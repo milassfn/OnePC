@@ -6,7 +6,7 @@ exit /b
 : fin batch #>
 
 Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
-$appVersion = '1.1.0'
+$appVersion = '1.3.0'
 $updBase = 'https://raw.githubusercontent.com/milassfn/OnePC/main/'
 $updUrl = $updBase + 'OnePC.cmd'
 # Clé publique de licence : posée ici par l'Atelier au moment de fabriquer OnePC.exe (vide = fichier de travail, sans licence)
@@ -440,6 +440,7 @@ $xaml = @'
                 </Grid>
                 <TextBlock x:Name="NameCpu" Margin="0,10,0,0" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" FontSize="12"/>
                 <TextBlock x:Name="SubCpu" Style="{StaticResource Dim}" HorizontalAlignment="Center" FontSize="11"/>
+                <TextBlock x:Name="StateCpu" Text=" " HorizontalAlignment="Center" FontSize="11.5" FontWeight="Bold" Margin="0,4,0,0"/>
                 <TextBlock x:Name="TempCpu" Text=" " Foreground="#FBBF24" HorizontalAlignment="Center" FontSize="11.5" FontWeight="SemiBold" Margin="0,3,0,0"/>
               </StackPanel>
             </Border>
@@ -455,6 +456,7 @@ $xaml = @'
                 </Grid>
                 <TextBlock x:Name="NameGpu" Margin="0,10,0,0" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" FontSize="12"/>
                 <TextBlock x:Name="SubGpu" Style="{StaticResource Dim}" HorizontalAlignment="Center" FontSize="11"/>
+                <TextBlock x:Name="StateGpu" Text=" " HorizontalAlignment="Center" FontSize="11.5" FontWeight="Bold" Margin="0,4,0,0"/>
                 <TextBlock x:Name="TempGpu" Text=" " Foreground="#FBBF24" HorizontalAlignment="Center" FontSize="11.5" FontWeight="SemiBold" Margin="0,3,0,0"/>
               </StackPanel>
             </Border>
@@ -470,6 +472,7 @@ $xaml = @'
                 </Grid>
                 <TextBlock x:Name="NameRam" Margin="0,10,0,0" HorizontalAlignment="Center" FontSize="12"/>
                 <TextBlock x:Name="SubRam" Style="{StaticResource Dim}" HorizontalAlignment="Center" FontSize="11"/>
+                <TextBlock x:Name="StateRam" Text=" " HorizontalAlignment="Center" FontSize="11.5" FontWeight="Bold" Margin="0,4,0,0"/>
                 <TextBlock x:Name="ExtraRam" Text=" " Foreground="#FBBF24" HorizontalAlignment="Center" FontSize="11.5" FontWeight="SemiBold" Margin="0,3,0,0"/>
               </StackPanel>
             </Border>
@@ -613,9 +616,9 @@ $xaml = @'
           <StackPanel Grid.Row="0">
             <Border Style="{StaticResource Card}" Padding="18,14">
               <DockPanel>
-                <Button x:Name="DrvAutoGo" DockPanel.Dock="Right" Style="{StaticResource Action}" Content="Mettre à jour tous les pilotes" Margin="14,0,0,0" VerticalAlignment="Center"/>
+                <Button x:Name="DrvAutoGo" DockPanel.Dock="Right" Style="{StaticResource Action}" Content="Rechercher les mises à jour" Margin="14,0,0,0" VerticalAlignment="Center"/>
                 <StackPanel>
-                  <TextBlock Text="PILOTES EN UN CLIC : CARTE GRAPHIQUE, PROCESSEUR, PUIS LE RESTE" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,4"/>
+                  <TextBlock Text="PILOTES : CARTE GRAPHIQUE, PROCESSEUR, PUIS LE RESTE — TU VALIDES CHAQUE PILOTE" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,4"/>
                   <TextBlock x:Name="DrvAutoGpu" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                   <TextBlock x:Name="DrvAutoInfo" Foreground="#CACAD2" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/>
                 </StackPanel>
@@ -825,7 +828,24 @@ $xaml = @'
           <TextBlock Text="Optimisation" Style="{StaticResource H}" Margin="0,0,0,2"/>
           <TextBlock Text="Nettoyage, mode jeu, mises à jour des logiciels et réparation de Windows" Style="{StaticResource Dim}" Margin="0,0,0,4"/>
           <TextBlock x:Name="OptiMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,0,0,8"/>
-          <Grid>
+          <Border Style="{StaticResource Card}" Margin="0,0,0,2" BorderBrush="#A78BFA" BorderThickness="1.5">
+            <DockPanel>
+              <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                <Button x:Name="BtnPad" Style="{StaticResource Action}" Content="Optimiser ma manette"/>
+                <Button x:Name="BtnPadOrig" Style="{StaticResource Ghost}" Content="Remettre d'origine" ToolTip="Réactive la veille des ports USB comme avant"/>
+              </StackPanel>
+              <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="&#xE7FC;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#A78BFA" VerticalAlignment="Center" Margin="0,0,7,0"/>
+                  <TextBlock Text="MANETTE — ANTI-LAG" Style="{StaticResource Tag}" Foreground="#A78BFA"/>
+                </StackPanel>
+                <TextBlock x:Name="PadInfo" Text="..." FontSize="16" FontWeight="SemiBold" Margin="0,2,0,6"/>
+                <TextBlock x:Name="PadMsg" TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="20"
+                           Text="Enlève le délai que Windows ajoute à la manette : empêche la mise en veille des ports USB et garde le PC réactif. Pour le moins de lag possible, branche ta manette en filaire (USB). Réversible, et un redémarrage finalise le réglage."/>
+              </StackPanel>
+            </DockPanel>
+          </Border>
+          <Grid Margin="0,14,0,0">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
@@ -1720,7 +1740,7 @@ foreach ($oldName in @(('Sal' + 'Info'), ('Kon' + 'trol'), ('Tweak' + 'Milass'))
     try { if (Get-ScheduledTask -TaskName ($oldName + ' Entretien') -ErrorAction Stop) { $script:migCare = $true } } catch {}
     try { if (Get-ScheduledTask -TaskName ($oldName + ' Pilotes') -ErrorAction Stop) { $script:migDrv = $true } } catch {}
 }
-$cfg = @{ Accent = 'Rouge'; StartPage = 'Home'; Tray = $false; DrvCheck = $true; Alerts = $true; GpuMax = 85; RamMax = 92; DiskMin = 10; GameApps = @(); BackSrc = ''; BackDst = ''; Games = @(); DnsAlias = ''; StartOff = @(); PlanOrig = ''; AccentHex = ''; NamesClean = $false; Welcome = $false; CalTold = ''; Pseudo = ''; Banner = 0; Since = ''; UpdAsked = ''; ThemeOrig = -1; FastOrig = -1 }
+$cfg = @{ Accent = 'Rouge'; StartPage = 'Home'; Tray = $false; DrvCheck = $true; Alerts = $true; GpuMax = 85; RamMax = 92; DiskMin = 10; GameApps = @(); BackSrc = ''; BackDst = ''; Games = @(); DnsAlias = ''; StartOff = @(); PlanOrig = ''; AccentHex = ''; NamesClean = $false; Welcome = $false; CalTold = ''; Pseudo = ''; Banner = 0; Since = ''; UpdAsked = ''; ThemeOrig = -1; FastOrig = -1; PadDone = $false }
 try {
     $saved = Get-Content -LiteralPath $cfgFile -Raw -Encoding UTF8 -ErrorAction Stop | ConvertFrom-Json
     foreach ($p in $saved.PSObject.Properties) { if ($cfg.ContainsKey($p.Name)) { $cfg[$p.Name] = $p.Value } }
@@ -2149,7 +2169,12 @@ if ($amdGpu -or $amdCpu) {
 (UI 'InfoPc').Text  = $env:COMPUTERNAME
 (UI 'MbMaker').Text = [string]$mb.Manufacturer
 (UI 'MbModel').Text = "Modèle : " + $mb.Product
-(UI 'MbBios').Text  = "BIOS : " + $bios.SMBIOSBIOSVersion
+$sbTxt = 'inconnu'
+try {
+    $sb = Get-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control\SecureBoot\State' -Name UEFISecureBootEnabled -ErrorAction Stop
+    if ([int]$sb.UEFISecureBootEnabled -eq 1) { $sbTxt = 'activé' } else { $sbTxt = 'désactivé' }
+} catch { $sbTxt = 'non disponible (BIOS en mode ancien / Legacy)' }
+(UI 'MbBios').Text  = "BIOS : " + $bios.SMBIOSBIOSVersion + "   ·   Secure Boot : " + $sbTxt
 (UI 'DiskList').Text = ($disks | ForEach-Object { $_.Model + " (" + [math]::Round($_.Size / 1GB) + " Go)" }) -join '  |  '
 
 # ---------- Mesures en arrière-plan (la fenêtre reste fluide) ----------
@@ -2329,6 +2354,15 @@ function Set-Gauge($path, $pct) {
     if (-not $win.IsVisible -or (UI 'PageHome').Visibility -ne 'Visible') { $g.Cur = $p; Draw-Gauge $path $p; return }
     if (-not $gaugeTimer.IsEnabled) { $gaugeTimer.Start() }
 }
+function Set-GaugeState($name, $pct, $isRam) {
+    $p = [int]$pct
+    if ($isRam) {
+        if ($p -ge 90) { $t = 'Saturée'; $c = '#FB923C' } elseif ($p -ge 75) { $t = 'Bien remplie'; $c = '#FBBF24' } else { $t = 'OK'; $c = '#34D399' }
+    } else {
+        if ($p -ge 90) { $t = 'À fond'; $c = '#FB923C' } elseif ($p -ge 60) { $t = 'Ça travaille'; $c = '#FBBF24' } else { $t = 'Tranquille'; $c = '#34D399' }
+    }
+    $u = UI $name; $u.Text = $t; $u.Foreground = $brush.ConvertFromString($c)
+}
 $script:span = 60
 function Set-Line($poly, $hist) {
     if ((UI 'PageHome').Visibility -ne 'Visible') { return }
@@ -2388,7 +2422,7 @@ function Show-Page($key) {
     try {
         if ($key -eq 'Start') { Load-Startup }
         if ($key -eq 'Disk')  { Load-Disks }
-        if ($key -eq 'Opti')  { Update-Power; Show-Fast }
+        if ($key -eq 'Opti')  { Update-Power; Show-Fast; Update-Pad }
         if ($key -eq 'Light') { Load-Light }
         if ($key -eq 'Wall')  { Load-Walls; Load-Cust }
         if ($key -eq 'Crash') { Load-Crashes }
@@ -2584,6 +2618,72 @@ function Show-Box($text, [bool]$yesNo, $inputDefault = $null) {
     }
 }
 function Ask($text) { Show-Box $text $true }
+function Show-Picker($title, $intro, $items) {
+    if (-not $items -or @($items).Count -eq 0) { return @() }
+    try {
+        $x = @"
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize" ShowInTaskbar="False"
+        SizeToContent="Height" Width="560" MaxHeight="640" WindowStartupLocation="CenterOwner" FontFamily="Segoe UI">
+  <Border x:Name="Card" Margin="18" Background="#16161A" BorderBrush="#2E2E36" BorderThickness="1" CornerRadius="12">
+    <Border.Effect><DropShadowEffect BlurRadius="24" ShadowDepth="4" Opacity="0.55" Color="#000000"/></Border.Effect>
+    <StackPanel>
+      <Border x:Name="Head" Background="#1C1C22" CornerRadius="12,12,0,0" Padding="18,12">
+        <StackPanel Orientation="Horizontal">
+          <Border Width="8" Height="8" CornerRadius="4" Background="$accent" VerticalAlignment="Center" Margin="0,0,10,0"/>
+          <TextBlock x:Name="Ttl" Foreground="#FFFFFF" FontWeight="Bold" FontSize="13"/>
+        </StackPanel>
+      </Border>
+      <TextBlock x:Name="Intro" Margin="22,16,22,8" Foreground="#CACAD2" FontSize="12.5" TextWrapping="Wrap" LineHeight="18"/>
+      <StackPanel Orientation="Horizontal" Margin="22,0,22,6">
+        <TextBlock x:Name="All" Text="Tout cocher" Foreground="$accent" FontSize="12" FontWeight="SemiBold" Cursor="Hand" Margin="0,0,16,0"/>
+        <TextBlock x:Name="None" Text="Tout décocher" Foreground="#9A9AA4" FontSize="12" FontWeight="SemiBold" Cursor="Hand"/>
+      </StackPanel>
+      <ScrollViewer MaxHeight="360" VerticalScrollBarVisibility="Auto" Margin="22,0,22,0">
+        <StackPanel x:Name="List"/>
+      </ScrollViewer>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="18,16,18,18">
+        <Border x:Name="No" CornerRadius="7" Background="#222228" BorderBrush="#34343C" BorderThickness="1" Padding="22,8" Margin="0,0,10,0" Cursor="Hand">
+          <TextBlock Text="Annuler" Foreground="#E4E4EA" FontSize="13" FontWeight="SemiBold"/>
+        </Border>
+        <Border x:Name="Yes" CornerRadius="7" Background="$accent" Padding="22,8" Cursor="Hand">
+          <TextBlock Text="Installer la sélection" Foreground="#FFFFFF" FontSize="13" FontWeight="SemiBold"/>
+        </Border>
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</Window>
+"@
+        $d = [Windows.Markup.XamlReader]::Parse($x)
+        if ($win -and $win.IsVisible) { $d.Owner = $win } else { $d.WindowStartupLocation = 'CenterScreen'; $d.Topmost = $true }
+        $d.FindName('Ttl').Text = [string]$title
+        $d.FindName('Intro').Text = [string]$intro
+        $list = $d.FindName('List')
+        $cbs = New-Object System.Collections.ArrayList
+        foreach ($it in @($items)) {
+            $cb = New-Object System.Windows.Controls.CheckBox
+            $cb.Content = [string]$it
+            $cb.IsChecked = $true
+            $cb.Foreground = 'White'
+            $cb.FontSize = 13
+            $cb.Margin = '0,7,0,7'
+            $cb.Padding = '6,0,0,0'
+            [void]$list.Children.Add($cb)
+            [void]$cbs.Add($cb)
+        }
+        $d.Tag = $false
+        $d.FindName('All').Add_MouseLeftButtonUp({ foreach ($c in $cbs) { $c.IsChecked = $true } }.GetNewClosure())
+        $d.FindName('None').Add_MouseLeftButtonUp({ foreach ($c in $cbs) { $c.IsChecked = $false } }.GetNewClosure())
+        $d.FindName('Yes').Add_MouseLeftButtonUp({ $d.Tag = $true; $d.Close() }.GetNewClosure())
+        $d.FindName('No').Add_MouseLeftButtonUp({ $d.Close() }.GetNewClosure())
+        $d.FindName('Head').Add_MouseLeftButtonDown({ try { $d.DragMove() } catch {} }.GetNewClosure())
+        $d.Add_KeyDown({ param($o, $e) if ($e.Key -eq 'Escape') { $d.Close() } }.GetNewClosure())
+        [void]$d.ShowDialog()
+        if (-not $d.Tag) { return $null }
+        $sel = @(); foreach ($c in $cbs) { if ($c.IsChecked) { $sel += [string]$c.Content } }
+        return $sel
+    } catch { return $null }
+}
 $script:jobs = New-Object System.Collections.ArrayList
 function Start-Bg($code, $arg, $done) {
     $p = [powershell]::Create()
@@ -2835,6 +2935,85 @@ function Set-Profile($guid, $label, $gameMode) {
 (UI 'BtnChill').Add_Click({ Set-Profile '381b4222-f694-41f0-9685-ff5bb260df2e' 'Chill' $false })
 (UI 'BtnOrig').Add_Click({ $script:watch = $null; [void](Restore-PlanOrig) })
 (UI 'BtnEco').Add_Click({ Set-Profile 'a1841308-3541-4fab-bc81-f71556f20b4a' 'Éco' $false })
+
+# ---------- Manette : anti-lag ----------
+$padDetectCode = {
+    param($a)
+    $res = [pscustomobject]@{ Found = $false; Name = ''; Bt = $false }
+    try {
+        $rx = 'Controller|Gamepad|Manette|DualSense|DualShock|Xbox|Wireless Controller|Sony Interactive|8BitDo|Switch Pro'
+        $devs = @(Get-PnpDevice -PresentOnly -ErrorAction Stop | Where-Object { $_.Status -eq 'OK' -and $_.FriendlyName -match $rx -and $_.Class -notmatch 'AudioEndpoint|MEDIA|Image|Camera|Monitor' })
+        if ($devs.Count) {
+            $res.Found = $true
+            $res.Name = [string]$devs[0].FriendlyName
+            foreach ($d in $devs) { if ([string]$d.InstanceId -match 'BTH|BLUETOOTH') { $res.Bt = $true } }
+        }
+    } catch {}
+    $res
+}
+function Update-Pad {
+    (UI 'PadInfo').Text = 'Détection de la manette...'
+    Start-Bg $padDetectCode 0 {
+        param($r)
+        $r = @($r)[0]
+        if (-not $r -or -not $r.Found) {
+            (UI 'PadInfo').Text = 'Aucune manette détectée'
+            (UI 'PadMsg').Text = "Branche ou allume ta manette puis reviens sur cet onglet pour qu'elle soit vue. L'optimisation marche quand même si tu la lances maintenant."
+        }
+        else {
+            $conn = if ($r.Bt) { 'Bluetooth (sans fil)' } else { 'Filaire (USB)' }
+            (UI 'PadInfo').Text = $r.Name + '  ·  ' + $conn
+            if ($r.Bt) { (UI 'PadMsg').Text = "Ta manette est en Bluetooth : c'est ce qui ajoute le plus de lag (10 à 20 ms). Branche-la en USB pour la meilleure réactivité. L'optimisation ci-dessous enlève en plus le délai que Windows ajoute." }
+            else { (UI 'PadMsg').Text = "Manette en filaire, parfait. L'optimisation enlève le délai que Windows ajoute (veille des ports USB, réactivité du PC). Réversible, un redémarrage finalise." }
+        }
+        if ($cfg.PadDone) { (UI 'PadInfo').Text = [string](UI 'PadInfo').Text + '   — optimisée ✓' }
+    }
+}
+$padOptiCode = @'
+$ErrorActionPreference = 'Continue'
+Write-Host "Optimisation de la manette (anti-lag)..." -ForegroundColor Cyan
+Write-Host ""
+try {
+    powercfg /setacvalueindex SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0 | Out-Null
+    powercfg /setdcvalueindex SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0 | Out-Null
+    powercfg /setactive SCHEME_CURRENT | Out-Null
+    Write-Host "- Veille selective USB desactivee (plan d'alimentation)" -ForegroundColor Green
+} catch { Write-Host "- Veille USB (plan) non modifiable sur ce PC" -ForegroundColor Yellow }
+try {
+    New-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\USB' -Force | Out-Null
+    New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\USB' -Name 'DisableSelectiveSuspend' -Value 1 -PropertyType DWord -Force | Out-Null
+    Write-Host "- Veille USB desactivee au niveau du pilote" -ForegroundColor Green
+} catch { Write-Host ("- Veille USB (pilote) : " + $_.Exception.Message) -ForegroundColor Yellow }
+Write-Host ""
+Write-Host "C'est fait. Redemarre le PC pour que ce soit pleinement actif." -ForegroundColor Cyan
+Write-Host "Astuce : branche ta manette en USB pour le moins de lag possible." -ForegroundColor Gray
+Read-Host "Appuie sur Entree pour fermer"
+'@
+$padOrigCode = @'
+Write-Host "Remise d'origine des reglages manette..." -ForegroundColor Cyan
+Write-Host ""
+try {
+    powercfg /setacvalueindex SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 1 | Out-Null
+    powercfg /setdcvalueindex SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 1 | Out-Null
+    powercfg /setactive SCHEME_CURRENT | Out-Null
+    Write-Host "- Veille selective USB remise (plan d'alimentation)" -ForegroundColor Green
+} catch {}
+try {
+    Remove-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\USB' -Name 'DisableSelectiveSuspend' -ErrorAction SilentlyContinue
+    Write-Host "- Veille USB (pilote) remise par defaut" -ForegroundColor Green
+} catch {}
+Write-Host ""
+Write-Host "C'est remis comme avant. Redemarre le PC pour finaliser." -ForegroundColor Cyan
+Read-Host "Appuie sur Entree pour fermer"
+'@
+(UI 'BtnPad').Add_Click({
+    if (Run-Console $padOptiCode -Admin) { $cfg.PadDone = $true; Save-Cfg; (UI 'OptiMsg').Text = 'Manette optimisée. Redémarre le PC pour que ce soit pleinement actif.'; Log 'Manette optimisée (anti-lag)'; Update-Pad }
+    else { (UI 'OptiMsg').Text = 'Optimisation manette annulée (droits administrateur refusés).' }
+})
+(UI 'BtnPadOrig').Add_Click({
+    if (Run-Console $padOrigCode -Admin) { $cfg.PadDone = $false; Save-Cfg; (UI 'OptiMsg').Text = 'Réglages manette remis d''origine.'; Update-Pad }
+    else { (UI 'OptiMsg').Text = 'Annulé (droits administrateur refusés).' }
+})
 
 # ---------- Extinction : démarrage rapide ----------
 $fastKey = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power'
@@ -3131,9 +3310,10 @@ try {
     $s = New-Object -ComObject Microsoft.Update.Session
     $res = $s.CreateUpdateSearcher().Search("IsInstalled=0 and Type='Driver'")
     $c = New-Object -ComObject Microsoft.Update.UpdateColl
+    $keep = @(__KEEP__)
     if ($res.Updates.Count -eq 0) { Write-Host "Aucun pilote a installer." -ForegroundColor Green }
     else {
-        foreach ($u in $res.Updates) { if ('__GPUSKIP__' -eq '1' -and [string]$u.Title -match '(?i)display|radeon|geforce|nvidia') { continue }; Write-Host (" - " + $u.Title); if (-not $u.EulaAccepted) { $u.AcceptEula() }; [void]$c.Add($u) }
+        foreach ($u in $res.Updates) { if ('__GPUSKIP__' -eq '1' -and [string]$u.Title -match '(?i)display|radeon|geforce|nvidia') { continue }; if ($keep.Count -and ($keep -notcontains [string]$u.Title)) { continue }; Write-Host (" - " + $u.Title); if (-not $u.EulaAccepted) { $u.AcceptEula() }; [void]$c.Add($u) }
         if ($c.Count -eq 0) { Write-Host "Aucun pilote a installer." -ForegroundColor Green; throw 'rien' }
         Write-Host "Telechargement..."
         $d = $s.CreateUpdateDownloader(); $d.Updates = $c; [void]$d.Download()
@@ -3258,12 +3438,22 @@ if ($okDl) {
             (UI 'DrvAutoInfo').Text = $head + "`r`n1. " + $gpuNote + "`r`n2. " + $chipNote + "`r`n3. " + $wuNote
             return
         }
-        $todo = @()
-        if ($gpuUrl) { $lab = $gpuVer; if (-not $lab) { $lab = 'dernière version' }; $shown = $from; if (-not $shown) { $shown = 'inconnue' }; $todo += "Pilote graphique $brand : $shown -> $lab" }
-        if ($chipUrl) { $shown = [string]$script:chipNow; if (-not $shown) { $shown = 'pas installés' }; $todo += "Pilotes processeur / chipset AMD : $shown -> $chipVer" }
+        $todo = @(); $gpuLabel = ''; $chipLabel = ''
+        if ($gpuUrl) { $lab = $gpuVer; if (-not $lab) { $lab = 'dernière version' }; $shown = $from; if (-not $shown) { $shown = 'inconnue' }; $gpuLabel = "Pilote graphique $brand : $shown -> $lab"; $todo += $gpuLabel }
+        if ($chipUrl) { $shown = [string]$script:chipNow; if (-not $shown) { $shown = 'pas installés' }; $chipLabel = "Pilotes processeur / chipset AMD : $shown -> $chipVer"; $todo += $chipLabel }
         foreach ($t in $wu) { $todo += $t }
-        if (-not (Ask ("Installer ces mises à jour de pilotes ?`r`n`r`n - " + ($todo -join "`r`n - ") + "`r`n`r`nTout se fait tout seul dans une fenêtre administrateur. L'écran peut clignoter ou devenir noir quelques secondes : ferme tes jeux avant."))) {
+        $sel = Show-Picker 'Mises à jour de pilotes trouvées' "Coche les pilotes à installer (tout est coché par défaut). Rien ne s'installe sans ta validation. Tout se fait dans une fenêtre administrateur : ferme tes jeux avant, l'écran peut clignoter quelques secondes." $todo
+        if ($null -eq $sel) {
             (UI 'DrvAutoInfo').Text = "" + $todo.Count + " mise(s) à jour disponible(s), pas encore installée(s)."; return
+        }
+        if (@($sel).Count -eq 0) {
+            (UI 'DrvAutoInfo').Text = "Aucun pilote coché : rien n'a été installé."; return
+        }
+        $doGpu = ($gpuUrl -and ($sel -contains $gpuLabel))
+        $doChip = ($chipUrl -and ($sel -contains $chipLabel))
+        $wuKeep = @($wu | Where-Object { $sel -contains $_ })
+        if (-not $doGpu -and -not $doChip -and $wuKeep.Count -eq 0) {
+            (UI 'DrvAutoInfo').Text = "Aucun pilote coché : rien n'a été installé."; return
         }
         $code = @'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -3272,22 +3462,22 @@ $script:needReboot = $false
 $dir = Join-Path $env:TEMP 'OnePC-pilotes'; New-Item -ItemType Directory -Path $dir -Force | Out-Null
 Write-Host "Ne ferme pas cette fenetre pendant les installations." -ForegroundColor Yellow
 '@
-        # ordre : carte graphique, puis processeur / chipset, puis le reste
-        if ($gpuUrl) {
+        # ordre : carte graphique, puis processeur / chipset, puis le reste (uniquement ce qui est coché)
+        if ($doGpu) {
             $part = $drvNvPart; if ($drvVendor -eq 'AMD') { $part = $drvAmdPart }
             $code += "`r`n" + $part.Replace('__VER__', $gpuVer).Replace('__URL__', $gpuUrl.Replace("'", "''"))
         }
-        if ($chipUrl) { $code += "`r`n" + $drvChipPart.Replace('__CVER__', $chipVer).Replace('__CURL__', $chipUrl.Replace("'", "''")) }
-        if ($wu.Count) { $skip = '0'; if ($drvVendor) { $skip = '1' }; $code += "`r`n" + $drvWuPart.Replace('__GPUSKIP__', $skip) }
+        if ($doChip) { $code += "`r`n" + $drvChipPart.Replace('__CVER__', $chipVer).Replace('__CURL__', $chipUrl.Replace("'", "''")) }
+        if ($wuKeep.Count) { $skip = '0'; if ($drvVendor) { $skip = '1' }; $keepLit = (@($wuKeep) | ForEach-Object { "'" + ($_ -replace "'", "''") + "'" }) -join ','; $code += "`r`n" + $drvWuPart.Replace('__GPUSKIP__', $skip).Replace('__KEEP__', $keepLit) }
         $code += "`r`n" + @'
 Write-Host ""
 if ($script:needReboot) { Write-Host "Termine. Redemarre le PC pour finir l'installation." -ForegroundColor Green } else { Write-Host "Termine." -ForegroundColor Green }
 Read-Host "Appuie sur Entree pour fermer"
 '@
         if (Run-Console $code -Admin) {
-            Log ("Mise à jour des pilotes lancée : " + ($todo -join ' ; '))
+            Log ("Mise à jour des pilotes lancée : " + (@($sel) -join ' ; '))
             (UI 'DrvDot').Visibility = 'Collapsed'
-            (UI 'DrvAutoInfo').Text = "Installation lancée dans la fenêtre administrateur (" + $todo.Count + " mise(s) à jour). Redémarre le PC quand elle a fini, puis reclique ici pour vérifier que tout est à jour."
+            (UI 'DrvAutoInfo').Text = "Installation lancée dans la fenêtre administrateur (" + @($sel).Count + " pilote(s) coché(s)). Redémarre le PC quand elle a fini, puis reclique ici pour vérifier que tout est à jour."
         } else { (UI 'DrvAutoInfo').Text = 'Annulé (droits administrateur refusés).' }
     }
 })
@@ -3455,6 +3645,8 @@ $svcFile = Join-Path $appDir 'services.txt'
 (UI 'SvcStop').Add_Click({
     $sel = @((UI 'LightSvc').Children | Where-Object { $_.IsChecked } | ForEach-Object { [string]$_.Tag })
     if ($sel.Count -eq 0) { (UI 'SvcMsg').Text = "Coche d'abord au moins un service."; return }
+    $noms = @((UI 'LightSvc').Children | Where-Object { $_.IsChecked } | ForEach-Object { ([string]$_.Content -split '   ·   ')[0] })
+    if (-not (Ask ("Mettre ces " + $sel.Count + " service(s) en manuel ?`r`n`r`n - " + ($noms -join "`r`n - ") + "`r`n`r`nCes services sont sûrs à désactiver. Rien n'est supprimé : le bouton « Rétablir » les remet comme avant quand tu veux. Windows demandera les droits administrateur."))) { return }
     $code = @'
 $file = '__FILE__'
 foreach ($n in @(__NAMES__)) {
@@ -6284,10 +6476,10 @@ $timer.Add_Tick({
         $hCpu.Add($sync.Cpu); if ($hCpu.Count -gt 3600) { $hCpu.RemoveAt(0) }
         $hGpu.Add($sync.Gpu); if ($hGpu.Count -gt 3600) { $hGpu.RemoveAt(0) }
         $hRam.Add($sync.Ram); if ($hRam.Count -gt 3600) { $hRam.RemoveAt(0) }
-        (UI 'ValCpu').Text = [string]$sync.Cpu; Set-Gauge (UI 'ArcCpu') $sync.Cpu; Set-Line (UI 'LineCpu') $hCpu
+        (UI 'ValCpu').Text = [string]$sync.Cpu; Set-Gauge (UI 'ArcCpu') $sync.Cpu; Set-Line (UI 'LineCpu') $hCpu; Set-GaugeState 'StateCpu' $sync.Cpu $false
         if ($sync.GpuOk) { (UI 'ValGpu').Text = [string]$sync.Gpu } else { (UI 'ValGpu').Text = '-' }
-        Set-Gauge (UI 'ArcGpu') $sync.Gpu; Set-Line (UI 'LineGpu') $hGpu
-        (UI 'ValRam').Text = [string]$sync.Ram; Set-Gauge (UI 'ArcRam') $sync.Ram; Set-Line (UI 'LineRam') $hRam
+        Set-Gauge (UI 'ArcGpu') $sync.Gpu; Set-Line (UI 'LineGpu') $hGpu; if ($sync.GpuOk) { Set-GaugeState 'StateGpu' $sync.Gpu $false } else { (UI 'StateGpu').Text = ' ' }
+        (UI 'ValRam').Text = [string]$sync.Ram; Set-Gauge (UI 'ArcRam') $sync.Ram; Set-Line (UI 'LineRam') $hRam; Set-GaugeState 'StateRam' $sync.Ram $true
         (UI 'SubRam').Text = "" + $sync.RamUsed + " / $ramGo Go utilisés"
         (UI 'DiskC').Text = $sync.DiskC
         (UI 'ChipCpu').Text = "" + $sync.Cpu + " %"; (UI 'ChipRam').Text = "" + $sync.Ram + " %"
