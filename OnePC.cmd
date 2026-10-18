@@ -6,7 +6,7 @@ exit /b
 : fin batch #>
 
 Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
-$appVersion = '1.3.0'
+$appVersion = '1.3.1'
 $updBase = 'https://raw.githubusercontent.com/milassfn/OnePC/main/'
 $updUrl = $updBase + 'OnePC.cmd'
 # Clé publique de licence : posée ici par l'Atelier au moment de fabriquer OnePC.exe (vide = fichier de travail, sans licence)
@@ -3581,7 +3581,8 @@ function Load-Disks {
 }
 
 # ---------- Alléger : applications en arrière-plan ----------
-$keepRx = 'Radeon|AMDRS|amdow|atieclxx|NVIDIA|nvcontainer|nvsphelper|NVDisplay|Realtek|RtkAud|RAVCpl|Nahimic|SecurityHealth|avast|avg|avp|bdagent|bitdefender|norton|mcafee|ekrn|egui|mbam|ctfmon|wscript'
+$gameKeepRx = 'Epic|EasyAntiCheat|EOSOverlay|UnrealCEF|CrashReportClient|Fortnite|BattlEye|BEService|Riot|vgc|vgtray|steam|Battle\.net|EADesktop|EABackground|Origin|^upc$|UbisoftConnect|GalaxyClient|RockstarService|SocialClub'
+$keepRx = $gameKeepRx + '|Radeon|AMDRS|amdow|atieclxx|NVIDIA|nvcontainer|nvsphelper|NVDisplay|Realtek|RtkAud|RAVCpl|Nahimic|SecurityHealth|avast|avg|avp|bdagent|bitdefender|norton|mcafee|ekrn|egui|mbam|ctfmon|wscript'
 $light = '#E8E8EC'
 function New-Check($text, $tag, $width) {
     $cb = New-Object System.Windows.Controls.CheckBox
@@ -4295,7 +4296,7 @@ $script:watch = $null
 function Close-GameApps {
     $closed = 0
     foreach ($n in $cfg.GameApps) {
-        if ($protected -contains $n -or $n -match 'EpicGamesLauncher|Fortnite|steam') { continue }
+        if ($protected -contains $n -or $n -match $gameKeepRx) { continue }
         if (Get-Process -Name $n -ErrorAction SilentlyContinue) { try { Stop-Process -Name $n -Force -ErrorAction Stop; $closed++ } catch {} }
     }
     $closed
