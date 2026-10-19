@@ -1,0 +1,4 @@
+2026-10-19 | OnePC 1.5.0 : Aide & support | Un souci ? Nouvel onglet Aide : ouvre un ticket avec ton diagnostic en un clic, et trouve la solution aux problèmes fréquents.
+2026-10-19 | Nouveaux onglets Manette et Souris | OnePC reconnaît ta souris et ta manette, règle la vitesse du curseur, coupe l'accélération et enlève le lag de la manette.
+2026-10-19 | OBS réglé pour ton PC | Connexion en un clic, assistant de réglages, micro propre, ton live en direct et l'analyse de ton dernier live.
+2026-10-19 | Des badges dans ton profil | Nettoyages, heures de jeu, PC à jour... débloque-les tous dans Mon profil.
