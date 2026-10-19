@@ -6,7 +6,7 @@ exit /b
 : fin batch #>
 
 Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
-$appVersion = '1.5.0'
+$appVersion = '1.5.1'
 $updBase = 'https://raw.githubusercontent.com/milassfn/OnePC/main/'
 $updUrl = $updBase + 'OnePC.cmd'
 # Clé publique de licence : posée ici par l'Atelier au moment de fabriquer OnePC.exe (vide = fichier de travail, sans licence)
@@ -2219,11 +2219,50 @@ function Get-MachineCode {
     $hex = (($h[0..4] | ForEach-Object { $_.ToString('X2') }) -join '')
     $hex.Substring(0, 5) + '-' + $hex.Substring(5, 5)
 }
+# --- cles courtes (XXXXX-XXXXX-XXXXX-XXXXX) ---
+$licShort = '76ca754c03d726f6b537a1c0f67817cbd58fcce360567a2185e6d6d1f7cb96cb'
+$b32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
+function B32Enc([byte[]]$b) {
+    $s = ''; $buf = 0; $bits = 0
+    foreach ($x in $b) { $buf = ($buf -shl 8) -bor $x; $bits += 8; while ($bits -ge 5) { $bits -= 5; $s += $b32[($buf -shr $bits) -band 31] } ; $buf = $buf -band ((1 -shl $bits) - 1) }
+    if ($bits -gt 0) { $s += $b32[($buf -shl (5 - $bits)) -band 31] }
+    $s
+}
+function B32Dec([string]$s) {
+    $out = New-Object System.Collections.Generic.List[byte]; $buf = 0; $bits = 0
+    foreach ($ch in $s.ToCharArray()) { $v = $b32.IndexOf($ch); if ($v -lt 0) { return $null }; $buf = ($buf -shl 5) -bor $v; $bits += 5; if ($bits -ge 8) { $bits -= 8; $out.Add([byte](($buf -shr $bits) -band 255)) }; $buf = $buf -band ((1 -shl $bits) - 1) }
+    ,$out.ToArray()
+}
+function Short-Norm([string]$t) { (([string]$t).ToUpper() -replace '[^0-9A-Z]', '').Replace('O', '0').Replace('I', '1').Replace('L', '1').Replace('U', 'V') }
+function Short-Tag([byte[]]$head, [string]$machine) {
+    $sec = [byte[]]::new(32); for ($i = 0; $i -lt 32; $i++) { $sec[$i] = [Convert]::ToByte($licShort.Substring($i * 2, 2), 16) }
+    $h = New-Object System.Security.Cryptography.HMACSHA256 (,$sec)
+    $msg = [System.Text.Encoding]::ASCII.GetBytes('OnePC2|' + $machine + '|' + (($head | ForEach-Object { $_.ToString('X2') }) -join ''))
+    $t = $h.ComputeHash($msg); ,([byte[]]$t[0..7])
+}
+function Short-Id([string]$norm) { $sha = [System.Security.Cryptography.SHA256]::Create(); 'K' + (B32Enc ([byte[]]($sha.ComputeHash([System.Text.Encoding]::ASCII.GetBytes('id|' + $norm))[0..4]))) }
+function Test-ShortLic([string]$k, $r) {
+    # $k deja normalisee (20 caracteres) ; renvoie $true si la cle est authentique, et remplit $r
+    $b = B32Dec $k; if (-not $b -or $b.Count -ne 12 -or (B32Enc $b) -ne $k) { return $false }
+    $head = [byte[]]$b[0..3]; $meta = ([int]$b[2] -shl 8) -bor [int]$b[3]
+    $machine = Get-MachineCode; if ($meta -band 0x8000) { $machine = '*' }
+    $tag = Short-Tag $head $machine
+    for ($i = 0; $i -lt 8; $i++) { if ($tag[$i] -ne $b[4 + $i]) { return $false } }
+    $days = $meta -band 0x7FFF
+    $r.Id = Short-Id $k; $r.Client = ''; $r.Machine = $machine
+    $r.Exp = '0'; if ($days -gt 0) { $r.Exp = ([datetime]'2026-01-01').AddDays($days).ToString('yyyyMMdd') }
+    $true
+}
 function Test-Lic($text) {
     # renvoie @{ Ok; Why; Id; Client; Exp; Machine }
     $r = @{ Ok = $false; Why = ''; Id = ''; Client = ''; Exp = ''; Machine = '' }
     try {
         $k = (([string]$text) -replace '\s', '')
+        if (-not $k.StartsWith('ONEPC1.')) {
+            $n = Short-Norm $k
+            if ($n.Length -ne 20) { $r.Why = "Ce n'est pas une clé OnePC : elle doit ressembler à XXXXX-XXXXX-XXXXX-XXXXX."; return $r }
+            if (-not (Test-ShortLic $n $r)) { $r.Why = "Cette clé n'est pas valide sur ce PC : vérifie qu'elle a été créée avec le code de ce PC."; return $r }
+        } else {
         $p = $k.Split('.')
         if ($p.Count -ne 3 -or $p[0] -ne 'ONEPC1') { $r.Why = "Ce n'est pas une clé OnePC."; return $r }
         $data = B64uDec $p[1]; $sig = B64uDec $p[2]
@@ -2233,6 +2272,7 @@ function Test-Lic($text) {
         $f = [System.Text.Encoding]::UTF8.GetString($data).Split('|')
         if ($f.Count -lt 4) { $r.Why = "Cette clé n'est pas valide."; return $r }
         $r.Id = $f[0]; $r.Client = $f[1]; $r.Exp = $f[2]; $r.Machine = $f[3]
+        }
         if ($r.Machine -ne '*' -and $r.Machine -ne (Get-MachineCode)) { $r.Why = "Cette clé a été créée pour un autre PC (code " + $r.Machine + ")."; return $r }
         if ($r.Exp -ne '0') {
             $d = [datetime]::ParseExact($r.Exp, 'yyyyMMdd', [cultureinfo]::InvariantCulture)
@@ -2267,8 +2307,8 @@ function Show-Activation($why) {
           </Border>
           <TextBox x:Name="Code" IsReadOnly="True" Padding="10,8" Background="#0E0E11" Foreground="#FFFFFF" BorderBrush="#34343C" FontFamily="Consolas" FontSize="18" FontWeight="Bold"/>
         </DockPanel>
-        <TextBlock Text="TA CLÉ" Foreground="#8E8E98" FontSize="10.5" Margin="0,16,0,6"/>
-        <TextBox x:Name="Key" Height="96" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Padding="10,8" Background="#0E0E11" Foreground="#FFFFFF" BorderBrush="#34343C" CaretBrush="#FFFFFF" FontFamily="Consolas" FontSize="12"/>
+        <TextBlock Text="TA CLÉ  (XXXXX-XXXXX-XXXXX-XXXXX)" Foreground="#8E8E98" FontSize="10.5" Margin="0,16,0,6"/>
+        <TextBox x:Name="Key" MaxHeight="96" MinHeight="42" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Padding="10,8" Background="#0E0E11" Foreground="#FFFFFF" BorderBrush="#34343C" CaretBrush="#FFFFFF" FontFamily="Consolas" FontSize="17" FontWeight="Bold"/>
         <TextBlock x:Name="Err" Foreground="#FF7A8A" FontSize="12.5" TextWrapping="Wrap" Margin="0,10,0,0" MinHeight="18"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
           <Border x:Name="Quit" CornerRadius="7" Background="#222228" BorderBrush="#34343C" BorderThickness="1" Padding="22,8" Margin="0,0,10,0" Cursor="Hand">
@@ -8576,7 +8616,7 @@ $script:updBusy = $false; $script:updManual = $false
 (UI 'SetUpdate').Add_Click({ Check-Update $true })
 $licTxt = 'Version ' + $appVersion
 if ($script:lic) {
-    $licTxt += '   ·   Licence : ' + $script:lic.Client
+    $licTxt += '   ·   Licence'; if ($script:lic.Client) { $licTxt += ' : ' + $script:lic.Client } else { $licTxt += ' active' }
     if ($script:lic.Exp -ne '0') { try { $licTxt += ', valable jusqu''au ' + [datetime]::ParseExact($script:lic.Exp, 'yyyyMMdd', [cultureinfo]::InvariantCulture).ToString('dd/MM/yyyy', [cultureinfo]::InvariantCulture) } catch {} } else { $licTxt += ', sans date de fin' }
     if ($script:lic.Machine -eq '*') { $licTxt += ', tous PC' }
 } elseif (-not $licOn) { $licTxt += '   ·   Fichier de travail (sans licence)' }
