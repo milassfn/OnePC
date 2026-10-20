@@ -1,3 +1,6 @@
+2026-10-20 | OnePC 1.6.0 : Mon PC rame ? | Un gros bouton, et OnePC trouve pourquoi ton PC rame et comment le régler. Nouveau aussi : Mon matériel (écran 144 Hz, RAM XMP, conseils d'upgrade).
+2026-10-20 | Barre des tâches et Remettre à neuf | Personnalise ta barre des tâches avec un aperçu en direct, et remets ton PC à neuf sans rien perdre, étape par étape.
+2026-10-20 | Nouveau look | Démarrage, Alléger, Programmes, Raccourcis, Applications, Réseau, Rangement, Historique et Réglages ont été refaits : plus clairs, tout est expliqué.
 2026-10-19 | OnePC 1.5.1 : clés courtes | Ta clé de licence tient maintenant en 20 caractères (XXXXX-XXXXX-XXXXX-XXXXX). Les anciennes clés marchent toujours.
 2026-10-19 | OnePC 1.5.0 : Aide & support | Un souci ? Nouvel onglet Aide : ouvre un ticket avec ton diagnostic en un clic, et trouve la solution aux problèmes fréquents.
 2026-10-19 | Nouveaux onglets Manette et Souris | OnePC reconnaît ta souris et ta manette, règle la vitesse du curseur, coupe l'accélération et enlève le lag de la manette.

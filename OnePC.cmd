@@ -6,7 +6,7 @@ exit /b
 : fin batch #>
 
 Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
-$appVersion = '1.5.1'
+$appVersion = '1.6.0'
 $updBase = 'https://raw.githubusercontent.com/milassfn/OnePC/main/'
 $updUrl = $updBase + 'OnePC.cmd'
 # Clé publique de licence : posée ici par l'Atelier au moment de fabriquer OnePC.exe (vide = fichier de travail, sans licence)
@@ -185,6 +185,172 @@ $xaml = @'
       <Setter Property="Foreground" Value="#8E8E98"/>
       <Setter Property="FontSize" Value="12"/>
     </Style>
+    <Style x:Key="Tile" TargetType="Button">
+      <Setter Property="Foreground" Value="#E8E8EC"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="b" CornerRadius="12" Background="#1A1A1F" BorderBrush="#26262C" BorderThickness="1" Padding="12,10">
+              <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="b" Property="Background" Value="#202027"/>
+                <Setter TargetName="b" Property="BorderBrush" Value="#FF5A3C"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="b" Property="Opacity" Value="0.4"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="Seg" TargetType="Button">
+      <Setter Property="Foreground" Value="#B8B8C0"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="FontSize" Value="12.5"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="b" CornerRadius="7" Background="{TemplateBinding Background}" Padding="12,6">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="b" Property="Opacity" Value="0.8"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="Switch" TargetType="ToggleButton">
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ToggleButton">
+            <Border x:Name="tr" Width="44" Height="24" CornerRadius="12" Background="#2A2A31" BorderBrush="#3A3A44" BorderThickness="1">
+              <Ellipse x:Name="kn" Width="16" Height="16" Fill="#9C9CA6" HorizontalAlignment="Left" Margin="3,0,0,0"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="tr" Property="Background" Value="#FF5A3C"/>
+                <Setter TargetName="tr" Property="BorderBrush" Value="#FF5A3C"/>
+                <Setter TargetName="kn" Property="Fill" Value="#FFFFFF"/>
+                <Setter TargetName="kn" Property="HorizontalAlignment" Value="Right"/>
+                <Setter TargetName="kn" Property="Margin" Value="0,0,3,0"/>
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="tr" Property="Opacity" Value="0.85"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="SwitchRow" TargetType="CheckBox">
+      <Setter Property="Foreground" Value="#E8E8EC"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="CheckBox">
+            <Border x:Name="b" Background="Transparent" Padding="4,12,4,12">
+              <DockPanel>
+                <Border x:Name="tr" DockPanel.Dock="Right" Width="44" Height="24" CornerRadius="12" Background="#2A2A31" BorderBrush="#3A3A44" BorderThickness="1" Margin="20,0,0,0" VerticalAlignment="Center">
+                  <Ellipse x:Name="kn" Width="16" Height="16" Fill="#9C9CA6" HorizontalAlignment="Left" Margin="3,0,0,0"/>
+                </Border>
+                <ContentPresenter VerticalAlignment="Center"/>
+              </DockPanel>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="tr" Property="Background" Value="#FF5A3C"/>
+                <Setter TargetName="tr" Property="BorderBrush" Value="#FF5A3C"/>
+                <Setter TargetName="kn" Property="Fill" Value="#FFFFFF"/>
+                <Setter TargetName="kn" Property="HorizontalAlignment" Value="Right"/>
+                <Setter TargetName="kn" Property="Margin" Value="0,0,3,0"/>
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="tr" Property="Opacity" Value="0.85"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="b" Property="Opacity" Value="0.45"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="CheckCard" TargetType="CheckBox">
+      <Setter Property="Foreground" Value="#E8E8EC"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="CheckBox">
+            <Border x:Name="b" CornerRadius="11" Background="#141418" BorderBrush="#26262C" BorderThickness="1" Padding="13,11">
+              <DockPanel>
+                <Border x:Name="box" DockPanel.Dock="Left" Width="20" Height="20" CornerRadius="6" BorderBrush="#4A4A55" BorderThickness="1.5" Background="Transparent" Margin="0,2,12,0" VerticalAlignment="Top">
+                  <TextBlock x:Name="tick" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                </Border>
+                <ContentPresenter VerticalAlignment="Top"/>
+              </DockPanel>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="box" Property="Background" Value="#FF5A3C"/>
+                <Setter TargetName="box" Property="BorderBrush" Value="#FF5A3C"/>
+                <Setter TargetName="tick" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="b" Property="BorderBrush" Value="#FF5A3C"/>
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="b" Property="Background" Value="#1B1B21"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="Tick" TargetType="CheckBox">
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="CheckBox">
+            <Border x:Name="box" Width="20" Height="20" CornerRadius="6" BorderBrush="#4A4A55" BorderThickness="1.5" Background="Transparent">
+              <TextBlock x:Name="tick" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="box" Property="BorderBrush" Value="#8E8E98"/>
+              </Trigger>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="box" Property="Background" Value="#FF5A3C"/>
+                <Setter TargetName="box" Property="BorderBrush" Value="#FF5A3C"/>
+                <Setter TargetName="tick" Property="Visibility" Value="Visible"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <DataTemplate x:Key="RowCard">
+      <Border x:Name="row" CornerRadius="10" Padding="12,9" Margin="0,0,0,6" Background="#141418">
+        <Grid>
+          <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" MinWidth="150"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <TextBlock Grid.Column="0" Text="{Binding A}" Foreground="#FBBF24" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxWidth="260" Margin="0,0,16,0" VerticalAlignment="Center"/>
+          <TextBlock Grid.Column="1" Text="{Binding B}" Foreground="#CACAD2" TextWrapping="Wrap" VerticalAlignment="Center"/>
+          <TextBlock Grid.Column="2" Text="{Binding C}" Foreground="#6C6C76" FontSize="11.5" Margin="16,0,0,0" VerticalAlignment="Center"/>
+        </Grid>
+      </Border>
+      <DataTemplate.Triggers>
+        <Trigger SourceName="row" Property="IsMouseOver" Value="True">
+          <Setter TargetName="row" Property="Background" Value="#1B1B21"/>
+        </Trigger>
+      </DataTemplate.Triggers>
+    </DataTemplate>
     <Style TargetType="ScrollBar">
       <Setter Property="Width" Value="8"/>
       <Setter Property="MinWidth" Value="8"/>
@@ -252,6 +418,12 @@ $xaml = @'
                   <TextBlock Text="Accueil" Margin="12,0,0,0"/>
                 </StackPanel>
               </Button>
+              <Button x:Name="NavSlow" Style="{StaticResource Nav}">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="&#xEC4A;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                  <TextBlock Text="Mon PC rame" Margin="12,0,0,0"/>
+                </StackPanel>
+              </Button>
               <Button x:Name="GrpOpti" Style="{StaticResource Nav}">
                 <DockPanel Width="148" LastChildFill="True">
                   <TextBlock x:Name="GrpOptiChev" DockPanel.Dock="Right" Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="9" VerticalAlignment="Center" Opacity="0.7"/>
@@ -268,6 +440,12 @@ $xaml = @'
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
                       <TextBlock Text="Optimisation" Margin="12,0,0,0"/>
+                    </StackPanel>
+                  </Button>
+                  <Button x:Name="NavHw" Style="{StaticResource Nav}">
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="&#xE7F8;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                      <TextBlock Text="Mon matériel" Margin="12,0,0,0"/>
                     </StackPanel>
                   </Button>
                   <Button x:Name="NavDrv" Style="{StaticResource Nav}">
@@ -400,6 +578,12 @@ $xaml = @'
                       <TextBlock Text="Raccourcis" Margin="12,0,0,0"/>
                     </StackPanel>
                   </Button>
+                  <Button x:Name="NavBar" Style="{StaticResource Nav}">
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                      <TextBlock Text="Barre des tâches" Margin="12,0,0,0"/>
+                    </StackPanel>
+                  </Button>
                   <Button x:Name="NavTidy" Style="{StaticResource Nav}">
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
@@ -410,6 +594,12 @@ $xaml = @'
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
                       <TextBlock Text="Fond d'écran" Margin="12,0,0,0"/>
+                    </StackPanel>
+                  </Button>
+                  <Button x:Name="NavFresh" Style="{StaticResource Nav}">
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="&#xE777;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                      <TextBlock Text="Remettre à neuf" Margin="12,0,0,0"/>
                     </StackPanel>
                   </Button>
                 </StackPanel>
@@ -459,8 +649,8 @@ $xaml = @'
         </Grid.RowDefinitions>
 
         <Grid x:Name="TitleBar" Grid.Row="0" Background="Transparent">
-          <TextBlock x:Name="PageTitle" Text="Accueil" FontSize="16" FontWeight="SemiBold" Margin="26,0,0,0" VerticalAlignment="Center"/>
-          <Border x:Name="SearchWrap" HorizontalAlignment="Left" Margin="190,0,0,0" VerticalAlignment="Center" Width="220" Background="#17171B" BorderBrush="#2E2E35" BorderThickness="1" CornerRadius="8">
+          <TextBlock x:Name="PageTitle" Text="Accueil" FontSize="16" FontWeight="SemiBold" Margin="26,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" MaxWidth="196" TextTrimming="CharacterEllipsis"/>
+          <Border x:Name="SearchWrap" HorizontalAlignment="Left" Margin="236,0,0,0" VerticalAlignment="Center" Width="220" Background="#17171B" BorderBrush="#2E2E35" BorderThickness="1" CornerRadius="8">
             <Grid>
               <TextBlock x:Name="SearchHint" Text="Rechercher une fonction..." Foreground="#6C6C76" Margin="11,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
               <TextBox x:Name="SearchBox" Background="Transparent" Foreground="#E8E8EC" CaretBrush="#E8E8EC" BorderThickness="0" Padding="8,6" VerticalContentAlignment="Center"/>
@@ -506,6 +696,20 @@ $xaml = @'
         <ScrollViewer x:Name="PageHome" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8"><StackPanel Margin="26,4,22,12" MaxWidth="1250">
           <TextBlock Text="Monitoring système" Style="{StaticResource H}" Margin="0,0,0,2"/>
           <TextBlock Text="Surveillance matérielle en temps réel" Style="{StaticResource Dim}" Margin="0,0,0,12"/>
+          <Button x:Name="HomeSlow" Style="{StaticResource Tile}" Margin="0,0,0,14">
+            <DockPanel Margin="4,4,4,4">
+              <Border DockPanel.Dock="Right" CornerRadius="8" Background="#FF5A3C" Padding="16,8" VerticalAlignment="Center">
+                <TextBlock Text="Trouver la cause" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+              </Border>
+              <Border Width="44" Height="44" CornerRadius="12" Background="#2A1712" Margin="0,0,14,0">
+                <TextBlock Text="&#xEC4A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#FF5A3C" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+              <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Ton PC rame ?" FontSize="15" FontWeight="SemiBold"/>
+                <TextBlock Text="Un clic, et OnePC trouve pourquoi et t'explique comment régler ça." Foreground="#9C9CA6" FontSize="12.5" Margin="0,2,0,0"/>
+              </StackPanel>
+            </DockPanel>
+          </Button>
           <Border x:Name="HomeNews" Visibility="Collapsed" Background="#1A1530" BorderBrush="#5B4B9A" BorderThickness="1" CornerRadius="10" Padding="14,10" Margin="0,0,0,12">
             <DockPanel>
               <Button x:Name="HomeNewsClose" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="&#xE711;" FontFamily="Segoe MDL2 Assets" Margin="8,0,0,0" ToolTip="Masquer"/>
@@ -836,40 +1040,83 @@ $xaml = @'
 
         <!-- ===== Programmes ===== -->
         <Grid x:Name="PageProc" Grid.Row="1" Margin="26,4,26,20" MaxWidth="1250" Visibility="Collapsed">
-          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-          <StackPanel Grid.Row="0">
-            <TextBlock Text="Applications ouvertes" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock Text="Classées par mémoire utilisée. Les processus de Windows sont masqués pour ne garder que tes applications." Style="{StaticResource Dim}" Margin="0,0,0,4"/>
-            <TextBlock x:Name="ProcMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,0,0,8"/>
-          </StackPanel>
-          <Border Grid.Row="1" Style="{StaticResource Card}" Padding="16,12">
-            <DockPanel>
-              <Grid DockPanel.Dock="Top" Margin="0,0,22,8">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*"/><ColumnDefinition Width="140"/><ColumnDefinition Width="80"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="PROGRAMME" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="1" Text="MÉMOIRE" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
+          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <DockPanel Grid.Row="0" Margin="0,0,0,14">
+            <Border DockPanel.Dock="Right" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" CornerRadius="9" Width="250" VerticalAlignment="Center" Margin="16,0,0,0">
+              <Grid>
+                <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#6C6C76" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                <TextBox x:Name="ProcFind" Background="Transparent" BorderThickness="0" Foreground="#E8E8EC" CaretBrush="#E8E8EC" Padding="32,8,10,8" VerticalContentAlignment="Center"/>
+                <TextBlock x:Name="ProcFindHint" Text="Chercher une appli..." Foreground="#6C6C76" Margin="35,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
               </Grid>
-              <ScrollViewer VerticalScrollBarVisibility="Visible">
+            </Border>
+            <StackPanel>
+              <TextBlock Text="Applications ouvertes" Style="{StaticResource H}" Margin="0,0,0,2"/>
+              <TextBlock Text="Ce qui tourne en ce moment, de la plus gourmande à la plus légère. Les processus de Windows sont masqués." Style="{StaticResource Dim}" TextWrapping="Wrap"/>
+            </StackPanel>
+          </DockPanel>
+          <Grid Grid.Row="1" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="2*"/></Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="16,12">
+              <StackPanel>
+                <TextBlock Text="APPLICATIONS OUVERTES" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,0,0,4"/>
+                <TextBlock x:Name="ProcN" Text="-" FontSize="26" FontWeight="Bold"/>
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="16,12">
+              <StackPanel>
+                <TextBlock Text="MÉMOIRE UTILISÉE" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,0,0,4"/>
+                <TextBlock x:Name="ProcMemTot" Text="-" FontSize="26" FontWeight="Bold"/>
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="4" Style="{StaticResource Card}" Padding="16,12">
+              <StackPanel>
+                <TextBlock Text="LA PLUS GOURMANDE" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0,0,0,6"/>
+                <DockPanel>
+                  <Border Width="34" Height="34" CornerRadius="9" Background="#202026" Margin="0,0,12,0">
+                    <Image x:Name="ProcTopIco" Width="22" Height="22" RenderOptions.BitmapScalingMode="HighQuality"/>
+                  </Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Name="ProcTopName" Text="-" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock x:Name="ProcTopMem" Text=" " Style="{StaticResource Dim}"/>
+                  </StackPanel>
+                </DockPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+          <Border Grid.Row="2" Style="{StaticResource Card}" Padding="10,8,4,8">
+            <DockPanel>
+              <TextBlock x:Name="ProcMsg" DockPanel.Dock="Bottom" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="10,6,0,2"/>
+              <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="ProcList">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                      <Border BorderBrush="#222227" BorderThickness="0,1,0,0" Padding="0,8">
-                        <Grid Margin="0,0,14,0">
-                          <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/><ColumnDefinition Width="140"/><ColumnDefinition Width="80"/>
-                          </Grid.ColumnDefinitions>
-                          <DockPanel Grid.Column="0" VerticalAlignment="Center">
-                            <Border DockPanel.Dock="Left" Width="26" Height="26" CornerRadius="6" Background="#1D1D22" Margin="0,0,10,0">
-                              <Image Source="{Binding Ico}" Width="18" Height="18" RenderOptions.BitmapScalingMode="HighQuality"/>
+                      <Border x:Name="row" CornerRadius="10" Padding="10,8" Margin="0,0,8,3" Background="Transparent">
+                        <Grid>
+                          <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="230"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                          <Border Grid.Column="0" Width="38" Height="38" CornerRadius="10" Background="#202026" Margin="0,0,12,0">
+                            <Image Source="{Binding Ico}" Width="22" Height="22" RenderOptions.BitmapScalingMode="HighQuality"/>
+                          </Border>
+                          <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,12,0">
+                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="{Binding Sub}" Foreground="#7C7C86" FontSize="11.5" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                          </StackPanel>
+                          <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,18,0">
+                            <TextBlock Text="{Binding Mem}" Foreground="{Binding MemCol}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                            <Border Height="5" CornerRadius="3" Background="#25252C" Margin="0,6,0,0">
+                              <Border HorizontalAlignment="Left" Width="{Binding BarW}" Height="5" CornerRadius="3" Background="{Binding MemCol}"/>
                             </Border>
-                            <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                          </DockPanel>
-                          <TextBlock Grid.Column="1" Text="{Binding Mem}" Foreground="#FBBF24" VerticalAlignment="Center"/>
-                          <Button Grid.Column="2" Content="Fermer" Style="{StaticResource Mini}"/>
+                          </StackPanel>
+                          <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Tag="open" Content="&#xE838;" FontFamily="Segoe MDL2 Assets" Style="{StaticResource Mini}" Margin="0,0,6,0" ToolTip="Ouvrir le dossier du programme"/>
+                            <Button Tag="close" Content="Fermer" Style="{StaticResource Mini}"/>
+                          </StackPanel>
                         </Grid>
                       </Border>
+                      <DataTemplate.Triggers>
+                        <Trigger SourceName="row" Property="IsMouseOver" Value="True">
+                          <Setter TargetName="row" Property="Background" Value="#1E1E24"/>
+                        </Trigger>
+                      </DataTemplate.Triggers>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -880,37 +1127,83 @@ $xaml = @'
 
         <!-- ===== Démarrage ===== -->
         <Grid x:Name="PageStart" Grid.Row="1" Margin="26,4,26,20" MaxWidth="1250" Visibility="Collapsed">
-          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-          <StackPanel Grid.Row="0">
+          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <StackPanel Grid.Row="0" Margin="0,0,0,14">
             <TextBlock Text="Programmes au démarrage" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock Text="Ce qui se lance tout seul avec Windows. Désactiver ne supprime rien, tu peux réactiver à tout moment." Style="{StaticResource Dim}" Margin="0,0,0,4"/>
-            <TextBlock x:Name="StartMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,0,0,8"/>
+            <TextBlock Text="Ce qui se lance tout seul quand Windows démarre. Couper un programme ne le supprime pas : il s'ouvre toujours quand tu cliques dessus." Style="{StaticResource Dim}" TextWrapping="Wrap"/>
           </StackPanel>
-          <Border Grid.Row="1" Style="{StaticResource Card}" Padding="16,12">
+          <Grid Grid.Row="1" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="1.6*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="1.4*"/></Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="16,12">
+              <StackPanel>
+                <TextBlock Text="SE LANCENT AVEC WINDOWS" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,0,0,4"/>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock x:Name="StartOnN" Text="-" FontSize="26" FontWeight="Bold"/>
+                  <TextBlock x:Name="StartAllN" Text=" " Foreground="#8E8E98" VerticalAlignment="Bottom" Margin="8,0,0,5"/>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="16,12">
+              <DockPanel>
+                <Button x:Name="StartCutAll" DockPanel.Dock="Right" Style="{StaticResource Action}" Content="Couper" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                <StackPanel>
+                  <TextBlock Text="INUTILES AU DÉMARRAGE" Style="{StaticResource Tag}" Foreground="#FF6B6B" Margin="0,0,0,4"/>
+                  <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="StartAdvN" Text="-" FontSize="26" FontWeight="Bold"/>
+                    <TextBlock x:Name="StartAdvTxt" Text=" " Foreground="#8E8E98" VerticalAlignment="Bottom" Margin="8,0,0,5" TextTrimming="CharacterEllipsis"/>
+                  </StackPanel>
+                </StackPanel>
+              </DockPanel>
+            </Border>
+            <Border Grid.Column="4" Style="{StaticResource Card}" Padding="16,12">
+              <StackPanel>
+                <TextBlock Text="LÉGENDE" Style="{StaticResource Tag}" Foreground="#8E8E98" Margin="0,0,0,6"/>
+                <WrapPanel>
+                  <Border CornerRadius="8" Padding="8,1,8,2" Background="#173326" Margin="0,0,6,5"><TextBlock Text="À garder" Foreground="#3DDC84" FontSize="11" FontWeight="SemiBold"/></Border>
+                  <Border CornerRadius="8" Padding="8,1,8,2" Background="#33280F" Margin="0,0,6,5"><TextBlock Text="Tu peux couper" Foreground="#FBBF24" FontSize="11" FontWeight="SemiBold"/></Border>
+                  <Border CornerRadius="8" Padding="8,1,8,2" Background="#3A1519" Margin="0,0,6,5"><TextBlock Text="Inutile au démarrage" Foreground="#FF6B6B" FontSize="11" FontWeight="SemiBold"/></Border>
+                  <Border CornerRadius="8" Padding="8,1,8,2" Background="#25252C" Margin="0,0,6,5"><TextBlock Text="Inconnu" Foreground="#B8B8C0" FontSize="11" FontWeight="SemiBold"/></Border>
+                </WrapPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+          <Border Grid.Row="2" Style="{StaticResource Card}" Padding="10,10,4,6">
             <DockPanel>
-              <Grid DockPanel.Dock="Top" Margin="0,0,22,8">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*"/><ColumnDefinition Width="170"/><ColumnDefinition Width="110"/><ColumnDefinition Width="100"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="PROGRAMME" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="1" Text="POUR" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="2" Text="ÉTAT" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-              </Grid>
-              <ScrollViewer VerticalScrollBarVisibility="Visible">
+              <TextBlock x:Name="StartMsg" DockPanel.Dock="Bottom" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="8,4,0,2" TextWrapping="Wrap"/>
+              <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="StartList">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                      <Border BorderBrush="#222227" BorderThickness="0,1,0,0" Padding="0,8">
-                        <Grid Margin="0,0,14,0">
-                          <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/><ColumnDefinition Width="170"/><ColumnDefinition Width="110"/><ColumnDefinition Width="100"/>
-                          </Grid.ColumnDefinitions>
-                          <TextBlock Grid.Column="0" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                          <TextBlock Grid.Column="1" Text="{Binding Source}" Foreground="#8E8E98" VerticalAlignment="Center"/>
-                          <TextBlock Grid.Column="2" Text="{Binding State}" Foreground="#FBBF24" VerticalAlignment="Center"/>
-                          <Button Grid.Column="3" Content="{Binding Action}" Style="{StaticResource Mini}"/>
+                      <Border x:Name="row" CornerRadius="12" Padding="14,12" Margin="0,0,8,8" Background="#141418" BorderBrush="#222228" BorderThickness="1" Opacity="{Binding Op}">
+                        <Grid>
+                          <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                          <Border Grid.Column="0" Width="44" Height="44" CornerRadius="11" Background="#202026" Margin="0,0,14,0" VerticalAlignment="Top">
+                            <Grid>
+                              <TextBlock Text="&#xE7E8;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="#6C6C76" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                              <Image Source="{Binding Ico}" Width="26" Height="26" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            </Grid>
+                          </Border>
+                          <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <WrapPanel>
+                              <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                              <Border CornerRadius="8" Padding="8,1,8,2" Background="{Binding AdvBg}" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding AdvTxt}" Foreground="{Binding AdvCol}" FontSize="11" FontWeight="SemiBold"/>
+                              </Border>
+                            </WrapPanel>
+                            <TextBlock Text="{Binding Desc}" Foreground="#9C9CA6" TextWrapping="Wrap" Margin="0,5,0,0" LineHeight="18"/>
+                            <TextBlock Text="{Binding Sub}" Foreground="#5E5E68" FontSize="11" TextTrimming="CharacterEllipsis" Margin="0,5,0,0" ToolTip="{Binding Sub}"/>
+                          </StackPanel>
+                          <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="18,0,4,0">
+                            <ToggleButton Style="{StaticResource Switch}" IsChecked="{Binding Enabled, Mode=OneWay}" HorizontalAlignment="Right"/>
+                            <TextBlock Text="{Binding StateTxt}" Foreground="{Binding StateCol}" FontSize="11" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+                          </StackPanel>
                         </Grid>
                       </Border>
+                      <DataTemplate.Triggers>
+                        <Trigger SourceName="row" Property="IsMouseOver" Value="True">
+                          <Setter TargetName="row" Property="Background" Value="#19191E"/>
+                        </Trigger>
+                      </DataTemplate.Triggers>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -1173,74 +1466,126 @@ $xaml = @'
         <!-- ===== Réseau ===== -->
         <ScrollViewer x:Name="PageNet" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed"><StackPanel Margin="26,4,22,12" MaxWidth="1250">
           <TextBlock Text="Réseau" Style="{StaticResource H}" Margin="0,0,0,2"/>
-          <TextBlock Text="Ping et débit utilisé par le PC, en direct" Style="{StaticResource Dim}" Margin="0,0,0,12"/>
+          <TextBlock Text="Ta connexion en direct, et les outils pour la rendre plus rapide et plus stable." Style="{StaticResource Dim}" Margin="0,0,0,14"/>
           <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*"/><ColumnDefinition Width="14"/>
-              <ColumnDefinition Width="*"/><ColumnDefinition Width="14"/>
-              <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Style="{StaticResource Card}">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="18,14">
               <StackPanel>
-                <TextBlock Text="PING" Style="{StaticResource Tag}" Foreground="#F472B6"/>
-                <TextBlock x:Name="PingVal" Text="..." Style="{StaticResource Big}"/>
-                <TextBlock Text="vers 1.1.1.1" Style="{StaticResource Dim}"/>
+                <DockPanel>
+                  <Border x:Name="PingPill" DockPanel.Dock="Right" CornerRadius="10" Padding="10,3" Background="#202026" VerticalAlignment="Center">
+                    <TextBlock x:Name="PingQual" Text="..." FontSize="11.5" FontWeight="SemiBold" Foreground="#B8B8C0"/>
+                  </Border>
+                  <StackPanel Orientation="Horizontal">
+                    <Border Width="30" Height="30" CornerRadius="9" Background="#2E1B2A" Margin="0,0,10,0"><TextBlock Text="&#xEC4A;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <TextBlock Text="PING" Style="{StaticResource Tag}" Foreground="#F472B6" Margin="0" VerticalAlignment="Center"/>
+                  </StackPanel>
+                </DockPanel>
+                <TextBlock x:Name="PingVal" Text="..." FontSize="32" FontWeight="Bold" Margin="0,12,0,0"/>
+                <TextBlock Text="Temps de réponse vers internet (1.1.1.1). Plus c'est bas, mieux c'est." Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,2,0,0"/>
               </StackPanel>
             </Border>
-            <Border Grid.Column="2" Style="{StaticResource Card}">
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="18,14">
               <StackPanel>
-                <TextBlock Text="RÉCEPTION" Style="{StaticResource Tag}" Foreground="#FB923C"/>
-                <TextBlock x:Name="DownVal" Text="..." Style="{StaticResource Big}"/>
-                <TextBlock Text="Mbit/s en ce moment" Style="{StaticResource Dim}"/>
+                <StackPanel Orientation="Horizontal">
+                  <Border Width="30" Height="30" CornerRadius="9" Background="#33220F" Margin="0,0,10,0"><TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <TextBlock Text="RÉCEPTION" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                  <TextBlock x:Name="DownVal" Text="..." FontSize="32" FontWeight="Bold"/>
+                  <TextBlock Text="Mbit/s" Foreground="#8E8E98" VerticalAlignment="Bottom" Margin="8,0,0,7"/>
+                </StackPanel>
+                <TextBlock Text="Ce que ton PC télécharge en ce moment." Style="{StaticResource Dim}" Margin="0,2,0,0"/>
               </StackPanel>
             </Border>
-            <Border Grid.Column="4" Style="{StaticResource Card}">
+            <Border Grid.Column="4" Style="{StaticResource Card}" Padding="18,14">
               <StackPanel>
-                <TextBlock Text="ENVOI" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-                <TextBlock x:Name="UpVal" Text="..." Style="{StaticResource Big}"/>
-                <TextBlock Text="Mbit/s en ce moment" Style="{StaticResource Dim}"/>
+                <StackPanel Orientation="Horizontal">
+                  <Border Width="30" Height="30" CornerRadius="9" Background="#14283A" Margin="0,0,10,0"><TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <TextBlock Text="ENVOI" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                  <TextBlock x:Name="UpVal" Text="..." FontSize="32" FontWeight="Bold"/>
+                  <TextBlock Text="Mbit/s" Foreground="#8E8E98" VerticalAlignment="Bottom" Margin="8,0,0,7"/>
+                </StackPanel>
+                <TextBlock Text="Ce que ton PC envoie en ce moment." Style="{StaticResource Dim}" Margin="0,2,0,0"/>
               </StackPanel>
             </Border>
           </Grid>
-          <Border Style="{StaticResource Card}" Margin="0,14,0,0">
-            <StackPanel>
-              <TextBlock Text="CONNEXION" Style="{StaticResource Tag}" Foreground="#34D399"/>
-              <TextBlock x:Name="NetInfo" Text="Lecture en cours..." LineHeight="22" Foreground="#CACAD2"/>
-              <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
-                <Button x:Name="BtnDns" Style="{StaticResource Ghost}" Content="Vider le cache DNS"/>
-                <TextBlock x:Name="NetMsg" Text=" " Foreground="#B8B8C0" VerticalAlignment="Center"/>
+          <Grid Margin="0,14,0,0">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="18,16">
+              <StackPanel>
+                <TextBlock Text="MA CONNEXION" Style="{StaticResource Tag}" Foreground="#34D399"/>
+                <TextBlock x:Name="NetInfo" Text="Lecture en cours..." LineHeight="22" Foreground="#CACAD2" TextWrapping="Wrap"/>
+                <WrapPanel Margin="0,14,0,0">
+                  <Button x:Name="BtnDns" Style="{StaticResource Ghost}" Content="Vider le cache DNS" ToolTip="Utile quand un site ou un jeu n'arrive plus à se connecter alors qu'internet marche"/>
+                  <TextBlock x:Name="NetMsg" Text=" " Foreground="#B8B8C0" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </WrapPanel>
               </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="18,16">
+              <StackPanel>
+                <TextBlock Text="TEST DE DÉBIT" Style="{StaticResource Tag}" Foreground="#F472B6"/>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="Mesure la vraie vitesse de ta connexion (serveurs Cloudflare). Environ 15 secondes, jusqu'à 350 Mo de données : évite en partage de connexion mobile."/>
+                <WrapPanel Margin="0,12,0,0">
+                  <Button x:Name="SpeedGo" Style="{StaticResource Action}" Content="Lancer le test"/>
+                  <TextBlock x:Name="SpeedMsg" Text=" " Foreground="#E8E8EC" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </WrapPanel>
+                <Border Background="#141418" CornerRadius="10" Padding="12,8" Margin="0,12,0,0">
+                  <TextBlock x:Name="SpeedHist" Foreground="#8E8E98" LineHeight="20" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap"/>
+                </Border>
+              </StackPanel>
+            </Border>
+          </Grid>
+          <Grid Margin="0,14,0,0">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="18,16">
+              <StackPanel>
+                <TextBlock Text="SERVEUR DNS" Style="{StaticResource Tag}" Foreground="#FBBF24"/>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Margin="0,0,0,12" Text="Le DNS traduit les noms de sites en adresses. Celui de Cloudflare ou de Google est souvent plus rapide et plus fiable que celui de la box. Demande les droits administrateur."/>
+                <WrapPanel>
+                  <Button x:Name="DnsCf" Style="{StaticResource Ghost}" Content="Cloudflare (1.1.1.1)" Margin="0,0,8,8"/>
+                  <Button x:Name="DnsGoogle" Style="{StaticResource Ghost}" Content="Google (8.8.8.8)" Margin="0,0,8,8"/>
+                  <Button x:Name="DnsAuto" Style="{StaticResource Ghost}" Content="Automatique (box)" Margin="0,0,8,8"/>
+                </WrapPanel>
+                <TextBlock x:Name="DnsMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="18,16">
+              <StackPanel>
+                <TextBlock Text="MOTS DE PASSE WI-FI ENREGISTRÉS" Style="{StaticResource Tag}" Foreground="#A78BFA"/>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Margin="0,0,0,12" Text="Les réseaux Wi-Fi déjà enregistrés sur ce PC, avec leur mot de passe : pratique pour connecter un téléphone ou une console."/>
+                <WrapPanel><Button x:Name="WifiShow" Style="{StaticResource Ghost}" Content="Afficher les mots de passe"/></WrapPanel>
+                <TextBlock x:Name="WifiMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                <ItemsControl x:Name="WifiList" ItemTemplate="{StaticResource RowCard}" Margin="0,8,0,0"/>
+              </StackPanel>
+            </Border>
+          </Grid>
+          <Border Style="{StaticResource Card}" Margin="0,14,0,0" Padding="18,16">
+            <StackPanel>
+              <DockPanel>
+                <Button x:Name="ConnScan" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Actualiser" Margin="12,0,0,0" VerticalAlignment="Top"/>
+                <StackPanel>
+                  <TextBlock Text="APPLICATIONS CONNECTÉES À INTERNET" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
+                  <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="Les programmes qui ont des connexions ouvertes en ce moment. Pratique pour repérer ce qui utilise internet pendant que tu joues (mise à jour, synchro, lanceur...)."/>
+                </StackPanel>
+              </DockPanel>
+              <ItemsControl x:Name="ConnList" ItemTemplate="{StaticResource RowCard}" Margin="0,12,0,0"/>
             </StackPanel>
           </Border>
-          <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+          <Border Style="{StaticResource Card}" Margin="0,14,0,0" Padding="18,16">
             <StackPanel>
-              <TextBlock Text="TEST DE DÉBIT" Style="{StaticResource Tag}" Foreground="#F472B6"/>
-              <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Text="Mesure le débit réel de ta connexion avec les serveurs de Cloudflare. Dure environ 15 secondes et peut consommer jusqu'à 350 Mo de données : évite en partage de connexion mobile."/>
-              <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                <Button x:Name="SpeedGo" Style="{StaticResource Action}" Content="Lancer le test"/>
-                <TextBlock x:Name="SpeedMsg" Text=" " Foreground="#E8E8EC" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
-              </StackPanel>
-              <TextBlock x:Name="SpeedHist" Foreground="#8E8E98" Margin="0,12,0,0" LineHeight="20" FontFamily="Consolas" FontSize="12"/>
+              <DockPanel>
+                <Button x:Name="DevScan" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Chercher les appareils" Margin="12,0,0,0" VerticalAlignment="Top"/>
+                <StackPanel>
+                  <TextBlock Text="APPAREILS SUR TON RÉSEAU" Style="{StaticResource Tag}" Foreground="#34D399"/>
+                  <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="Ta box, tes téléphones, tes consoles, ta télé... tout ce qui est connecté chez toi. Dure quelques secondes."/>
+                </StackPanel>
+              </DockPanel>
+              <TextBlock x:Name="DevMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/>
+              <ItemsControl x:Name="DevList" ItemTemplate="{StaticResource RowCard}" Margin="0,8,0,0"/>
             </StackPanel>
           </Border>
-        <Border Style="{StaticResource Card}" Margin="0,14,0,0"><StackPanel><TextBlock Text="APPLICATIONS CONNECTÉES À INTERNET" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-<TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,0,0,10" Text="Les applications qui ont des connexions ouvertes en ce moment. Windows ne donne pas le débit par application sans outil spécialisé : c'est le nombre de connexions qui est affiché."/>
-<StackPanel Orientation="Horizontal"><Button x:Name="ConnScan" Style="{StaticResource Ghost}" Content="Actualiser"/></StackPanel>
-<ItemsControl x:Name="ConnList" ItemTemplate="{StaticResource Row3}" Margin="0,8,0,0"/></StackPanel></Border>
-<Border Style="{StaticResource Card}" Margin="0,14,0,0"><StackPanel><TextBlock Text="APPAREILS SUR TON RÉSEAU" Style="{StaticResource Tag}" Foreground="#34D399"/>
-<TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,0,0,10" Text="Cherche les appareils qui répondent sur ton réseau local (box, téléphones, consoles, télés). Dure quelques secondes."/>
-<StackPanel Orientation="Horizontal"><Button x:Name="DevScan" Style="{StaticResource Ghost}" Content="Chercher les appareils"/></StackPanel>
-<TextBlock x:Name="DevMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/>
-<ItemsControl x:Name="DevList" ItemTemplate="{StaticResource Row3}" Margin="0,8,0,0"/></StackPanel></Border>
-<Border Style="{StaticResource Card}" Margin="0,14,0,0"><StackPanel><TextBlock Text="SERVEUR DNS" Style="{StaticResource Tag}" Foreground="#FBBF24"/>
-<TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,0,0,10" Text="Le DNS traduit les noms de sites en adresses. Celui de Cloudflare ou de Google est souvent plus rapide et plus fiable que celui de la box. Demande les droits administrateur."/>
-<StackPanel Orientation="Horizontal"><Button x:Name="DnsCf" Style="{StaticResource Ghost}" Content="Cloudflare (1.1.1.1)"/><Button x:Name="DnsGoogle" Style="{StaticResource Ghost}" Content="Google (8.8.8.8)"/><Button x:Name="DnsAuto" Style="{StaticResource Ghost}" Content="Automatique (box)"/></StackPanel>
-<TextBlock x:Name="DnsMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/></StackPanel></Border>
-<Border Style="{StaticResource Card}" Margin="0,14,0,0"><StackPanel><TextBlock Text="MOTS DE PASSE WI-FI ENREGISTRÉS" Style="{StaticResource Tag}" Foreground="#F472B6"/>
-<TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,0,0,10" Text="Les réseaux Wi-Fi déjà enregistrés sur ce PC et leur mot de passe, pratique pour connecter un autre appareil."/>
-<StackPanel Orientation="Horizontal"><Button x:Name="WifiShow" Style="{StaticResource Ghost}" Content="Afficher"/></StackPanel>
-<TextBlock x:Name="WifiMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/>
-<ItemsControl x:Name="WifiList" ItemTemplate="{StaticResource Row3}" Margin="0,8,0,0"/></StackPanel></Border>
         </StackPanel></ScrollViewer>
 
         <!-- ===== Disques ===== -->
@@ -1321,68 +1666,100 @@ $xaml = @'
 
         <!-- ===== Applications ===== -->
         <Grid x:Name="PageApps" Grid.Row="1" Margin="26,4,26,20" MaxWidth="1250" Visibility="Collapsed">
-          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-          <StackPanel Grid.Row="0">
+          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <StackPanel Grid.Row="0" Margin="0,0,0,14">
             <TextBlock Text="Applications installées" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock x:Name="AppsInfo" Text="Lecture de la liste..." Style="{StaticResource Dim}" Margin="0,0,0,12"/>
-            <DockPanel Margin="0,0,0,6">
-              <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                <Button x:Name="AppUnSel" Style="{StaticResource Action}" Content="Désinstaller la sélection" IsEnabled="False"/>
-                <Button x:Name="AppSort" Style="{StaticResource Ghost}" Content="Trier par taille"/>
-                <Button x:Name="AppRefresh" Style="{StaticResource Ghost}" Content="Actualiser"/>
-                <Button x:Name="AppStore" Style="{StaticResource Ghost}" Content="Applis du Microsoft Store" Margin="0"/>
+            <TextBlock x:Name="AppsInfo" Text="Lecture de la liste..." Style="{StaticResource Dim}" TextWrapping="Wrap"/>
+          </StackPanel>
+          <Grid Grid.Row="1" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="2*"/></Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="16,12">
+              <StackPanel>
+                <TextBlock Text="APPLICATIONS" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,0,0,4"/>
+                <TextBlock x:Name="AppsN" Text="-" FontSize="26" FontWeight="Bold"/>
               </StackPanel>
-              <Border Background="#17171B" BorderBrush="#2E2E35" BorderThickness="1" CornerRadius="8" Width="210" HorizontalAlignment="Left">
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="16,12">
+              <StackPanel>
+                <TextBlock Text="PLACE UTILISÉE" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,0,0,4"/>
+                <TextBlock x:Name="AppsTot" Text="-" FontSize="26" FontWeight="Bold"/>
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="4" Style="{StaticResource Card}" Padding="16,12">
+              <StackPanel>
+                <TextBlock Text="LA PLUS GROSSE" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0,0,0,6"/>
+                <DockPanel>
+                  <Border Width="34" Height="34" CornerRadius="9" Background="#202026" Margin="0,0,12,0">
+                    <Image x:Name="AppsBigIco" Width="22" Height="22" RenderOptions.BitmapScalingMode="HighQuality"/>
+                  </Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Name="AppsBigName" Text="-" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock x:Name="AppsBigSize" Text=" " Style="{StaticResource Dim}"/>
+                  </StackPanel>
+                </DockPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+          <DockPanel Grid.Row="2" Margin="0,0,0,10">
+            <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+              <Button x:Name="AppUnSel" Style="{StaticResource Action}" Content="Désinstaller la sélection" IsEnabled="False" Margin="0,0,8,0"/>
+              <Button x:Name="AppSort" Style="{StaticResource Ghost}" Content="Trier par taille" Margin="0,0,8,0"/>
+              <Button x:Name="AppRefresh" Style="{StaticResource Ghost}" Content="Actualiser" Margin="0,0,8,0"/>
+              <Button x:Name="AppStore" Style="{StaticResource Ghost}" Content="Applis du Microsoft Store" Margin="0"/>
+            </WrapPanel>
+            <StackPanel>
+              <Border Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" CornerRadius="9" Width="260" HorizontalAlignment="Left">
                 <Grid>
-                  <TextBlock x:Name="AppHint" Text="Rechercher une application..." Foreground="#6C6C76" Margin="12,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                  <TextBox x:Name="AppSearch" Background="Transparent" Foreground="#E8E8EC" CaretBrush="#E8E8EC" BorderThickness="0" Padding="9,8" VerticalContentAlignment="Center"/>
+                  <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#6C6C76" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                  <TextBlock x:Name="AppHint" Text="Chercher une application..." Foreground="#6C6C76" Margin="35,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                  <TextBox x:Name="AppSearch" Background="Transparent" Foreground="#E8E8EC" CaretBrush="#E8E8EC" BorderThickness="0" Padding="32,8,10,8" VerticalContentAlignment="Center"/>
                 </Grid>
               </Border>
-            </DockPanel>
-            <TextBlock x:Name="AppsMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,0,0,8"/>
-          </StackPanel>
-          <Border Grid.Row="1" Style="{StaticResource Card}" Padding="16,12">
-            <DockPanel>
-              <Grid DockPanel.Dock="Top" Margin="0,0,22,8">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*"/><ColumnDefinition Width="200"/><ColumnDefinition Width="90"/><ColumnDefinition Width="100"/><ColumnDefinition Width="80"/><ColumnDefinition Width="110"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="APPLICATION" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="1" Text="ÉDITEUR" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="2" Text="TAILLE" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="3" Text="INSTALLÉE LE" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-              </Grid>
-              <ScrollViewer VerticalScrollBarVisibility="Visible">
-                <ItemsControl x:Name="AppList">
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <Border BorderBrush="#222227" BorderThickness="0,1,0,0" Padding="0,8">
-                        <Grid Margin="0,0,14,0">
-                          <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/><ColumnDefinition Width="200"/><ColumnDefinition Width="90"/><ColumnDefinition Width="100"/><ColumnDefinition Width="80"/><ColumnDefinition Width="110"/>
-                          </Grid.ColumnDefinitions>
-                          <DockPanel Grid.Column="0" Margin="0,0,12,0" VerticalAlignment="Center">
-                            <CheckBox DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,10,0" ToolTip="Cocher pour désinstaller plusieurs applications d'un coup"/>
-                            <Border DockPanel.Dock="Left" Width="30" Height="30" CornerRadius="7" Background="#1D1D22" Margin="0,0,10,0">
-                              <Image Source="{Binding Ico}" Width="22" Height="22" RenderOptions.BitmapScalingMode="HighQuality"/>
-                            </Border>
-                            <StackPanel VerticalAlignment="Center">
-                              <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
-                              <TextBlock Text="{Binding Version}" Foreground="#6C6C76" FontSize="11"/>
-                            </StackPanel>
-                          </DockPanel>
-                          <TextBlock Grid.Column="1" Text="{Binding Publisher}" Foreground="#8E8E98" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                          <TextBlock Grid.Column="2" Text="{Binding Size}" Foreground="#FBBF24" VerticalAlignment="Center"/>
-                          <TextBlock Grid.Column="3" Text="{Binding Date}" Foreground="#8E8E98" VerticalAlignment="Center"/>
-                          <Button Grid.Column="4" Content="Lancer" Style="{StaticResource Mini}"/>
-                          <Button Grid.Column="5" Content="Désinstaller" Style="{StaticResource Mini}"/>
-                        </Grid>
-                      </Border>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </ScrollViewer>
-            </DockPanel>
+              <TextBlock x:Name="AppsMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="2,8,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+          </DockPanel>
+          <Border Grid.Row="3" Style="{StaticResource Card}" Padding="10,10,4,6">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+              <ItemsControl x:Name="AppList">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border x:Name="row" CornerRadius="12" Padding="12,10" Margin="0,0,8,6" Background="#141418">
+                      <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <CheckBox Grid.Column="0" Style="{StaticResource Tick}" VerticalAlignment="Center" Margin="2,0,14,0" ToolTip="Cocher pour désinstaller plusieurs applications d'un coup"/>
+                        <Border Grid.Column="1" Width="40" Height="40" CornerRadius="10" Background="#202026" Margin="0,0,14,0">
+                          <Grid>
+                            <TextBlock Text="&#xE71D;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#5E5E68" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="{Binding Ico}" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality"/>
+                          </Grid>
+                        </Border>
+                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,14,0">
+                          <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                          <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                            <TextBlock Text="{Binding Publisher}" Foreground="#8E8E98" FontSize="11.5" TextTrimming="CharacterEllipsis" MaxWidth="320"/>
+                            <TextBlock Text="  ·  " Foreground="#4A4A55" FontSize="11.5"/>
+                            <TextBlock Text="{Binding Version}" Foreground="#6C6C76" FontSize="11.5"/>
+                          </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3" VerticalAlignment="Center" Margin="0,0,18,0" MinWidth="90">
+                          <TextBlock Text="{Binding Size}" Foreground="#FBBF24" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                          <TextBlock Text="{Binding Date}" Foreground="#6C6C76" FontSize="11" HorizontalAlignment="Right" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                          <Button Content="Lancer" Style="{StaticResource Mini}" Margin="0,0,6,0"/>
+                          <Button Content="Désinstaller" Style="{StaticResource Mini}"/>
+                        </StackPanel>
+                      </Grid>
+                    </Border>
+                    <DataTemplate.Triggers>
+                      <Trigger SourceName="row" Property="IsMouseOver" Value="True">
+                        <Setter TargetName="row" Property="Background" Value="#1B1B21"/>
+                      </Trigger>
+                    </DataTemplate.Triggers>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </ScrollViewer>
           </Border>
         </Grid>
 
@@ -1446,52 +1823,90 @@ $xaml = @'
         <!-- ===== Rangement ===== -->
         <ScrollViewer x:Name="PageTidy" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed"><StackPanel Margin="26,4,22,12" MaxWidth="1250">
           <TextBlock Text="Rangement des fichiers" Style="{StaticResource H}" Margin="0,0,0,2"/>
-          <TextBlock Text="Trie les fichiers en vrac d'un dossier dans des sous-dossiers par type. Rien n'est supprimé, et tu peux annuler." Style="{StaticResource Dim}" Margin="0,0,0,12"/>
-          <Border Style="{StaticResource Card}">
+          <TextBlock Text="Un dossier en bazar ? OnePC trie les fichiers en vrac dans des sous-dossiers (Images, Vidéos, Documents...). Rien n'est supprimé, et tu peux tout annuler." Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,0,0,14"/>
+          <TextBlock Text="1 · CHOISIS UN DOSSIER" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="2,0,0,8"/>
+          <UniformGrid Columns="4" Margin="0,0,0,6">
+            <Button x:Name="TidyDl" Style="{StaticResource Tile}" Margin="0,0,10,0" Height="78">
+              <DockPanel>
+                <Border Width="40" Height="40" CornerRadius="10" Background="#14283A" Margin="0,0,12,0"><TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <StackPanel VerticalAlignment="Center"><TextBlock Text="Téléchargements" FontWeight="SemiBold"/><TextBlock Text="Souvent le plus en bazar" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+              </DockPanel>
+            </Button>
+            <Button x:Name="TidyDesk" Style="{StaticResource Tile}" Margin="0,0,10,0" Height="78">
+              <DockPanel>
+                <Border Width="40" Height="40" CornerRadius="10" Background="#33220F" Margin="0,0,12,0"><TextBlock Text="&#xE7F8;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <StackPanel VerticalAlignment="Center"><TextBlock Text="Bureau" FontWeight="SemiBold"/><TextBlock Text="Les fichiers posés à la va-vite" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+              </DockPanel>
+            </Button>
+            <Button x:Name="TidyDocs" Style="{StaticResource Tile}" Margin="0,0,10,0" Height="78">
+              <DockPanel>
+                <Border Width="40" Height="40" CornerRadius="10" Background="#173326" Margin="0,0,12,0"><TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <StackPanel VerticalAlignment="Center"><TextBlock Text="Documents" FontWeight="SemiBold"/><TextBlock Text="Papiers, PDF, fichiers" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+              </DockPanel>
+            </Button>
+            <Button x:Name="TidyOther" Style="{StaticResource Tile}" Height="78">
+              <DockPanel>
+                <Border Width="40" Height="40" CornerRadius="10" Background="#26203A" Margin="0,0,12,0"><TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <StackPanel VerticalAlignment="Center"><TextBlock Text="Autre dossier..." FontWeight="SemiBold"/><TextBlock Text="Choisis n'importe lequel" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+              </DockPanel>
+            </Button>
+          </UniformGrid>
+          <TextBlock Text="2 · REGARDE CE QUI SERA RANGÉ" Style="{StaticResource Tag}" Foreground="#34D399" Margin="2,18,0,8"/>
+          <Border Style="{StaticResource Card}" Padding="18,16">
             <StackPanel>
-              <TextBlock Text="DOSSIER À RANGER" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-              <StackPanel Orientation="Horizontal">
-                <Button x:Name="TidyDl" Style="{StaticResource Ghost}" Content="Téléchargements"/>
-                <Button x:Name="TidyDesk" Style="{StaticResource Ghost}" Content="Bureau"/>
-                <Button x:Name="TidyDocs" Style="{StaticResource Ghost}" Content="Documents"/>
-                <Button x:Name="TidyOther" Style="{StaticResource Ghost}" Content="Autre dossier..."/>
-              </StackPanel>
-              <TextBlock x:Name="TidyPath" Text="Choisis un dossier pour voir ce qui sera rangé." Foreground="#CACAD2" Margin="0,12,0,0" TextTrimming="CharacterEllipsis"/>
-            </StackPanel>
-          </Border>
-          <Border Style="{StaticResource Card}" Margin="0,14,0,0">
-            <StackPanel>
-              <TextBlock Text="CE QUI SERA RANGÉ" Style="{StaticResource Tag}" Foreground="#34D399"/>
-              <ItemsControl x:Name="TidyList">
+              <Border Background="#141418" CornerRadius="9" Padding="12,8" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#8E8E98" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                  <TextBlock x:Name="TidyPath" Text="Choisis un dossier au-dessus pour voir ce qui sera rangé." Foreground="#CACAD2" TextTrimming="CharacterEllipsis" MaxWidth="800"/>
+                </StackPanel>
+              </Border>
+              <ItemsControl x:Name="TidyList" Margin="0,14,0,0">
+                <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <Border BorderBrush="#222227" BorderThickness="0,1,0,0" Padding="0,8">
-                      <Grid>
-                        <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="190"/><ColumnDefinition Width="130"/><ColumnDefinition Width="110"/><ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Count}" Foreground="#FBBF24"/>
-                        <TextBlock Grid.Column="2" Text="{Binding Size}" Foreground="#8E8E98"/>
-                        <TextBlock Grid.Column="3" Text="{Binding Sample}" Foreground="#6C6C76" TextTrimming="CharacterEllipsis"/>
-                      </Grid>
+                    <Border Width="268" Margin="0,0,10,10" CornerRadius="12" Background="#141418" BorderBrush="#26262C" BorderThickness="1" Padding="14,12">
+                      <DockPanel>
+                        <Border DockPanel.Dock="Left" Width="40" Height="40" CornerRadius="10" Background="{Binding Bg}" Margin="0,0,12,0" VerticalAlignment="Top">
+                          <TextBlock Text="{Binding Glyph}" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="{Binding Col}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel>
+                          <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"/>
+                          <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock Text="{Binding Count}" Foreground="{Binding Col}" FontSize="12"/>
+                            <TextBlock Text="  ·  " Foreground="#4A4A55" FontSize="12"/>
+                            <TextBlock Text="{Binding Size}" Foreground="#8E8E98" FontSize="12"/>
+                          </StackPanel>
+                          <TextBlock Text="{Binding Sample}" Foreground="#6C6C76" FontSize="11" TextTrimming="CharacterEllipsis" Margin="0,5,0,0"/>
+                        </StackPanel>
+                      </DockPanel>
                     </Border>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
-              <TextBlock x:Name="TidyInfo" Text=" " Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0"/>
-              <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                <Button x:Name="TidyGo" Style="{StaticResource Action}" Content="Ranger ce dossier" IsEnabled="False"/>
-                <Button x:Name="TidyUndo" Style="{StaticResource Ghost}" Content="Annuler le dernier rangement"/>
-                <Button x:Name="TidyOpen" Style="{StaticResource Ghost}" Content="Ouvrir le dossier" IsEnabled="False"/>
-              </StackPanel>
+              <TextBlock x:Name="TidyInfo" Text=" " Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+              <TextBlock Text="3 · RANGE" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0,16,0,8"/>
+              <WrapPanel>
+                <Button x:Name="TidyGo" Style="{StaticResource Action}" Content="Ranger ce dossier" IsEnabled="False" Margin="0,0,8,0"/>
+                <Button x:Name="TidyUndo" Style="{StaticResource Ghost}" Content="Annuler le dernier rangement" Margin="0,0,8,0"/>
+                <Button x:Name="TidyOpen" Style="{StaticResource Ghost}" Content="Ouvrir le dossier" IsEnabled="False" Margin="0"/>
+              </WrapPanel>
               <TextBlock x:Name="TidyMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
             </StackPanel>
           </Border>
-        <Border Style="{StaticResource Card}" Margin="0,14,0,0"><StackPanel><TextBlock Text="SAUVEGARDE" Style="{StaticResource Tag}" Foreground="#FB923C"/>
-<TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,0,0,10" Text="Copie un dossier important vers une clé USB ou un autre disque. Les fichiers déjà copiés et inchangés sont sautés, et rien n'est jamais supprimé dans la destination."/>
-<StackPanel Orientation="Horizontal"><Button x:Name="BackSrc" Style="{StaticResource Ghost}" Content="Dossier à sauvegarder..."/><Button x:Name="BackDst" Style="{StaticResource Ghost}" Content="Destination..."/><Button x:Name="BackGo" Style="{StaticResource Action}" Content="Sauvegarder maintenant"/></StackPanel>
-<TextBlock x:Name="BackInfo" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+          <TextBlock Text="SAUVEGARDER UN DOSSIER" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="2,22,0,8"/>
+          <Border Style="{StaticResource Card}" Padding="18,16">
+            <StackPanel>
+              <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Margin="0,0,0,12" Text="Copie un dossier important vers une clé USB ou un autre disque. Les fichiers déjà copiés et inchangés sont sautés, et rien n'est jamais supprimé dans la destination."/>
+              <WrapPanel>
+                <Button x:Name="BackSrc" Style="{StaticResource Ghost}" Content="1. Dossier à sauvegarder..." Margin="0,0,8,8"/>
+                <Button x:Name="BackDst" Style="{StaticResource Ghost}" Content="2. Destination..." Margin="0,0,8,8"/>
+                <Button x:Name="BackGo" Style="{StaticResource Action}" Content="3. Sauvegarder maintenant" Margin="0,0,8,8"/>
+              </WrapPanel>
+              <Border Background="#141418" CornerRadius="9" Padding="12,8" Margin="0,4,0,0">
+                <TextBlock x:Name="BackInfo" Text=" " Foreground="#B8B8C0" FontSize="12" TextWrapping="Wrap" LineHeight="18"/>
+              </Border>
+            </StackPanel>
+          </Border>
         </StackPanel></ScrollViewer>
 
         <!-- ===== Fond d'écran ===== -->
@@ -1533,44 +1948,63 @@ $xaml = @'
         <ScrollViewer x:Name="PageLight" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
           <StackPanel Margin="26,4,22,12" MaxWidth="1250">
             <TextBlock Text="Alléger le PC" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock Text="Réduire le nombre de processus qui tournent en même temps" Style="{StaticResource Dim}" Margin="0,0,0,12"/>
-            <Border Style="{StaticResource Card}">
-              <DockPanel>
-                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                  <Button x:Name="GoStart" Style="{StaticResource Ghost}" Content="Programmes au démarrage"/>
-                  <Button x:Name="LightRefresh" Style="{StaticResource Ghost}" Content="Actualiser" Margin="0"/>
+            <TextBlock Text="Moins il y a de choses qui tournent en fond, plus ton PC a de marge pour tes jeux. Ici, tout est expliqué : tu sais ce que tu coupes avant de cliquer." Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,0,0,14"/>
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+              <Border Grid.Column="0" Style="{StaticResource Card}" Padding="20,14" MinWidth="230">
+                <StackPanel>
+                  <TextBlock Text="EN CE MOMENT" Style="{StaticResource Tag}" Foreground="#FF7A5C" Margin="0,0,0,4"/>
+                  <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="ProcBig" Text="..." FontSize="34" FontWeight="Bold" Foreground="#FF7A5C"/>
+                    <TextBlock Text="processus" Foreground="#CACAD2" VerticalAlignment="Bottom" Margin="10,0,0,7"/>
+                  </StackPanel>
+                  <WrapPanel Margin="0,10,0,0">
+                    <Button x:Name="LightRefresh" Style="{StaticResource Ghost}" Content="Actualiser" Margin="0,0,8,0"/>
+                    <Button x:Name="GoStart" Style="{StaticResource Ghost}" Content="Démarrage" Margin="0"/>
+                  </WrapPanel>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                  <TextBlock x:Name="ProcBig" Text="..." Style="{StaticResource Big}" Foreground="#FF7A5C"/>
-                  <TextBlock Text="processus en cours sur le PC" Foreground="#CACAD2" VerticalAlignment="Center" Margin="12,6,0,0"/>
+              </Border>
+              <Border Grid.Column="2" Style="{StaticResource Card}" Padding="20,14">
+                <StackPanel>
+                  <TextBlock Text="COMMENT ÇA MARCHE" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,0,0,8"/>
+                  <DockPanel Margin="0,0,0,7">
+                    <Border DockPanel.Dock="Left" Width="22" Height="22" CornerRadius="11" Background="#14283A" Margin="0,0,10,0"><TextBlock Text="1" Foreground="#38BDF8" FontWeight="Bold" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" VerticalAlignment="Center"><Run Text="Les applications en arrière-plan" FontWeight="SemiBold" Foreground="#FFFFFF"/><Run Text=" : on les ferme juste pour maintenant. Elles reviennent quand tu les rouvres."/></TextBlock>
+                  </DockPanel>
+                  <DockPanel Margin="0,0,0,7">
+                    <Border DockPanel.Dock="Left" Width="22" Height="22" CornerRadius="11" Background="#14283A" Margin="0,0,10,0"><TextBlock Text="2" Foreground="#38BDF8" FontWeight="Bold" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" VerticalAlignment="Center"><Run Text="Les services de Windows" FontWeight="SemiBold" Foreground="#FFFFFF"/><Run Text=" : on les arrête pour de bon, mais Windows peut encore les lancer s'il en a besoin. « Rétablir » remet tout."/></TextBlock>
+                  </DockPanel>
+                  <DockPanel>
+                    <Border DockPanel.Dock="Left" Width="22" Height="22" CornerRadius="11" Background="#14283A" Margin="0,0,10,0"><TextBlock Text="3" Foreground="#38BDF8" FontWeight="Bold" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" VerticalAlignment="Center"><Run Text="Rien n'est supprimé" FontWeight="SemiBold" Foreground="#FFFFFF"/><Run Text=" : aucune application n'est désinstallée, aucun fichier n'est effacé."/></TextBlock>
+                  </DockPanel>
                 </StackPanel>
-              </DockPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+              </Border>
+            </Grid>
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0" Padding="18,16,8,8">
               <StackPanel>
-                <TextBlock Text="APPLICATIONS EN ARRIÈRE-PLAN" Style="{StaticResource Tag}" Foreground="#FB923C"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,0,0,12"
-                           Text="Ces applications tournent sans fenêtre ouverte (lanceurs, mises à jour automatiques, icônes près de l'horloge). Coche celles dont tu n'as pas besoin maintenant : elles se relanceront la prochaine fois que tu les ouvres."/>
+                <TextBlock Text="1 · APPLICATIONS EN ARRIÈRE-PLAN" Style="{StaticResource Tag}" Foreground="#FB923C"/>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,0,10,14" Text="Elles tournent sans fenêtre ouverte : lanceurs, mises à jour automatiques, icônes près de l'horloge. Coche celles dont tu n'as pas besoin maintenant. La plus gourmande est en premier."/>
                 <WrapPanel x:Name="LightApps"/>
-                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <WrapPanel Margin="0,4,0,8">
                   <Button x:Name="LightClose" Style="{StaticResource Action}" Content="Fermer la sélection"/>
-                  <Button x:Name="LightSave" Style="{StaticResource Ghost}" Content="Mémoriser pour « Optimiser et lancer »"/>
                   <Button x:Name="LightAll" Style="{StaticResource Ghost}" Content="Tout cocher"/>
-                  <TextBlock x:Name="LightMsg" Text=" " Foreground="#B8B8C0" VerticalAlignment="Center"/>
-                </StackPanel>
+                  <Button x:Name="LightSave" Style="{StaticResource Ghost}" Content="Mémoriser pour « Optimiser et lancer »" ToolTip="Ces applications seront fermées automatiquement quand tu lances un jeu avec « Optimiser et lancer »"/>
+                  <TextBlock x:Name="LightMsg" Text=" " Foreground="#B8B8C0" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </WrapPanel>
               </StackPanel>
             </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0" Padding="18,16,8,8">
               <StackPanel>
-                <TextBlock Text="SERVICES WINDOWS FACULTATIFS" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,0,0,12"
-                           Text="Des services que la plupart des gens n'utilisent jamais. Ils sont arrêtés et passés en démarrage « manuel » : Windows peut encore les lancer s'il en a vraiment besoin, donc rien ne casse. Le gain est modeste (quelques processus). « Rétablir » remet tout comme avant."/>
+                <TextBlock Text="2 · SERVICES WINDOWS FACULTATIFS" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,0,10,14" Text="Des services que la plupart des gens n'utilisent jamais. Pour chacun : ce que c'est, et ce que tu perds si tu l'arrêtes. Le gain est modeste (quelques processus), mais il n'y a aucun risque : « Rétablir » remet tout comme avant."/>
                 <WrapPanel x:Name="LightSvc"/>
-                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <WrapPanel Margin="0,4,0,8">
                   <Button x:Name="SvcStop" Style="{StaticResource Action}" Content="Arrêter la sélection"/>
                   <Button x:Name="SvcRestore" Style="{StaticResource Ghost}" Content="Rétablir"/>
-                  <TextBlock x:Name="SvcMsg" Text=" " Foreground="#B8B8C0" VerticalAlignment="Center"/>
-                </StackPanel>
+                  <TextBlock x:Name="SvcMsg" Text=" " Foreground="#B8B8C0" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </WrapPanel>
               </StackPanel>
             </Border>
           </StackPanel>
@@ -1579,9 +2013,333 @@ $xaml = @'
         <!-- ===== Raccourcis ===== -->
         <ScrollViewer x:Name="PageTools" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
           <StackPanel x:Name="ToolsHost" Margin="26,4,22,12" MaxWidth="1250">
-            <TextBlock Text="Raccourcis Windows" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock Text="Les outils et réglages utiles de Windows, y compris ceux qu'on ne trouve jamais. Laisse la souris sur un bouton pour voir à quoi il sert." Style="{StaticResource Dim}" Margin="0,0,0,4"/>
+            <DockPanel Margin="0,0,0,14">
+              <Border DockPanel.Dock="Right" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" CornerRadius="9" Width="260" VerticalAlignment="Center" Margin="16,0,0,0">
+                <Grid>
+                  <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#6C6C76" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                  <TextBox x:Name="ToolsFind" Background="Transparent" BorderThickness="0" Foreground="#E8E8EC" CaretBrush="#E8E8EC" Padding="32,8,10,8" VerticalContentAlignment="Center"/>
+                  <TextBlock x:Name="ToolsFindHint" Text="Chercher un outil..." Foreground="#6C6C76" Margin="35,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                </Grid>
+              </Border>
+              <StackPanel>
+                <TextBlock Text="Raccourcis Windows" Style="{StaticResource H}" Margin="0,0,0,2"/>
+                <TextBlock Text="Les outils et réglages utiles de Windows, y compris ceux qu'on ne trouve jamais. Un clic suffit pour les ouvrir." Style="{StaticResource Dim}" TextWrapping="Wrap"/>
+              </StackPanel>
+            </DockPanel>
             <TextBlock x:Name="ToolsMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,0,0,8"/>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- ===== Mon PC rame ===== -->
+        <ScrollViewer x:Name="PageSlow" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <Border CornerRadius="18" Padding="30,26" BorderBrush="#2E2E36" BorderThickness="1">
+              <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                  <GradientStop Color="#221519" Offset="0"/>
+                  <GradientStop Color="#141418" Offset="0.7"/>
+                </LinearGradientBrush>
+              </Border.Background>
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="ASSISTANT MON PC RAME" Style="{StaticResource Tag}" Foreground="#FF5A3C"/>
+                  <TextBlock x:Name="SlowHead" Text="Un clic, et OnePC trouve pourquoi." FontSize="25" FontWeight="Bold" TextWrapping="Wrap"/>
+                  <TextBlock x:Name="SlowSub" Text="Processeur, mémoire, disque, démarrage, mises à jour, chauffe, écran... OnePC vérifie tout en quelques secondes et t'explique le problème en une phrase, avec le bouton pour le régler." Foreground="#B8B8C0" FontSize="13.5" TextWrapping="Wrap" Margin="0,10,0,0" LineHeight="20"/>
+                </StackPanel>
+                <Button x:Name="SlowGo" Grid.Column="1" Cursor="Hand" Margin="30,0,6,0" Width="150" Height="150" Foreground="#FFFFFF">
+                  <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                      <Grid>
+                        <Ellipse Margin="-8" Stroke="#FF5A3C" StrokeThickness="2" Opacity="0.25"/>
+                        <Ellipse x:Name="e" Fill="#FF5A3C"/>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                      </Grid>
+                      <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="e" Property="Opacity" Value="0.85"/></Trigger>
+                        <Trigger Property="IsEnabled" Value="False"><Setter TargetName="e" Property="Opacity" Value="0.45"/></Trigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </Button.Template>
+                  <StackPanel>
+                    <TextBlock x:Name="SlowGoIco" Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="34" HorizontalAlignment="Center" Foreground="#FFFFFF"/>
+                    <TextBlock x:Name="SlowGoTxt" Text="Analyser" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0" Foreground="#FFFFFF"/>
+                  </StackPanel>
+                </Button>
+              </Grid>
+            </Border>
+            <TextBlock x:Name="SlowResTag" Text="CE QUE J'AI TROUVÉ" Style="{StaticResource Tag}" Foreground="#8E8E98" Margin="4,22,0,10" Visibility="Collapsed"/>
+            <StackPanel x:Name="SlowList"/>
+            <TextBlock x:Name="SlowMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="4,8,0,0" TextWrapping="Wrap"/>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- ===== Mon matériel ===== -->
+        <ScrollViewer x:Name="PageHw" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
+          <StackPanel Margin="26,4,22,12" MaxWidth="1250">
+            <TextBlock Text="Mon matériel" Style="{StaticResource H}" Margin="0,0,0,2"/>
+            <TextBlock Text="Les réglages oubliés qui coûtent des FPS sans que tu le saches, et ce qui vaut vraiment le coup d'être changé sur ton PC." Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,0,0,14"/>
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+              <Border Grid.Column="0" Style="{StaticResource Card}" Padding="18,16">
+                <StackPanel>
+                  <DockPanel>
+                    <Border x:Name="HwHzPill" DockPanel.Dock="Right" CornerRadius="10" Padding="10,3" Background="#202026">
+                      <TextBlock x:Name="HwHzState" Text="..." FontSize="11.5" FontWeight="SemiBold" Foreground="#B8B8C0"/>
+                    </Border>
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#38BDF8" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                      <TextBlock Text="ÉCRAN" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0"/>
+                    </StackPanel>
+                  </DockPanel>
+                  <TextBlock x:Name="HwHzBig" Text="-" FontSize="34" FontWeight="Bold" Margin="0,8,0,0"/>
+                  <TextBlock x:Name="HwHzSub" Text=" " Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                  <TextBlock x:Name="HwHzTxt" Text=" " Foreground="#CACAD2" TextWrapping="Wrap" Margin="0,12,0,0" LineHeight="19" MinHeight="57"/>
+                  <WrapPanel Margin="0,14,0,0">
+                    <Button x:Name="HwHzFix" Style="{StaticResource Action}" Content="Passer au maximum" Margin="0,0,10,0" Visibility="Collapsed"/>
+                    <Button x:Name="HwHzWin" Style="{StaticResource Ghost}" Content="Réglages d'affichage de Windows" Margin="0"/>
+                  </WrapPanel>
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="2" Style="{StaticResource Card}" Padding="18,16">
+                <StackPanel>
+                  <DockPanel>
+                    <Border x:Name="HwRamPill" DockPanel.Dock="Right" CornerRadius="10" Padding="10,3" Background="#202026">
+                      <TextBlock x:Name="HwRamState" Text="..." FontSize="11.5" FontWeight="SemiBold" Foreground="#B8B8C0"/>
+                    </Border>
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="&#xE950;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#FBBF24" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                      <TextBlock Text="MÉMOIRE (RAM)" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0"/>
+                    </StackPanel>
+                  </DockPanel>
+                  <TextBlock x:Name="HwRamBig" Text="-" FontSize="34" FontWeight="Bold" Margin="0,8,0,0"/>
+                  <TextBlock x:Name="HwRamSub" Text=" " Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                  <TextBlock x:Name="HwRamTxt" Text=" " Foreground="#CACAD2" TextWrapping="Wrap" Margin="0,12,0,0" LineHeight="19" MinHeight="57"/>
+                  <WrapPanel Margin="0,14,0,0">
+                    <Button x:Name="HwXmpShow" Style="{StaticResource Action}" Content="Comment activer le XMP / EXPO" Margin="0,0,10,0"/>
+                    <Button x:Name="HwBios" Style="{StaticResource Ghost}" Content="Redémarrer dans le BIOS" Margin="0"/>
+                  </WrapPanel>
+                </StackPanel>
+              </Border>
+            </Grid>
+            <Border x:Name="HwXmpCard" Style="{StaticResource Card}" Margin="0,14,0,0" Padding="20,18" Visibility="Collapsed">
+              <StackPanel>
+                <DockPanel>
+                  <WrapPanel x:Name="HwBrands" DockPanel.Dock="Right"/>
+                  <TextBlock x:Name="HwXmpTitle" Text="GUIDE : ACTIVER LE PROFIL XMP / EXPO" Style="{StaticResource Tag}" Foreground="#FBBF24" VerticalAlignment="Center" Margin="0"/>
+                </DockPanel>
+                <TextBlock x:Name="HwXmpIntro" Text=" " TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,12,0,12" LineHeight="19"/>
+                <StackPanel x:Name="HwXmpSteps"/>
+                <Border Background="#2A1F10" BorderBrush="#6B4E1A" BorderThickness="1" CornerRadius="10" Padding="14,10" Margin="0,8,0,0">
+                  <DockPanel>
+                    <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#FCD34D" Margin="0,1,12,0" VerticalAlignment="Top"/>
+                    <TextBlock x:Name="HwXmpWarn" TextWrapping="Wrap" Foreground="#FCD34D" FontSize="12.5" LineHeight="18"/>
+                  </DockPanel>
+                </Border>
+                <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                  <Button x:Name="HwBios2" Style="{StaticResource Action}" Content="Redémarrer dans le BIOS maintenant"/>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0" Padding="18,16">
+              <StackPanel>
+                <DockPanel>
+                  <Button x:Name="HwUpgGo" DockPanel.Dock="Right" Style="{StaticResource Action}" Content="Analyser mon matériel" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                  <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="&#xE7F8;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#F472B6" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                      <TextBlock Text="CONSEILS D'UPGRADE" Style="{StaticResource Tag}" Foreground="#F472B6" Margin="0"/>
+                    </StackPanel>
+                    <TextBlock x:Name="HwUpgHead" Text="Ce que tu devrais changer en premier pour gagner le plus, calculé uniquement à partir de ce que OnePC mesure sur ton PC." TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,8,0,0"/>
+                  </StackPanel>
+                </DockPanel>
+                <ItemsControl x:Name="HwUpgList" Margin="0,12,0,0">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border Background="#141418" CornerRadius="10" Margin="0,0,0,8" Padding="0">
+                        <Grid>
+                          <Grid.ColumnDefinitions><ColumnDefinition Width="4"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                          <Border Grid.Column="0" Background="{Binding Brush}" CornerRadius="10,0,0,10"/>
+                          <StackPanel Grid.Column="1" Margin="14,10,14,11">
+                            <DockPanel>
+                              <TextBlock DockPanel.Dock="Right" Text="{Binding Status}" Foreground="{Binding Brush}" FontSize="12" FontWeight="SemiBold"/>
+                              <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                            </DockPanel>
+                            <TextBlock Text="{Binding Detail}" Foreground="#9C9CA6" TextWrapping="Wrap" Margin="0,4,0,0" LineHeight="18"/>
+                          </StackPanel>
+                        </Grid>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+            <TextBlock x:Name="HwMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="4,10,0,0" TextWrapping="Wrap"/>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- ===== Barre des tâches ===== -->
+        <ScrollViewer x:Name="PageBar" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <TextBlock Text="Barre des tâches" Style="{StaticResource H}" Margin="0,0,0,2"/>
+            <TextBlock Text="Choisis, c'est appliqué tout de suite. Certains réglages font disparaître la barre une seconde, le temps que Windows la recharge." Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,0,0,14"/>
+            <Border CornerRadius="14" Height="170" Margin="0,0,0,14" BorderBrush="#2A2A31" BorderThickness="1" ClipToBounds="True">
+              <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                  <GradientStop Color="#2B1F4A" Offset="0"/>
+                  <GradientStop Color="#13233D" Offset="0.55"/>
+                  <GradientStop Color="#0E0E11" Offset="1"/>
+                </LinearGradientBrush>
+              </Border.Background>
+              <Grid>
+                <TextBlock Text="APERÇU" Style="{StaticResource Tag}" Foreground="#B8B8C0" Margin="16,14,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBlock x:Name="BarPrevNote" Text=" " Foreground="#E8E8EC" FontSize="12.5" Margin="0,0,0,62" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                <Border x:Name="BarPrev" VerticalAlignment="Bottom" Height="48" Background="#E61C1C22" BorderBrush="#33FFFFFF" BorderThickness="0,1,0,0">
+                  <Grid>
+                    <StackPanel x:Name="BarPrevLeft" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                    <StackPanel x:Name="BarPrevIcons" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,14,0">
+                      <TextBlock x:Name="BarPrevClock" Text="14:32" Foreground="#FFFFFF" FontSize="11.5" HorizontalAlignment="Right"/>
+                      <TextBlock x:Name="BarPrevDate" Text="20/10/2026" Foreground="#FFFFFF" FontSize="11.5" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+              </Grid>
+            </Border>
+            <Border Style="{StaticResource Card}" Padding="8,6">
+              <StackPanel x:Name="BarOpts"/>
+            </Border>
+            <WrapPanel Margin="0,14,0,0">
+              <Button x:Name="BarDefault" Style="{StaticResource Ghost}" Content="Remettre la barre par défaut"/>
+              <Button x:Name="BarRestart" Style="{StaticResource Ghost}" Content="Recharger la barre des tâches"/>
+              <Button x:Name="BarWin" Style="{StaticResource Ghost}" Content="Réglages de Windows"/>
+            </WrapPanel>
+            <TextBlock x:Name="BarMsg" Text="Tu peux tout annuler à tout moment : Réglages, « Tout remettre comme avant »." Foreground="#8E8E98" FontSize="12" Margin="2,10,0,0" TextWrapping="Wrap"/>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- ===== Remettre mon PC à neuf ===== -->
+        <ScrollViewer x:Name="PageFresh" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <TextBlock Text="Remettre mon PC à neuf" Style="{StaticResource H}" Margin="0,0,0,2"/>
+            <TextBlock Text="Sauvegarde, réinitialisation de Windows, puis tout remis en place : OnePC te guide à chaque étape." Style="{StaticResource Dim}" TextWrapping="Wrap"/>
+            <Border Background="#2A0F14" BorderBrush="#E5484D" BorderThickness="1.5" CornerRadius="12" Padding="18,14" Margin="0,14,0,14">
+              <DockPanel>
+                <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="#FF6B6B" Margin="0,2,16,0" VerticalAlignment="Top"/>
+                <StackPanel>
+                  <TextBlock Text="ATTENTION : RÉINITIALISER WINDOWS PEUT TOUT EFFACER" FontWeight="Bold" Foreground="#FF6B6B" FontSize="14.5"/>
+                  <TextBlock TextWrapping="Wrap" Foreground="#F5C2C2" Margin="0,6,0,0" LineHeight="19">
+                    <Run Text="Si tu choisis « Supprimer tout », tes fichiers, tes jeux et tes logiciels disparaissent."/>
+                    <Run Text="Ce qui n'est pas sauvegardé est perdu pour toujours :" FontWeight="Bold" Foreground="#FFFFFF"/>
+                    <Run Text="personne ne pourra le récupérer, même pas OnePC. Fais l'étape 1 en entier avant de toucher à l'étape 2."/>
+                  </TextBlock>
+                </StackPanel>
+              </DockPanel>
+            </Border>
+            <Grid Margin="0,0,0,14">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+              <Button x:Name="FreshTab1" Grid.Column="0" Style="{StaticResource Tile}">
+                <DockPanel>
+                  <Border x:Name="FreshNum1" Width="30" Height="30" CornerRadius="15" Background="#FF5A3C" Margin="0,0,12,0"><TextBlock Text="1" Foreground="#FFFFFF" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="Sauvegarder" FontWeight="SemiBold"/><TextBlock x:Name="FreshSt1" Text="À faire" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+                </DockPanel>
+              </Button>
+              <Button x:Name="FreshTab2" Grid.Column="2" Style="{StaticResource Tile}">
+                <DockPanel>
+                  <Border x:Name="FreshNum2" Width="30" Height="30" CornerRadius="15" Background="#2A2A31" Margin="0,0,12,0"><TextBlock Text="2" Foreground="#FFFFFF" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="Réinitialiser Windows" FontWeight="SemiBold"/><TextBlock x:Name="FreshSt2" Text="Bloqué tant que la sauvegarde n'est pas vérifiée" Foreground="#8E8E98" FontSize="11.5" TextTrimming="CharacterEllipsis"/></StackPanel>
+                </DockPanel>
+              </Button>
+              <Button x:Name="FreshTab3" Grid.Column="4" Style="{StaticResource Tile}">
+                <DockPanel>
+                  <Border x:Name="FreshNum3" Width="30" Height="30" CornerRadius="15" Background="#2A2A31" Margin="0,0,12,0"><TextBlock Text="3" Foreground="#FFFFFF" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="Tout remettre en place" FontWeight="SemiBold"/><TextBlock Text="Après la réinitialisation" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+                </DockPanel>
+              </Button>
+            </Grid>
+
+            <Border x:Name="FreshP1" Style="{StaticResource Card}" Padding="20,18">
+              <StackPanel>
+                <TextBlock Text="ÉTAPE 1 : SAUVEGARDER" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19">
+                  <Run Text="Branche un disque externe ou une clé USB assez grande, puis choisis-la ici."/>
+                  <Run Text="La sauvegarde ne doit jamais être sur le disque de Windows (C:) :" FontWeight="Bold" Foreground="#FFFFFF"/>
+                  <Run Text="elle serait effacée avec le reste."/>
+                </TextBlock>
+                <DockPanel Margin="0,14,0,0">
+                  <Button x:Name="FreshPick" DockPanel.Dock="Left" Style="{StaticResource Ghost}" Content="Choisir le disque de sauvegarde"/>
+                  <TextBlock x:Name="FreshDest" Text="Aucun disque choisi" Foreground="#8E8E98" VerticalAlignment="Center" TextWrapping="Wrap" Margin="6,0,0,0"/>
+                </DockPanel>
+                <TextBlock Text="CE QUE ONEPC VA SAUVEGARDER" Style="{StaticResource Tag}" Foreground="#8E8E98" Margin="0,18,0,8"/>
+                <WrapPanel x:Name="FreshWhat"/>
+                <TextBlock Text="À FAIRE TOI-MÊME (ONEPC NE PEUT PAS LE FAIRE À TA PLACE)" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,14,0,8"/>
+                <StackPanel x:Name="FreshTodo"/>
+                <WrapPanel Margin="0,14,0,0">
+                  <Button x:Name="FreshSave" Style="{StaticResource Action}" Content="Lancer la sauvegarde"/>
+                  <Button x:Name="FreshCheck" Style="{StaticResource Ghost}" Content="Vérifier ma sauvegarde"/>
+                </WrapPanel>
+                <Border x:Name="FreshSaveBox" Visibility="Collapsed" CornerRadius="10" Padding="14,12" Margin="0,14,0,0" BorderThickness="1">
+                  <TextBlock x:Name="FreshSaveRes" TextWrapping="Wrap" LineHeight="19"/>
+                </Border>
+                <TextBlock x:Name="FreshMsg1" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Border>
+
+            <Border x:Name="FreshP2" Style="{StaticResource Card}" Padding="20,18" Visibility="Collapsed">
+              <StackPanel>
+                <TextBlock Text="ÉTAPE 2 : RÉINITIALISER WINDOWS" Style="{StaticResource Tag}" Foreground="#FF6B6B"/>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="OnePC ouvre l'outil officiel de Windows, « Réinitialiser ce PC ». Windows te demandera de choisir entre deux options :"/>
+                <Grid Margin="0,12,0,0">
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                  <Border Grid.Column="0" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" CornerRadius="10" Padding="14,12">
+                    <StackPanel>
+                      <TextBlock Text="Conserver mes fichiers" FontWeight="SemiBold" Foreground="#3DDC84"/>
+                      <TextBlock Text="Garde tes documents. Supprime les logiciels, les jeux et les réglages." Foreground="#9C9CA6" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                    </StackPanel>
+                  </Border>
+                  <Border Grid.Column="2" Background="#1F1013" BorderBrush="#6B2A30" BorderThickness="1" CornerRadius="10" Padding="14,12">
+                    <StackPanel>
+                      <TextBlock Text="Supprimer tout" FontWeight="SemiBold" Foreground="#FF6B6B"/>
+                      <TextBlock Text="Efface TOUT ce qui est sur le disque de Windows. Le PC repart comme sorti du carton." Foreground="#9C9CA6" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                    </StackPanel>
+                  </Border>
+                </Grid>
+                <TextBlock Text="AVANT DE CONTINUER, COCHE TOUT" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,18,0,8"/>
+                <StackPanel>
+                  <CheckBox x:Name="FreshC0" Foreground="#E8E8EC" IsEnabled="False" Margin="0,0,0,8" Content="OnePC a vérifié ma sauvegarde (étape 1)"/>
+                  <CheckBox x:Name="FreshC1" Foreground="#E8E8EC" Margin="0,0,0,8" Content="J'ai fait toute la liste « À faire toi-même » de l'étape 1"/>
+                  <CheckBox x:Name="FreshC2" Foreground="#E8E8EC" Margin="0,0,0,8" Content="J'ai débranché mon disque de sauvegarde (sinon Windows pourrait l'effacer aussi)"/>
+                  <CheckBox x:Name="FreshC3" Foreground="#E8E8EC" Margin="0,0,0,8" Content="Mon PC est branché sur secteur, pas sur batterie"/>
+                  <CheckBox x:Name="FreshC4" Foreground="#E8E8EC" Margin="0,0,0,8" Content="J'ai compris que ce qui n'est pas sauvegardé sera perdu pour toujours"/>
+                </StackPanel>
+                <TextBlock Margin="0,10,0,6" Foreground="#CACAD2"><Run Text="Pour confirmer, tape "/><Run Text="FORMATER" FontWeight="Bold" Foreground="#FF6B6B"/><Run Text=" en majuscules :"/></TextBlock>
+                <TextBox x:Name="FreshType" Width="260" HorizontalAlignment="Left" Background="#0E0E11" Foreground="#FFFFFF" BorderBrush="#34343C" CaretBrush="#FFFFFF" Padding="10,7" FontFamily="Consolas" FontSize="15" FontWeight="Bold"/>
+                <WrapPanel Margin="0,16,0,0">
+                  <Button x:Name="FreshGo" Style="{StaticResource Action}" Background="#E5484D" Content="Ouvrir la réinitialisation de Windows" IsEnabled="False"/>
+                  <Button x:Name="FreshUsb" Style="{StaticResource Ghost}" Content="Plutôt avec une clé USB d'installation"/>
+                </WrapPanel>
+                <TextBlock x:Name="FreshMsg2" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Border>
+
+            <Border x:Name="FreshP3" Style="{StaticResource Card}" Padding="20,18" Visibility="Collapsed">
+              <StackPanel>
+                <TextBlock Text="ÉTAPE 3 : TOUT REMETTRE EN PLACE" Style="{StaticResource Tag}" Foreground="#34D399"/>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="Après la réinitialisation, rebranche ton disque de sauvegarde et ouvre le fichier OnePC.cmd qui s'y trouve (OnePC l'a copié pour toi). Choisis ta sauvegarde, puis ce que tu veux remettre."/>
+                <Border Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" CornerRadius="10" Padding="14,10" Margin="0,12,0,0">
+                  <TextBlock TextWrapping="Wrap" Foreground="#9C9CA6" FontSize="12.5" Text="Bon à savoir : après une réinitialisation, Windows donne un nouveau code à ton PC. OnePC te demandera sans doute une nouvelle clé : envoie le nouveau code du PC sur le Discord."/>
+                </Border>
+                <DockPanel Margin="0,14,0,0">
+                  <Button x:Name="FreshPickBack" DockPanel.Dock="Left" Style="{StaticResource Ghost}" Content="Choisir ma sauvegarde"/>
+                  <TextBlock x:Name="FreshBackInfo" Text="Aucune sauvegarde choisie" Foreground="#8E8E98" VerticalAlignment="Center" TextWrapping="Wrap" Margin="6,0,0,0"/>
+                </DockPanel>
+                <WrapPanel x:Name="FreshTiles" Margin="0,16,0,0"/>
+                <WrapPanel Margin="0,4,0,0">
+                  <Button x:Name="FreshRAll" Style="{StaticResource Action}" Content="Tout remettre d'un coup" IsEnabled="False"/>
+                </WrapPanel>
+                <TextBlock x:Name="FreshMsg3" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Border>
           </StackPanel>
         </ScrollViewer>
 
@@ -1719,30 +2477,50 @@ $xaml = @'
         </ScrollViewer>
 
         <!-- ===== Historique ===== -->
-        <Grid x:Name="PageHist" Grid.Row="1" Margin="26,4,26,20" MaxWidth="1250" Visibility="Collapsed">
-          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-          <StackPanel Grid.Row="0">
-            <TextBlock Text="Historique" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock x:Name="HistInfo" Text="Tout ce que OnePC a modifié sur ce PC, du plus récent au plus ancien." Style="{StaticResource Dim}" Margin="0,0,0,12" TextWrapping="Wrap"/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-              <Button x:Name="HistReset" Style="{StaticResource Action}" Content="Tout remettre comme avant..."/>
-              <Button x:Name="HistOpen" Style="{StaticResource Ghost}" Content="Ouvrir le fichier"/>
-              <Button x:Name="HistClear" Style="{StaticResource Ghost}" Content="Vider l'historique"/>
-            </StackPanel>
-          </StackPanel>
-          <Border Grid.Row="1" Style="{StaticResource Card}" Padding="16,12">
-            <DockPanel>
-              <Grid DockPanel.Dock="Top" Margin="0,0,22,8">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="200"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="DATE" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="1" Text="MODIFICATION" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-              </Grid>
-              <ScrollViewer VerticalScrollBarVisibility="Visible">
-                <ItemsControl x:Name="HistList" ItemTemplate="{StaticResource Row3}" Margin="0,0,14,0"/>
-              </ScrollViewer>
+        <ScrollViewer x:Name="PageHist" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <DockPanel Margin="0,0,0,14">
+              <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                <Button x:Name="HistReset" Style="{StaticResource Action}" Content="Tout remettre comme avant..." Margin="0,0,8,0"/>
+                <Button x:Name="HistOpen" Style="{StaticResource Ghost}" Content="Ouvrir le fichier" Margin="0,0,8,0"/>
+                <Button x:Name="HistClear" Style="{StaticResource Ghost}" Content="Vider" Margin="0"/>
+              </WrapPanel>
+              <StackPanel>
+                <TextBlock Text="Historique" Style="{StaticResource H}" Margin="0,0,0,2"/>
+                <TextBlock x:Name="HistInfo" Text="Tout ce que OnePC a fait sur ce PC, du plus récent au plus ancien." Style="{StaticResource Dim}" TextWrapping="Wrap"/>
+              </StackPanel>
             </DockPanel>
-          </Border>
-        </Grid>
+            <Grid Margin="0,0,0,14">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+              <Border Grid.Column="0" Style="{StaticResource Card}" Padding="16,12">
+                <StackPanel>
+                  <TextBlock Text="ACTIONS EN TOUT" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,0,0,4"/>
+                  <TextBlock x:Name="HistN" Text="-" FontSize="26" FontWeight="Bold"/>
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="2" Style="{StaticResource Card}" Padding="16,12">
+                <StackPanel>
+                  <TextBlock Text="CETTE SEMAINE" Style="{StaticResource Tag}" Foreground="#A78BFA" Margin="0,0,0,4"/>
+                  <TextBlock x:Name="HistWeek" Text="-" FontSize="26" FontWeight="Bold"/>
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="4" Style="{StaticResource Card}" Padding="16,12">
+                <StackPanel>
+                  <TextBlock Text="NETTOYAGES" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,4"/>
+                  <TextBlock x:Name="HistClean" Text="-" FontSize="26" FontWeight="Bold"/>
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="6" Style="{StaticResource Card}" Padding="16,12">
+                <StackPanel>
+                  <TextBlock Text="DERNIÈRE ACTION" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0,0,0,4"/>
+                  <TextBlock x:Name="HistLast" Text="-" FontSize="18" FontWeight="Bold" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+              </Border>
+            </Grid>
+            <WrapPanel x:Name="HistFilters" Margin="0,0,0,6"/>
+            <StackPanel x:Name="HistHost"/>
+          </StackPanel>
+        </ScrollViewer>
 
         <!-- ===== OBS ===== -->
         <ScrollViewer x:Name="PageObs" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
@@ -1990,62 +2768,110 @@ $xaml = @'
 
         <!-- ===== Réglages ===== -->
         <ScrollViewer x:Name="PageSet" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
-          <StackPanel Margin="26,4,22,12" MaxWidth="1250">
+          <StackPanel Margin="26,4,22,12" MaxWidth="980">
             <TextBlock Text="Réglages" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SetMsg" Text="Les changements sont enregistrés tout de suite." Style="{StaticResource Dim}" Margin="0,0,0,12"/>
-            <Border Style="{StaticResource Card}">
-              <StackPanel>
-                <TextBlock Text="APPARENCE" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-                <TextBlock Text="La couleur d'accent et la page d'ouverture se règlent maintenant dans « Mon profil »." Foreground="#CACAD2" Margin="0,0,0,8"/>
-                <StackPanel Orientation="Horizontal">
-                  <Button x:Name="SetRestart" Style="{StaticResource Ghost}" Content="Redémarrer OnePC"/>
-                  <Button x:Name="SetWelcome" Style="{StaticResource Ghost}" Content="Revoir la présentation"/>
-                  <Button x:Name="SetFolder" Style="{StaticResource Ghost}" Content="Ouvrir le dossier de l'appli"/>
-                  <Button x:Name="SetUpdate" Style="{StaticResource Ghost}" Content="Vérifier les mises à jour"/>
+            <TextBlock x:Name="SetMsg" Text="Les changements sont enregistrés tout de suite." Style="{StaticResource Dim}" Margin="0,0,0,14"/>
+            <Border CornerRadius="16" Padding="22,18" BorderBrush="#2E2E36" BorderThickness="1">
+              <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                  <GradientStop Color="#2A1712" Offset="0"/>
+                  <GradientStop Color="#17171B" Offset="0.65"/>
+                </LinearGradientBrush>
+              </Border.Background>
+              <DockPanel>
+                <Button x:Name="SetUpdate" DockPanel.Dock="Right" Style="{StaticResource Action}" Content="Vérifier les mises à jour" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                <Border DockPanel.Dock="Left" Width="52" Height="52" CornerRadius="14" Background="#FF5A3C" Margin="0,0,16,0">
+                  <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="24" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="OnePC" FontSize="20" FontWeight="Bold"/>
+                  <TextBlock x:Name="LicInfo" Foreground="#B8B8C0" FontSize="12.5" Margin="0,3,0,0" TextWrapping="Wrap"/>
                 </StackPanel>
-                <TextBlock x:Name="LicInfo" Foreground="#8E8E98" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
+              </DockPanel>
+            </Border>
+            <WrapPanel Margin="0,12,0,0">
+              <Button x:Name="SetRestart" Style="{StaticResource Ghost}" Content="Redémarrer OnePC" Margin="0,0,8,8"/>
+              <Button x:Name="SetWelcome" Style="{StaticResource Ghost}" Content="Revoir la présentation" Margin="0,0,8,8"/>
+              <Button x:Name="SetFolder" Style="{StaticResource Ghost}" Content="Ouvrir le dossier de l'appli" Margin="0,0,8,8"/>
+            </WrapPanel>
+            <TextBlock Foreground="#8E8E98" FontSize="12" Margin="2,0,0,0" TextWrapping="Wrap"><Run Text="La couleur de l'appli et la page d'ouverture se règlent dans "/><Run Text="Mon profil" FontWeight="SemiBold" Foreground="#CACAD2"/><Run Text=" (en bas du menu)."/></TextBlock>
+
+            <TextBlock Text="COMPORTEMENT" Style="{StaticResource Tag}" Foreground="#34D399" Margin="2,22,0,8"/>
+            <Border Style="{StaticResource Card}" Padding="14,2">
+              <StackPanel>
+                <CheckBox x:Name="SetAuto" Style="{StaticResource SwitchRow}">
+                  <StackPanel><TextBlock Text="Lancer OnePC avec Windows" FontWeight="SemiBold"/><TextBlock Text="OnePC démarre discrètement près de l'horloge, prêt à t'alerter." Foreground="#8E8E98" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/></StackPanel>
+                </CheckBox>
+                <Border Height="1" Background="#222227"/>
+                <CheckBox x:Name="SetTray" Style="{StaticResource SwitchRow}">
+                  <StackPanel><TextBlock Text="Rester près de l'horloge quand je ferme la fenêtre" FontWeight="SemiBold"/><TextBlock Text="Pour recevoir les alertes et garder le menu rapide (clic droit sur l'icône)." Foreground="#8E8E98" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/></StackPanel>
+                </CheckBox>
+                <Border Height="1" Background="#222227"/>
+                <CheckBox x:Name="SetDrv" Style="{StaticResource SwitchRow}">
+                  <StackPanel><TextBlock Text="Chercher les nouveaux pilotes à chaque lancement" FontWeight="SemiBold"/><TextBlock Text="Un point rouge apparaît sur « Pilotes » quand il y a du nouveau." Foreground="#8E8E98" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/></StackPanel>
+                </CheckBox>
+                <Border Height="1" Background="#222227"/>
+                <CheckBox x:Name="SetDrvAlert" Style="{StaticResource SwitchRow}">
+                  <StackPanel><TextBlock Text="M'avertir quand un nouveau pilote graphique sort" FontWeight="SemiBold"/><TextBlock Text="Vérifié chaque jour, même quand OnePC est fermé." Foreground="#8E8E98" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/></StackPanel>
+                </CheckBox>
               </StackPanel>
             </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+
+            <TextBlock Text="ALERTES" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="2,22,0,8"/>
+            <Border Style="{StaticResource Card}" Padding="14,2,14,14">
               <StackPanel>
-                <TextBlock Text="COMPORTEMENT" Style="{StaticResource Tag}" Foreground="#34D399"/>
-                <CheckBox x:Name="SetAuto" Foreground="#E8E8EC" Margin="0,0,0,10" Content="Lancer OnePC au démarrage de Windows"/>
-                <CheckBox x:Name="SetTray" Foreground="#E8E8EC" Margin="0,0,0,10" Content="Quand je ferme la fenêtre, garder OnePC près de l'horloge (pour les alertes et le menu rapide)"/>
-                <CheckBox x:Name="SetDrv" Foreground="#E8E8EC" Margin="0,0,0,10" Content="Rechercher les nouveaux pilotes à chaque lancement"/>
-                <CheckBox x:Name="SetDrvAlert" Foreground="#E8E8EC" Content="M'avertir près de l'horloge quand un nouveau pilote graphique sort (vérifié chaque jour, même appli fermée)"/>
-              </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
-              <StackPanel>
-                <TextBlock Text="ALERTES" Style="{StaticResource Tag}" Foreground="#FBBF24"/>
-                <CheckBox x:Name="SetAlerts" Foreground="#E8E8EC" Margin="0,0,0,12" Content="M'envoyer une notification Windows en cas de problème"/>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                  <TextBlock Text="Carte graphique au-dessus de" Width="230" VerticalAlignment="Center" Foreground="#CACAD2"/>
-                  <TextBox x:Name="SetGpu" Width="56" Background="#1D1D22" Foreground="#E8E8EC" BorderBrush="#2E2E35" Padding="6,4" CaretBrush="#E8E8EC"/>
-                  <TextBlock Text="°C" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#8E8E98"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                  <TextBlock Text="Mémoire RAM au-dessus de" Width="230" VerticalAlignment="Center" Foreground="#CACAD2"/>
-                  <TextBox x:Name="SetRam" Width="56" Background="#1D1D22" Foreground="#E8E8EC" BorderBrush="#2E2E35" Padding="6,4" CaretBrush="#E8E8EC"/>
-                  <TextBlock Text="%" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#8E8E98"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                  <TextBlock Text="Disque C: avec moins de" Width="230" VerticalAlignment="Center" Foreground="#CACAD2"/>
-                  <TextBox x:Name="SetDisk" Width="56" Background="#1D1D22" Foreground="#E8E8EC" BorderBrush="#2E2E35" Padding="6,4" CaretBrush="#E8E8EC"/>
-                  <TextBlock Text="% de libre" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#8E8E98"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
+                <CheckBox x:Name="SetAlerts" Style="{StaticResource SwitchRow}">
+                  <StackPanel><TextBlock Text="M'envoyer une notification en cas de problème" FontWeight="SemiBold"/><TextBlock Text="Quand un des seuils ci-dessous est dépassé." Foreground="#8E8E98" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/></StackPanel>
+                </CheckBox>
+                <Border Height="1" Background="#222227" Margin="0,0,0,12"/>
+                <Grid>
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                  <Border Grid.Column="0" Background="#141418" CornerRadius="10" Padding="14,12">
+                    <StackPanel>
+                      <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" Foreground="#34D399" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/><TextBlock Text="Carte graphique" Foreground="#34D399" FontSize="12" FontWeight="SemiBold"/></StackPanel>
+                      <TextBlock Text="Température au-dessus de" Foreground="#8E8E98" FontSize="12" Margin="0,4,0,8"/>
+                      <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="SetGpu" Width="64" Background="#0E0E11" Foreground="#FFFFFF" BorderBrush="#34343C" Padding="8,5" CaretBrush="#FFFFFF" FontSize="15" FontWeight="SemiBold"/>
+                        <TextBlock Text="°C" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#B8B8C0"/>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                  <Border Grid.Column="2" Background="#141418" CornerRadius="10" Padding="14,12">
+                    <StackPanel>
+                      <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE950;" FontFamily="Segoe MDL2 Assets" Foreground="#FBBF24" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/><TextBlock Text="Mémoire RAM" Foreground="#FBBF24" FontSize="12" FontWeight="SemiBold"/></StackPanel>
+                      <TextBlock Text="Utilisée au-dessus de" Foreground="#8E8E98" FontSize="12" Margin="0,4,0,8"/>
+                      <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="SetRam" Width="64" Background="#0E0E11" Foreground="#FFFFFF" BorderBrush="#34343C" Padding="8,5" CaretBrush="#FFFFFF" FontSize="15" FontWeight="SemiBold"/>
+                        <TextBlock Text="%" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#B8B8C0"/>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                  <Border Grid.Column="4" Background="#141418" CornerRadius="10" Padding="14,12">
+                    <StackPanel>
+                      <StackPanel Orientation="Horizontal"><TextBlock Text="&#xEDA2;" FontFamily="Segoe MDL2 Assets" Foreground="#38BDF8" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/><TextBlock Text="Disque C:" Foreground="#38BDF8" FontSize="12" FontWeight="SemiBold"/></StackPanel>
+                      <TextBlock Text="Place libre en dessous de" Foreground="#8E8E98" FontSize="12" Margin="0,4,0,8"/>
+                      <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="SetDisk" Width="64" Background="#0E0E11" Foreground="#FFFFFF" BorderBrush="#34343C" Padding="8,5" CaretBrush="#FFFFFF" FontSize="15" FontWeight="SemiBold"/>
+                        <TextBlock Text="%" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#B8B8C0"/>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                </Grid>
+                <WrapPanel Margin="0,14,0,0">
                   <Button x:Name="SetSave" Style="{StaticResource Action}" Content="Enregistrer les seuils"/>
                   <Button x:Name="SetTest" Style="{StaticResource Ghost}" Content="Tester une notification"/>
-                </StackPanel>
+                </WrapPanel>
               </StackPanel>
             </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+
+            <TextBlock Text="TOUT REMETTRE COMME AVANT" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="2,22,0,8"/>
+            <Border Background="#1C1410" BorderBrush="#4A2E1A" BorderThickness="1" CornerRadius="14" Padding="18,16">
               <StackPanel>
-                <TextBlock Text="TOUT REMETTRE COMME AVANT" Style="{StaticResource Tag}" Foreground="#FB923C"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,0,0,10" Text="Annule d'un coup les réglages que OnePC a changés sur ce PC : profil d'alimentation, services arrêtés, DNS, programmes désactivés au démarrage, fond d'écran, thème de Windows, nettoyage automatique et lancement avec Windows. Tu vois la liste exacte avant de confirmer."/>
-                <StackPanel Orientation="Horizontal"><Button x:Name="ResetAll" Style="{StaticResource Action}" Content="Tout remettre comme avant"/></StackPanel>
-                <TextBlock x:Name="ResetMsg" Text="Ce bouton ne peut pas faire revenir ce qui a été supprimé (nettoyages, applications désinstallées). Pour les fichiers rangés, utilise « Annuler le dernier rangement »." Foreground="#8E8E98" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                <DockPanel>
+                  <Button x:Name="ResetAll" DockPanel.Dock="Right" Style="{StaticResource Action}" Content="Tout remettre comme avant" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                  <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="Annule d'un coup tout ce que OnePC a changé sur ce PC : profil d'alimentation, services arrêtés, DNS, programmes coupés au démarrage, fond d'écran, thème de Windows, barre des tâches, nettoyage automatique et lancement avec Windows. Tu vois la liste exacte avant de confirmer."/>
+                </DockPanel>
+                <TextBlock x:Name="ResetMsg" Text="Ce bouton ne peut pas faire revenir ce qui a été supprimé (nettoyages, applications désinstallées). Pour les fichiers rangés, utilise « Annuler le dernier rangement »." Foreground="#8E8E98" FontSize="12" Margin="0,12,0,0" TextWrapping="Wrap"/>
               </StackPanel>
             </Border>
           </StackPanel>
@@ -2104,7 +2930,7 @@ foreach ($oldName in @(('Sal' + 'Info'), ('Kon' + 'trol'), ('Tweak' + 'Milass'))
     try { if (Get-ScheduledTask -TaskName ($oldName + ' Entretien') -ErrorAction Stop) { $script:migCare = $true } } catch {}
     try { if (Get-ScheduledTask -TaskName ($oldName + ' Pilotes') -ErrorAction Stop) { $script:migDrv = $true } } catch {}
 }
-$cfg = @{ Accent = 'Rouge'; StartPage = 'Home'; Tray = $false; DrvCheck = $true; Alerts = $true; GpuMax = 85; RamMax = 92; DiskMin = 10; GameApps = @(); BackSrc = ''; BackDst = ''; Games = @(); DnsAlias = ''; StartOff = @(); PlanOrig = ''; AccentHex = ''; NamesClean = $false; Welcome = $false; CalTold = ''; Pseudo = ''; Banner = 0; Since = ''; UpdAsked = ''; ThemeOrig = -1; FastOrig = -1; PadDone = $false; MouseOrig = ''; NewsSeen = ''; ObsUse = ''; ObsUp = 0; ObsPass = ''; ObsLinked = $false; TourVer = '' }
+$cfg = @{ Accent = 'Rouge'; StartPage = 'Home'; Tray = $false; DrvCheck = $true; Alerts = $true; GpuMax = 85; RamMax = 92; DiskMin = 10; GameApps = @(); BackSrc = ''; BackDst = ''; Games = @(); DnsAlias = ''; StartOff = @(); PlanOrig = ''; AccentHex = ''; NamesClean = $false; Welcome = $false; CalTold = ''; Pseudo = ''; Banner = 0; Since = ''; UpdAsked = ''; ThemeOrig = -1; FastOrig = -1; PadDone = $false; MouseOrig = ''; NewsSeen = ''; ObsUse = ''; ObsUp = 0; ObsPass = ''; ObsLinked = $false; TourVer = ''; BarOrig = @(); FreshDest = ''; FreshOk = '' }
 try {
     $saved = Get-Content -LiteralPath $cfgFile -Raw -Encoding UTF8 -ErrorAction Stop | ConvertFrom-Json
     foreach ($p in $saved.PSObject.Properties) { if ($cfg.ContainsKey($p.Name)) { $cfg[$p.Name] = $p.Value } }
@@ -2582,7 +3408,7 @@ try {
 (UI 'DiskList').Text = ($disks | ForEach-Object { $_.Model + " (" + [math]::Round($_.Size / 1GB) + " Go)" }) -join '  |  '
 
 # ---------- Mesures en arrière-plan (la fenêtre reste fluide) ----------
-$sync = [hashtable]::Synchronized(@{ Run = $true; Cpu = 0; Gpu = 0; GpuOk = $true; Ram = 0; RamUsed = 0; DiskC = ''; Procs = @(); Ping = -1; Down = 0; Up = 0; NetInfo = 'Lecture en cours...'; Ghz = 0; Vram = 0; DiskFree = 100; CpuT = -1; GpuT = -1; ProcCount = 0 })
+$sync = [hashtable]::Synchronized(@{ Run = $true; Cpu = 0; Gpu = 0; GpuOk = $true; Ram = 0; RamUsed = 0; DiskC = ''; Procs = @(); Ping = -1; Down = 0; Up = 0; NetInfo = 'Lecture en cours...'; Ghz = 0; Vram = 0; DiskFree = 100; CpuT = -1; GpuT = -1; ProcCount = 0; ProcApps = 0; ProcSum = 0 })
 $sampler = [powershell]::Create()
 [void]$sampler.AddScript({
     param($sync)
@@ -2647,12 +3473,22 @@ public static class PcmGpu {
             }
             if ($loop % 3 -eq 0) {
                 $wdir = $env:windir
-                $sync.Procs = @(Get-Process | Where-Object { $_.Path -and -not $_.Path.StartsWith($wdir, [StringComparison]::OrdinalIgnoreCase) } |
+                if (-not $descCache) { $descCache = @{} }
+                $pTop = @(Get-Process | Where-Object { $_.Path -and -not $_.Path.StartsWith($wdir, [StringComparison]::OrdinalIgnoreCase) } |
                     Group-Object ProcessName | ForEach-Object {
                         $mem = 0; foreach ($p in $_.Group) { $mem += $p.WorkingSet64 }
                         [pscustomobject]@{ Raw = $_.Name; Count = $_.Count; Bytes = $mem; Path = [string]$_.Group[0].Path }
-                    } | Sort-Object Bytes -Descending | Select-Object -First 30 | ForEach-Object {
-                        $n = $_.Raw; if ($_.Count -gt 1) { $n = $_.Raw + "  (x" + $_.Count + ")" }
+                    } | Sort-Object Bytes -Descending)
+                $pMax = 1.0; if ($pTop.Count -and $pTop[0].Bytes -gt 0) { $pMax = [double]$pTop[0].Bytes }
+                $pSum = [double]0; foreach ($q in $pTop) { $pSum += $q.Bytes }
+                $sync.ProcApps = $pTop.Count; $sync.ProcSum = $pSum
+                $sync.Procs = @($pTop | Select-Object -First 30 | ForEach-Object {
+                        $n = $_.Raw; $fd = ''
+                        if ($descCache.ContainsKey($_.Path)) { $fd = [string]$descCache[$_.Path] } else { try { $fd = [string]([System.Diagnostics.FileVersionInfo]::GetVersionInfo($_.Path).FileDescription) } catch {}; $descCache[$_.Path] = $fd }
+                        if ($fd -and $fd.Trim().Length -ge 2 -and $fd.Trim().Length -le 60) { $n = $fd.Trim() }
+                        $sub = $_.Raw + '.exe'; if ($_.Count -gt 1) { $sub += '  ·  ' + $_.Count + ' processus' }
+                        $bw = [math]::Max(6, [int](220 * $_.Bytes / $pMax))
+                        $mc = '#6EE7B7'; if ($_.Bytes -ge 400MB) { $mc = '#FBBF24' }; if ($_.Bytes -ge 1GB) { $mc = '#FF6B6B' }
                         $mm = "" + [math]::Round($_.Bytes / 1MB) + " Mo"; if ($_.Bytes -ge 1GB) { $mm = ([math]::Round($_.Bytes / 1GB, 1)).ToString([cultureinfo]'fr-FR') + " Go" }
                         $ico = $null
                         try {
@@ -2666,7 +3502,7 @@ public static class PcmGpu {
                             }
                             $ico = $f
                         } catch {}
-                        [pscustomobject]@{ Raw = $_.Raw; Name = $n; Mem = $mm; Ico = $ico }
+                        [pscustomobject]@{ Raw = $_.Raw; Name = $n; Mem = $mm; Ico = $ico; Sub = $sub; BarW = $bw; MemCol = $mc; Path = $_.Path }
                     })
             }
         } catch {}
@@ -2796,9 +3632,9 @@ $hRam = New-Object 'System.Collections.Generic.List[double]'
 
 # ---------- Navigation ----------
 $brush = New-Object System.Windows.Media.BrushConverter
-$pages = @{ Help = @('NavHelp', 'PageHelp', 'Aide & support'); Pad = @('NavPad', 'PagePad', 'Manette'); Mouse = @('NavMouse', 'PageMouse', 'Souris'); Me = @('NavMe', 'PageMe', 'Mon profil'); Home = @('NavHome', 'PageHome', 'Accueil'); Drv = @('NavDrv', 'PageDrv', 'Pilotes'); Proc = @('NavProc', 'PageProc', 'Programmes'); Start = @('NavStart', 'PageStart', 'Démarrage'); Opti = @('NavOpti', 'PageOpti', 'Optimisation'); Net = @('NavNet', 'PageNet', 'Réseau'); Disk = @('NavDisk', 'PageDisk', 'Disques'); Light = @('NavLight', 'PageLight', 'Alléger'); Apps = @('NavApps', 'PageApps', 'Applications'); Tools = @('NavTools', 'PageTools', 'Raccourcis'); Games = @('NavGames', 'PageGames', 'Jeux'); Tidy = @('NavTidy', 'PageTidy', 'Rangement'); Wall = @('NavWall', 'PageWall', "Fond d'écran"); Set = @('NavSet', 'PageSet', 'Réglages'); Hist = @('NavHist', 'PageHist', 'Historique'); Obs = @('NavObs', 'PageObs', 'OBS'); Dc = @('NavDc', 'PageDc', 'Discord'); Care = @('NavCare', 'PageCare', 'Entretien'); Crash = @('NavCrash', 'PageCrash', 'Plantages') }
+$pages = @{ Help = @('NavHelp', 'PageHelp', 'Aide & support'); Pad = @('NavPad', 'PagePad', 'Manette'); Mouse = @('NavMouse', 'PageMouse', 'Souris'); Me = @('NavMe', 'PageMe', 'Mon profil'); Home = @('NavHome', 'PageHome', 'Accueil'); Drv = @('NavDrv', 'PageDrv', 'Pilotes'); Proc = @('NavProc', 'PageProc', 'Programmes'); Start = @('NavStart', 'PageStart', 'Démarrage'); Opti = @('NavOpti', 'PageOpti', 'Optimisation'); Net = @('NavNet', 'PageNet', 'Réseau'); Disk = @('NavDisk', 'PageDisk', 'Disques'); Light = @('NavLight', 'PageLight', 'Alléger'); Apps = @('NavApps', 'PageApps', 'Applications'); Tools = @('NavTools', 'PageTools', 'Raccourcis'); Games = @('NavGames', 'PageGames', 'Jeux'); Tidy = @('NavTidy', 'PageTidy', 'Rangement'); Wall = @('NavWall', 'PageWall', "Fond d'écran"); Set = @('NavSet', 'PageSet', 'Réglages'); Hist = @('NavHist', 'PageHist', 'Historique'); Obs = @('NavObs', 'PageObs', 'OBS'); Dc = @('NavDc', 'PageDc', 'Discord'); Care = @('NavCare', 'PageCare', 'Entretien'); Crash = @('NavCrash', 'PageCrash', 'Plantages'); Slow = @('NavSlow', 'PageSlow', 'Mon PC rame'); Hw = @('NavHw', 'PageHw', 'Mon matériel'); Bar = @('NavBar', 'PageBar', 'Barre des tâches'); Fresh = @('NavFresh', 'PageFresh', 'Remettre à neuf') }
 # ---------- Menu latéral : groupes dépliables ----------
-$navGroups = [ordered]@{ Opti = @('Opti', 'Drv', 'Care', 'Start', 'Light'); Game = @('Games', 'Pad', 'Mouse', 'Dc', 'Obs'); Mon = @('Proc', 'Net', 'Crash', 'Disk'); Tools = @('Apps', 'Tools', 'Tidy', 'Wall'); App = @('Set', 'Hist') }
+$navGroups = [ordered]@{ Opti = @('Opti', 'Hw', 'Drv', 'Care', 'Start', 'Light'); Game = @('Games', 'Pad', 'Mouse', 'Dc', 'Obs'); Mon = @('Proc', 'Net', 'Crash', 'Disk'); Tools = @('Apps', 'Tools', 'Bar', 'Tidy', 'Wall', 'Fresh'); App = @('Set', 'Hist') }
 $script:openGrp = ''
 function Open-Group($g) {
     foreach ($k in $navGroups.Keys) {
@@ -2872,8 +3708,11 @@ function Show-Page($key) {
         if ($key -eq 'Obs')   { Show-Obs; Show-ObsAll }
         if ($key -eq 'Dc')    { Show-Dc; Show-DcOptions }
         if ($key -eq 'Tools') { Update-HzBtn }
+        if ($key -eq 'Hw')    { Load-Hw }
+        if ($key -eq 'Bar')   { Load-Bar }
+        if ($key -eq 'Fresh') { Show-Fresh }
         if ($key -eq 'Apps' -and -not $script:apps) { Load-AppList }
-        if ($key -eq 'Proc')  { (UI 'ProcList').ItemsSource = $sync.Procs }
+        if ($key -eq 'Proc')  { Show-Procs }
     } catch {}
     $script:toastOn = $toastWas
 }
@@ -2905,6 +3744,10 @@ function Show-Page($key) {
 (UI 'NavMouse').Add_Click({ Show-Page 'Mouse' })
 (UI 'NavCare').Add_Click({ Show-Page 'Care' })
 (UI 'NavCrash').Add_Click({ Show-Page 'Crash' })
+(UI 'NavSlow').Add_Click({ Show-Page 'Slow' })
+(UI 'NavHw').Add_Click({ Show-Page 'Hw' })
+(UI 'NavBar').Add_Click({ Show-Page 'Bar' })
+(UI 'NavFresh').Add_Click({ Show-Page 'Fresh' })
 function Toggle-Max { if ($win.WindowState -eq 'Maximized') { $win.WindowState = 'Normal' } else { $win.WindowState = 'Maximized' } }
 (UI 'TitleBar').Add_MouseLeftButtonDown({
     param($sender, $e)
@@ -3139,20 +3982,131 @@ function Start-Bg($code, $arg, $done) {
 
 # ---------- Programmes : fermer ----------
 $protected = 'System', 'Idle', 'Registry', 'smss', 'csrss', 'wininit', 'winlogon', 'services', 'lsass', 'svchost', 'dwm', 'explorer', 'fontdrvhost', 'Memory Compression', 'MsMpEng', 'powershell'
+function Get-ImgSrc($path) {
+    try {
+        if (-not $path -or -not (Test-Path -LiteralPath $path)) { return $null }
+        $bi = New-Object System.Windows.Media.Imaging.BitmapImage
+        $bi.BeginInit(); $bi.UriSource = New-Object System.Uri ([string]$path); $bi.CacheOption = 'OnLoad'; $bi.EndInit(); $bi.Freeze()
+        $bi
+    } catch { $null }
+}
+function Show-Procs {
+    $all = @($sync.Procs)
+    $q = ''; try { $q = Norm ([string](UI 'ProcFind').Text).Trim() } catch {}
+    if ($q) { $all = @($all | Where-Object { (Norm ([string]$_.Name + ' ' + [string]$_.Raw + ' ' + [string]$_.Sub)) -like ('*' + $q + '*') }) }
+    (UI 'ProcList').ItemsSource = $all
+    try {
+        if ([int]$sync.ProcApps -gt 0) { (UI 'ProcN').Text = [string]$sync.ProcApps }
+        if ([double]$sync.ProcSum -gt 0) { (UI 'ProcMemTot').Text = Mo ([double]$sync.ProcSum) }
+        $first = @($sync.Procs) | Select-Object -First 1
+        if ($first) {
+            (UI 'ProcTopName').Text = [string]$first.Name; (UI 'ProcTopMem').Text = [string]$first.Mem
+            if ($script:procTopIco -ne [string]$first.Ico) { $script:procTopIco = [string]$first.Ico; (UI 'ProcTopIco').Source = Get-ImgSrc $first.Ico }
+        }
+    } catch {}
+}
+(UI 'ProcFind').Add_TextChanged({
+    if ((UI 'ProcFind').Text) { (UI 'ProcFindHint').Visibility = 'Collapsed' } else { (UI 'ProcFindHint').Visibility = 'Visible' }
+    Show-Procs
+})
 (UI 'ProcList').AddHandler([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent, [System.Windows.RoutedEventHandler] {
     param($sender, $e)
     $it = $e.OriginalSource.DataContext
     if (-not $it -or -not $it.Raw) { return }
     $name = [string]$it.Raw
+    if ([string]$e.OriginalSource.Tag -eq 'open') {
+        if ($it.Path -and (Test-Path -LiteralPath ([string]$it.Path))) { Start-Process explorer.exe -ArgumentList ('/select,"' + [string]$it.Path + '"') }
+        else { (UI 'ProcMsg').Text = "Emplacement de « $name » introuvable." }
+        return
+    }
     if ($protected -contains $name) { (UI 'ProcMsg').Text = "« $name » fait partie de Windows : je ne le ferme pas."; return }
-    if (-not (Ask "Fermer « $name » ?`r`nCe qui n'est pas enregistré dans ce programme sera perdu.")) { return }
-    try { Stop-Process -Name $name -Force -ErrorAction Stop; Log "Programme fermé : $name"; (UI 'ProcMsg').Text = "« $name » a été fermé." }
+    if (-not (Ask "Fermer « $($it.Name) » ?`r`nCe qui n'est pas enregistré dans ce programme sera perdu.")) { return }
+    try { Stop-Process -Name $name -Force -ErrorAction Stop; Log "Programme fermé : $name"; (UI 'ProcMsg').Text = "« $($it.Name) » a été fermé." }
     catch { (UI 'ProcMsg').Text = "Impossible de fermer « $name » (droits insuffisants ou déjà fermé)." }
 })
 
 # ---------- Démarrage ----------
 $runKey = 'Software\Microsoft\Windows\CurrentVersion\Run'
 $apKey  = 'Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved'
+# programmes connus : motif, vrai nom, explication, conseil (0 à garder, 1 tu peux couper, 2 inutile au démarrage)
+$appKb = @(
+    @('^OnePC', 'OnePC', "OnePC lui-même : il surveille ton PC et t'envoie les alertes. Coupe-le seulement si tu ne veux plus d'alertes.", 0),
+    @('SecurityHealth', 'Sécurité Windows', "L'icône de l'antivirus de Windows près de l'horloge. À garder.", 0),
+    @('RtkAud|RTHDVCPL|Realtek', 'Audio Realtek', "Le gestionnaire du son de ta carte mère. À garder, sinon certains réglages du son peuvent sauter.", 0),
+    @('Synaptics|ETDCtrl|\bELAN', 'Pavé tactile', "Le pilote du pavé tactile de ton PC portable. À garder.", 0),
+    @('StreamDeck|Elgato', 'Elgato Stream Deck', "Le logiciel de ton Stream Deck. À garder si tu en as un, sinon les touches ne marchent pas.", 0),
+    @('Wacom', 'Tablette Wacom', "Le pilote de ta tablette graphique. À garder si tu en as une.", 0),
+    @('discord', 'Discord', "Le chat vocal. Au démarrage, il s'ouvre en fond et prend de la mémoire avant même que tu l'utilises.", 1),
+    @('steam', 'Steam', "La boutique et le lanceur de jeux Steam. Tu peux l'ouvrir seulement quand tu veux jouer.", 1),
+    @('EpicGamesLauncher|Epic Games', 'Epic Games Launcher', "Le lanceur d'Epic (Fortnite). Il s'ouvre tout seul quand tu lances un jeu Epic.", 1),
+    @('LGHUB|G HUB', 'Logitech G HUB', "Le logiciel de tes accessoires Logitech. Les réglages enregistrés dans la souris marchent sans lui. Garde-le si tu utilises des macros ou du RGB.", 1),
+    @('SteelSeries', 'SteelSeries GG', "Le logiciel de tes accessoires SteelSeries. Garde-le si tu utilises son égaliseur (Sonar) ou du RGB.", 1),
+    @('Razer|Synapse', 'Razer Synapse', "Le logiciel de tes accessoires Razer. Garde-le si tu utilises des macros ou du RGB.", 1),
+    @('iCUE|Corsair', 'Corsair iCUE', "Le logiciel des accessoires et du RGB Corsair. Sans lui, le RGB peut revenir aux couleurs de base.", 1),
+    @('AMDNoiseSuppression', 'AMD Noise Suppression', "La suppression de bruit du micro d'AMD. Garde-le seulement si tu l'utilises sur Discord ou OBS.", 1),
+    @('RadeonSoftware|AMD Software|cncmd', 'AMD Software', "Le panneau de ta carte graphique AMD. Le pilote marche sans lui au démarrage.", 1),
+    @('NVIDIA app|GeForce Experience|NvBackend|nvcontainer', 'NVIDIA', "Le logiciel de ta carte graphique NVIDIA (mises à jour, enregistrement). Le pilote marche sans lui.", 1),
+    @('OneDrive', 'OneDrive', "Synchronise tes fichiers avec le cloud Microsoft. Garde-le si tu sauvegardes tes fichiers dessus.", 1),
+    @('Dropbox', 'Dropbox', "Synchronise tes fichiers avec Dropbox. Garde-le si tu t'en sers.", 1),
+    @('GoogleDrive|Google Drive', 'Google Drive', "Synchronise tes fichiers avec Google Drive. Garde-le si tu t'en sers.", 1),
+    @('Medal', 'Medal', "Enregistre tes meilleurs moments de jeu. Garde-le si tu l'utilises pendant que tu joues.", 1),
+    @('Afterburner', 'MSI Afterburner', "Réglages et surveillance de la carte graphique. Garde-le si tu as un profil de ventilateurs ou un compteur de FPS.", 1),
+    @('RTSS|RivaTuner', 'RivaTuner', "Affiche les FPS en jeu (avec Afterburner).", 1),
+    @('wallpaper', 'Wallpaper Engine', "Les fonds d'écran animés. Ils consomment un peu, même pendant que tu joues.", 1),
+    @('FACEIT', 'FACEIT', "Le client et l'anti-triche FACEIT. Utile seulement si tu joues sur FACEIT.", 1),
+    @('EADM|EADesktop|EA app|\bOrigin', 'EA app', "Le lanceur des jeux EA (FC, Apex, Battlefield...). Il s'ouvre quand tu lances un de leurs jeux.", 2),
+    @('Riot', 'Riot Client', "Le lanceur de Valorant et League of Legends. Le jeu l'ouvre quand il en a besoin.", 2),
+    @('Battle\.net', 'Battle.net', "Le lanceur de Blizzard (Call of Duty, Overwatch...). Inutile au démarrage.", 2),
+    @('Ubisoft|uplay', 'Ubisoft Connect', "Le lanceur d'Ubisoft. Inutile au démarrage.", 2),
+    @('Roblox', 'Roblox', "Le lanceur de Roblox. Il n'a rien à faire au démarrage.", 2),
+    @('Spotify', 'Spotify', "La musique en streaming. Au démarrage, il tourne en fond et prend de la mémoire pour rien.", 2),
+    @('Teams', 'Microsoft Teams', "La messagerie de Microsoft. Inutile au démarrage si tu ne t'en sers pas tous les jours.", 2),
+    @('MicrosoftEdgeAutoLaunch|msedge', 'Microsoft Edge', "Le navigateur de Microsoft qui se prépare en fond pour s'ouvrir plus vite. Inutile.", 2),
+    @('GoogleChromeAutoLaunch|chrome', 'Google Chrome', "Chrome qui se lance en fond. Inutile au démarrage.", 2),
+    @('\bopera', 'Opera / Opera GX', "Le navigateur Opera qui se prépare en fond. Inutile au démarrage.", 2),
+    @('brave', 'Brave', "Le navigateur Brave qui se prépare en fond. Inutile au démarrage.", 2),
+    @('Skype', 'Skype', "Inutile au démarrage si tu ne l'utilises pas tous les jours.", 2),
+    @('Zoom', 'Zoom', "Les visios Zoom. Il s'ouvre tout seul quand tu cliques sur un lien de réunion.", 2),
+    @('WhatsApp', 'WhatsApp', "Inutile au démarrage : ouvre-le quand tu en as besoin.", 2),
+    @('Telegram', 'Telegram', "Inutile au démarrage : ouvre-le quand tu en as besoin.", 2),
+    @('CCleaner', 'CCleaner', "Un nettoyeur qui tourne en fond et affiche des pubs. OnePC fait déjà le ménage.", 2),
+    @('torrent', 'Client torrent', "Il partage des fichiers en continu et utilise ta connexion. Lance-le seulement quand tu en as besoin.", 2),
+    @('Overwolf', 'Overwolf', "Des outils en jeu qui consomment de la mémoire. Inutile au démarrage.", 2),
+    @('obs64|OBS Studio', 'OBS Studio', "Le logiciel de stream. Inutile au démarrage.", 2),
+    @('iTunesHelper', 'iTunes', "Surveille le branchement d'un iPhone. Inutile au démarrage.", 2),
+    @('jusched|Java Update', 'Mises à jour Java', "Vérifie les mises à jour de Java. Inutile au démarrage.", 2),
+    @('Cortana', 'Cortana', "L'assistant de Microsoft. Presque personne ne s'en sert.", 2),
+    @('Adobe|CCXProcess|AdobeGC', 'Adobe', "Des outils de mise à jour et de synchronisation d'Adobe. Inutiles au démarrage.", 2)
+)
+$advLook = @{
+    '-1' = @('Inconnu', '#B8B8C0', '#25252C'); '0' = @('À garder', '#3DDC84', '#173326')
+    '1'  = @('Tu peux couper', '#FBBF24', '#33280F'); '2' = @('Inutile au démarrage', '#FF6B6B', '#3A1519')
+}
+function Get-KbInfo($text) {
+    foreach ($k in $appKb) { if ([string]$text -match $k[0]) { return @{ N = $k[1]; D = $k[2]; A = [int]$k[3] } } }
+    $null
+}
+function Get-ExePath($cmd) {
+    $c = [Environment]::ExpandEnvironmentVariables(([string]$cmd).Trim())
+    if (-not $c) { return '' }
+    if ($c.StartsWith('"')) { $e = $c.IndexOf('"', 1); if ($e -gt 1) { return $c.Substring(1, $e - 1) } }
+    $m = [regex]::Match($c, '^(.+?\.(exe|bat|cmd|vbs|com))(\s|$)', 'IgnoreCase'); if ($m.Success) { return $m.Groups[1].Value }
+    $c.Split(' ')[0]
+}
+function Get-ExeIcon($path) {
+    try {
+        if (-not $path -or -not (Test-Path -LiteralPath $path)) { return $null }
+        $idir = Join-Path $env:LOCALAPPDATA 'OnePC\icons'
+        $f = Join-Path $idir (($path.ToLower().GetHashCode()).ToString('x8') + '.png')
+        if (-not (Test-Path -LiteralPath $f)) {
+            if (-not (Test-Path -LiteralPath $idir)) { New-Item -ItemType Directory -Path $idir -Force | Out-Null }
+            Add-Type -AssemblyName System.Drawing
+            $i = [System.Drawing.Icon]::ExtractAssociatedIcon($path)
+            $b = $i.ToBitmap(); $b.Save($f, [System.Drawing.Imaging.ImageFormat]::Png); $b.Dispose(); $i.Dispose()
+        }
+        $f
+    } catch { $null }
+}
 function Test-StartEnabled($path, $name) {
     try {
         $k = Get-Item -LiteralPath $path -ErrorAction Stop
@@ -3160,6 +4114,22 @@ function Test-StartEnabled($path, $name) {
         if ($v -and ($v[0] -band 1)) { return $false }
     } catch {}
     return $true
+}
+function New-StartRow($name, $key, $exe, $src, $ap, $admin, $on) {
+    $fd = ''
+    try { if ($exe -and (Test-Path -LiteralPath $exe)) { $fd = [string]([System.Diagnostics.FileVersionInfo]::GetVersionInfo($exe).FileDescription).Trim() } } catch {}
+    $kb = Get-KbInfo ($name + ' ' + $exe + ' ' + $fd)
+    $nice = $name; $desc = "OnePC ne connaît pas ce programme. Regarde son emplacement juste en dessous avant de le couper : si tu ne sais pas ce que c'est, cherche son nom sur Internet."; $adv = -1
+    if ($kb) { $nice = $kb.N; $desc = $kb.D; $adv = $kb.A }
+    elseif ($fd -and $fd.Length -ge 3 -and $fd.Length -le 50 -and $fd -notmatch '^(Update|Updater|Launcher|Setup|Helper)$') { $nice = $fd }
+    $look = $advLook[[string]$adv]
+    $where = 'Ton compte'; if ($admin) { $where = 'Tous les comptes du PC' }
+    $sub = $where; if ($exe) { $sub += '  ·  ' + $exe }
+    [pscustomobject]@{
+        Name = $nice; Raw = $name; Source = $src; Enabled = [bool]$on; Ap = $ap; Key = $key; Admin = $admin
+        Desc = $desc; Sub = $sub; Ico = (Get-ExeIcon $exe); Adv = $adv; AdvTxt = $look[0]; AdvCol = $look[1]; AdvBg = $look[2]
+        StateTxt = $(if ($on) { 'Se lance avec Windows' } else { 'Coupé' }); StateCol = $(if ($on) { '#E8E8EC' } else { '#6C6C76' }); Op = $(if ($on) { 1.0 } else { 0.72 })
+    }
 }
 function Load-Startup {
     $rows = @()
@@ -3173,45 +4143,83 @@ function Load-Startup {
         if (-not $k) { continue }
         foreach ($n in $k.GetValueNames()) {
             if (-not $n) { continue }
-            $on = Test-StartEnabled $d.Ap $n
-            $rows += [pscustomobject]@{ Name = $n; Source = $d.Src; Enabled = $on; Ap = $d.Ap; Key = $n; Admin = $d.Admin
-                State = $(if ($on) { 'Activé' } else { 'Désactivé' }); Action = $(if ($on) { 'Désactiver' } else { 'Activer' }) }
+            $exe = ''; try { $exe = Get-ExePath ([string]$k.GetValue($n)) } catch {}
+            $rows += New-StartRow $n $n $exe $d.Src $d.Ap $d.Admin (Test-StartEnabled $d.Ap $n)
         }
     }
     $dirs = @(
         @{ Dir = [Environment]::GetFolderPath('Startup'); Ap = "HKCU:\$apKey\StartupFolder"; Src = 'Ton compte'; Admin = $false },
         @{ Dir = [Environment]::GetFolderPath('CommonStartup'); Ap = "HKLM:\$apKey\StartupFolder"; Src = 'Tous les comptes'; Admin = $true }
     )
+    $sh = $null; try { $sh = New-Object -ComObject WScript.Shell } catch {}
     foreach ($d in $dirs) {
         if (-not $d.Dir -or -not (Test-Path -LiteralPath $d.Dir)) { continue }
         foreach ($f in (Get-ChildItem -LiteralPath $d.Dir -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -ne 'desktop.ini' })) {
-            $on = Test-StartEnabled $d.Ap $f.Name
-            $rows += [pscustomobject]@{ Name = $f.BaseName; Source = $d.Src; Enabled = $on; Ap = $d.Ap; Key = $f.Name; Admin = $d.Admin
-                State = $(if ($on) { 'Activé' } else { 'Désactivé' }); Action = $(if ($on) { 'Désactiver' } else { 'Activer' }) }
+            $exe = $f.FullName
+            if ($f.Extension -eq '.lnk' -and $sh) { try { $t = [string]$sh.CreateShortcut($f.FullName).TargetPath; if ($t) { $exe = $t } } catch {} }
+            $rows += New-StartRow $f.BaseName $f.Name $exe $d.Src $d.Ap $d.Admin (Test-StartEnabled $d.Ap $f.Name)
         }
     }
-    (UI 'StartList').ItemsSource = @($rows | Sort-Object Name)
+    $rows = @($rows | Sort-Object @{ Expression = { -not $_.Enabled } }, @{ Expression = { -$_.Adv } }, Name)
+    $script:startRows = $rows
+    (UI 'StartList').ItemsSource = $rows
+    $on = @($rows | Where-Object { $_.Enabled })
+    $cut = @($rows | Where-Object { $_.Enabled -and $_.Adv -eq 2 })
+    (UI 'StartOnN').Text = [string]$on.Count; (UI 'StartAllN').Text = "sur " + $rows.Count + " programme(s)"
+    (UI 'StartAdvN').Text = [string]$cut.Count
+    if ($cut.Count) {
+        (UI 'StartAdvTxt').Text = (($cut | Select-Object -First 3 | ForEach-Object { $_.Name }) -join ', ') + $(if ($cut.Count -gt 3) { '...' } else { '' })
+        (UI 'StartCutAll').Content = "Couper les " + $cut.Count; (UI 'StartCutAll').IsEnabled = $true
+    } else {
+        (UI 'StartAdvTxt').Text = 'Rien à couper, bravo'; (UI 'StartCutAll').Content = 'Couper'; (UI 'StartCutAll').IsEnabled = $false
+    }
     if ($rows.Count -eq 0) { (UI 'StartMsg').Text = 'Aucun programme au démarrage trouvé.' }
+}
+function Set-StartItems($items, $on) {
+    # $on = $true pour réactiver, $false pour couper ; renvoie le nombre d'éléments modifiés
+    $b = 2; if (-not $on) { $b = 3 }
+    $admin = @($items | Where-Object { $_.Admin }); $user = @($items | Where-Object { -not $_.Admin }); $done = @()
+    if ($admin.Count) {
+        $code = ($admin | ForEach-Object {
+            $ap = ([string]$_.Ap).Replace("'", "''"); $key = ([string]$_.Key).Replace("'", "''")
+            "if (-not (Test-Path -LiteralPath '$ap')) { New-Item -Path '$ap' -Force | Out-Null }; Set-ItemProperty -LiteralPath '$ap' -Name '$key' -Value ([byte[]]($b,0,0,0,0,0,0,0,0,0,0,0)) -Type Binary"
+        }) -join "`r`n"
+        if (Run-Console $code -HiddenWait) { $done += $admin } else { (UI 'StartMsg').Text = 'Annulé pour les programmes de tous les comptes : il faut accepter la demande administrateur.' }
+    }
+    foreach ($it in $user) {
+        try {
+            if (-not (Test-Path -LiteralPath $it.Ap)) { New-Item -Path $it.Ap -Force | Out-Null }
+            Set-ItemProperty -LiteralPath $it.Ap -Name $it.Key -Value ([byte[]]($b, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)) -Type Binary -ErrorAction Stop
+            $done += $it
+        } catch {}
+    }
+    foreach ($it in $done) {
+        $ap = [string]$it.Ap; $key = [string]$it.Key
+        if (-not $on) { $cfg.StartOff = @($cfg.StartOff) + @(@{ Ap = $ap; Key = $key; Admin = [bool]$it.Admin; Name = [string]$it.Name }) }
+        else { $cfg.StartOff = @($cfg.StartOff | Where-Object { -not ($_.Ap -eq $ap -and $_.Key -eq $key) }) }
+        Log ("Démarrage de Windows : « " + $it.Name + " » " + $(if ($on) { 'réactivé' } else { 'désactivé' }))
+    }
+    Save-Cfg
+    $done.Count
 }
 (UI 'StartList').AddHandler([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent, [System.Windows.RoutedEventHandler] {
     param($sender, $e)
     $it = $e.OriginalSource.DataContext
     if (-not $it -or -not $it.Key) { return }
-    $b = 3; if (-not $it.Enabled) { $b = 2 }
-    $ap = [string]$it.Ap; $key = [string]$it.Key
-    try {
-        if ($it.Admin) {
-            $code = "if (-not (Test-Path -LiteralPath '$ap')) { New-Item -Path '$ap' -Force | Out-Null }; " +
-                    "Set-ItemProperty -LiteralPath '$ap' -Name '" + $key.Replace("'", "''") + "' -Value ([byte[]]($b,0,0,0,0,0,0,0,0,0,0,0)) -Type Binary"
-            if (-not (Run-Console $code -HiddenWait)) { (UI 'StartMsg').Text = 'Annulé : il faut accepter la demande administrateur pour ce programme.'; return }
-        } else {
-            if (-not (Test-Path -LiteralPath $ap)) { New-Item -Path $ap -Force | Out-Null }
-            Set-ItemProperty -LiteralPath $ap -Name $key -Value ([byte[]]($b, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)) -Type Binary -ErrorAction Stop
-        }
-        Load-Startup
-        if ($it.Enabled) { $cfg.StartOff = @($cfg.StartOff) + @(@{ Ap = $ap; Key = $key; Admin = [bool]$it.Admin; Name = [string]$it.Name }) } else { $cfg.StartOff = @($cfg.StartOff | Where-Object { -not ($_.Ap -eq $ap -and $_.Key -eq $key) }) }; Save-Cfg
-        Log ("Démarrage de Windows : « " + $it.Name + " » " + $(if ($it.Enabled) { 'désactivé' } else { 'réactivé' })); (UI 'StartMsg').Text = "« " + $it.Name + " » : modification prise en compte au prochain démarrage."
-    } catch { (UI 'StartMsg').Text = "Impossible de modifier « " + $it.Name + " »." }
+    $n = Set-StartItems @($it) (-not $it.Enabled)
+    Load-Startup
+    if ($n) {
+        if ($it.Enabled) { (UI 'StartMsg').Text = "« " + $it.Name + " » ne se lancera plus avec Windows. Rien n'est supprimé : réactive-le quand tu veux." }
+        else { (UI 'StartMsg').Text = "« " + $it.Name + " » se lancera de nouveau avec Windows." }
+    } elseif (-not $it.Admin) { (UI 'StartMsg').Text = "Impossible de modifier « " + $it.Name + " »." }
+})
+(UI 'StartCutAll').Add_Click({
+    $cut = @($script:startRows | Where-Object { $_.Enabled -and $_.Adv -eq 2 })
+    if (-not $cut.Count) { return }
+    if (-not (Ask ("Couper ces " + $cut.Count + " programme(s) au démarrage ?`r`n`r`n - " + (($cut | ForEach-Object { $_.Name }) -join "`r`n - ") + "`r`n`r`nRien n'est supprimé : ils s'ouvrent toujours quand tu cliques dessus, et tu peux les réactiver à tout moment."))) { return }
+    $n = Set-StartItems $cut $false
+    Load-Startup
+    if ($n) { (UI 'StartMsg').Text = "C'est fait : $n programme(s) ne se lanceront plus avec Windows. Ton PC démarrera plus vite et aura plus de mémoire libre." }
 })
 
 # ---------- Optimisation ----------
@@ -3959,7 +4967,7 @@ function Seen-News { if ($script:newsTop) { $cfg.NewsSeen = $script:newsTop; Sav
 (UI 'HomeNewsClose').Add_Click({ Seen-News })
 # --- problèmes fréquents
 $faq = @(
-    @{ Q = 'Mon PC rame'; A = "Le plus souvent : trop de programmes ouverts ou lancés au démarrage, ou un disque presque plein. Regarde ce qui consomme, coupe ce qui se lance tout seul, puis fais un nettoyage."; B = @('Ce qui consomme|Proc', 'Programmes au démarrage|Start', 'Nettoyer le PC|Opti') }
+    @{ Q = 'Mon PC rame'; A = "Lance l'assistant : il cherche la cause pour toi et t'explique comment la régler. Le plus souvent : trop de programmes ouverts ou lancés au démarrage, ou un disque presque plein."; B = @('Lancer l''assistant|Slow', 'Ce qui consomme|Proc', 'Programmes au démarrage|Start', 'Nettoyer le PC|Opti') }
     @{ Q = 'Mon jeu saccade ou j''ai peu de FPS'; A = "Active le profil Jeu, ferme les applis en arrière-plan et vérifie que le pilote de ta carte graphique est à jour. Lance ton jeu avec « Optimiser et lancer »."; B = @('Profil Jeu|Opti', 'Pilotes|Drv', 'Mes jeux|Games') }
     @{ Q = 'Écran bleu ou PC qui redémarre tout seul'; A = "Regarde quand c'est arrivé et ce que Windows en dit, puis mets tes pilotes à jour. Si ça recommence, ouvre un ticket avec ton diagnostic : on t'aide."; B = @('Voir les plantages|Crash', 'Pilotes|Drv') }
     @{ Q = 'Je n''ai plus de son'; A = "Vérifie la sortie audio choisie dans Windows (casque, enceintes, écran). Si rien ne marche, relance le service son de Windows (droits administrateur demandés)."; B = @('Réglages du son|cmd:sound', 'Relancer le son|cmd:audio') }
@@ -4695,35 +5703,82 @@ function New-Check($text, $tag, $width) {
     $cb.Margin = New-Object System.Windows.Thickness 0, 0, 10, 10
     $cb
 }
+function New-TextLine($text, $col, $size, $bold) {
+    $t = New-Object System.Windows.Controls.TextBlock; $t.Text = $text; $t.TextWrapping = 'Wrap'; $t.FontSize = $size
+    $t.Foreground = $brush.ConvertFromString($col); if ($bold) { $t.FontWeight = 'SemiBold' }
+    $t
+}
+function New-InfoCard($tag, $uid, $width, $ico, $title, $pillTxt, $pillCol, $pillBg, $lines) {
+    # case à cocher en forme de carte : titre, pastille, puis des lignes « libellé : texte »
+    $cb = New-Object System.Windows.Controls.CheckBox; $cb.Style = $win.FindResource('CheckCard'); $cb.Tag = $tag; $cb.Uid = $uid
+    $cb.Width = $width; $cb.Margin = New-Object System.Windows.Thickness 0, 0, 10, 10; $cb.VerticalAlignment = 'Top'
+    $sp = New-Object System.Windows.Controls.StackPanel
+    $hd = New-Object System.Windows.Controls.DockPanel
+    if ($ico) {
+        $im = New-Object System.Windows.Controls.Image; $im.Width = 20; $im.Height = 20; $im.Margin = New-Object System.Windows.Thickness 0, 0, 8, 0
+        $im.Source = Get-ImgSrc $ico; [System.Windows.Controls.DockPanel]::SetDock($im, 'Left'); [void]$hd.Children.Add($im)
+    }
+    if ($pillTxt) {
+        $pb = New-Object System.Windows.Controls.Border; $pb.CornerRadius = New-Object System.Windows.CornerRadius 8; $pb.Padding = New-Object System.Windows.Thickness 8, 1, 8, 2
+        $pb.Background = $brush.ConvertFromString($pillBg); $pb.Margin = New-Object System.Windows.Thickness 8, 0, 0, 0; $pb.VerticalAlignment = 'Center'
+        $pt = New-TextLine $pillTxt $pillCol 11 $true; $pt.TextWrapping = 'NoWrap'; $pb.Child = $pt
+        [System.Windows.Controls.DockPanel]::SetDock($pb, 'Right'); [void]$hd.Children.Add($pb)
+    }
+    $tt = New-TextLine $title '#FFFFFF' 13.5 $true; $tt.VerticalAlignment = 'Center'; $tt.TextTrimming = 'CharacterEllipsis'; $tt.TextWrapping = 'NoWrap'
+    [void]$hd.Children.Add($tt); [void]$sp.Children.Add($hd)
+    foreach ($l in $lines) {
+        $tb = New-Object System.Windows.Controls.TextBlock; $tb.TextWrapping = 'Wrap'; $tb.FontSize = 12; $tb.Margin = New-Object System.Windows.Thickness 0, 6, 0, 0; $tb.LineHeight = 17
+        if ($l[0]) {
+            $r1 = New-Object System.Windows.Documents.Run ($l[0] + ' : '); $r1.Foreground = $brush.ConvertFromString('#CACAD2'); $r1.FontWeight = 'SemiBold'
+            [void]$tb.Inlines.Add($r1)
+        }
+        $r2 = New-Object System.Windows.Documents.Run ([string]$l[1]); $r2.Foreground = $brush.ConvertFromString('#8E8E98'); [void]$tb.Inlines.Add($r2)
+        [void]$sp.Children.Add($tb)
+    }
+    $cb.Content = $sp
+    $cb
+}
 function Load-Apps {
     $host2 = UI 'LightApps'; $host2.Children.Clear()
     $wdir = $env:windir
     $groups = @(Get-Process | Where-Object { $_.Path -and -not $_.Path.StartsWith($wdir, [StringComparison]::OrdinalIgnoreCase) } | Group-Object ProcessName |
         Where-Object { $_.Name -notmatch $keepRx -and -not ($_.Group | Where-Object { $_.MainWindowHandle -ne 0 }) } |
-        ForEach-Object { $mem = 0; foreach ($p in $_.Group) { $mem += $p.WorkingSet64 }; [pscustomobject]@{ Raw = $_.Name; Count = $_.Count; Bytes = $mem } } |
+        ForEach-Object { $mem = 0; foreach ($p in $_.Group) { $mem += $p.WorkingSet64 }; [pscustomobject]@{ Raw = $_.Name; Count = $_.Count; Bytes = $mem; Path = [string]$_.Group[0].Path } } |
         Sort-Object Bytes -Descending)
     foreach ($g in $groups) {
-        $t = $g.Raw + "   ·   " + $g.Count + " processus, " + [math]::Round($g.Bytes / 1MB) + " Mo"
-        [void]$host2.Children.Add((New-Check $t $g.Raw 330))
+        $fd = ''; try { $fd = [string]([System.Diagnostics.FileVersionInfo]::GetVersionInfo($g.Path).FileDescription).Trim() } catch {}
+        $kb = Get-KbInfo ($g.Raw + ' ' + $g.Path + ' ' + $fd)
+        $nice = $g.Raw; if ($kb) { $nice = $kb.N } elseif ($fd -and $fd.Length -ge 3 -and $fd.Length -le 50) { $nice = $fd }
+        $what = "Un programme qui tourne en fond, sans fenêtre ouverte (" + $g.Raw + ".exe)."; if ($kb) { $what = $kb.D }
+        $mem = Mo ([double]$g.Bytes)
+        $pc = '#6EE7B7'; $pb = '#123024'; if ($g.Bytes -ge 300MB) { $pc = '#FBBF24'; $pb = '#33280F' }; if ($g.Bytes -ge 800MB) { $pc = '#FF6B6B'; $pb = '#3A1519' }
+        $lines = @(
+            @("C'est quoi", $what),
+            @('Si tu le fermes', "Il se relance la prochaine fois que tu l'ouvres. Ce qui n'est pas enregistré dedans est perdu."),
+            @('', ("" + $g.Count + " processus en fond"))
+        )
+        [void]$host2.Children.Add((New-InfoCard $g.Raw $nice 372 (Get-ExeIcon $g.Path) $nice $mem $pc $pb $lines))
     }
     if ($groups.Count -eq 0) { (UI 'LightMsg').Text = "Aucune application en arrière-plan trouvée." }
 }
+$svcKb = @(
+    @('DiagTrack', 'Télémétrie Microsoft', "Envoie à Microsoft des statistiques sur l'utilisation de ton PC.", "Rien de visible pour toi.", 'Conseillé'),
+    @('MapsBroker', 'Cartes hors connexion', "Télécharge les cartes pour l'appli Cartes de Windows.", "Les cartes de l'appli Cartes ne se mettent plus à jour toutes seules.", 'Conseillé'),
+    @('PhoneSvc', 'Téléphonie', "Sert à passer des appels depuis le PC avec ton téléphone (« Lien avec le mobile »).", "Les appels depuis le PC ne marchent plus. Les notifications du téléphone, si.", 'Si tu ne t''en sers pas'),
+    @('WMPNetworkSvc', 'Partage Windows Media', "Partage ta musique et tes vidéos sur le réseau avec le vieux Lecteur Windows Media.", "Presque personne ne s'en sert.", 'Conseillé'),
+    @('Fax', 'Fax', "Envoie et reçoit des fax.", "Rien, sauf si tu as un fax.", 'Conseillé'),
+    @('RetailDemo', 'Mode démo magasin', "Le mode démo des PC exposés en magasin.", "Rien.", 'Conseillé'),
+    @('Spooler', 'Impression', "Gère tout ce qui est impression.", "Tu ne pourras plus imprimer (même en PDF) tant qu'il est arrêté. « Rétablir » le remet.", 'Seulement sans imprimante')
+)
 function Load-Services {
     $host2 = UI 'LightSvc'; $host2.Children.Clear()
-    $defs = @(
-        @('DiagTrack', "Télémétrie Microsoft (envoi de statistiques d'utilisation)"),
-        @('MapsBroker', 'Cartes hors connexion'),
-        @('PhoneSvc', 'Lien avec le téléphone'),
-        @('WMPNetworkSvc', 'Partage réseau du Lecteur Windows Media'),
-        @('Fax', 'Télécopie'),
-        @('RetailDemo', 'Mode démonstration magasin'),
-        @('Spooler', "Impression (seulement si tu n'as pas d'imprimante)")
-    )
-    foreach ($d in $defs) {
+    foreach ($d in $svcKb) {
         $sv = Get-Service -Name $d[0] -ErrorAction SilentlyContinue
         if (-not $sv) { continue }
-        $state = 'arrêté'; if ($sv.Status -eq 'Running') { $state = 'en cours' }
-        [void]$host2.Children.Add((New-Check ($d[1] + "   ·   " + $state) $d[0] 500))
+        $state = 'Arrêté'; if ($sv.Status -eq 'Running') { $state = 'En marche' }
+        $pc = '#3DDC84'; $pb = '#173326'; if ($d[4] -ne 'Conseillé') { $pc = '#FBBF24'; $pb = '#33280F' }
+        $lines = @(@("C'est quoi", $d[2]), @('Si tu l''arrêtes', $d[3]), @('', ("En ce moment : " + $state)))
+        [void]$host2.Children.Add((New-InfoCard $d[0] $d[1] 372 $null $d[1] $d[4] $pc $pb $lines))
     }
 }
 function Load-Light { Load-Apps; Load-Services }
@@ -4737,7 +5792,8 @@ function Load-Light { Load-Apps; Load-Services }
 (UI 'LightClose').Add_Click({
     $sel = @((UI 'LightApps').Children | Where-Object { $_.IsChecked } | ForEach-Object { [string]$_.Tag })
     if ($sel.Count -eq 0) { (UI 'LightMsg').Text = "Coche d'abord au moins une application."; return }
-    if (-not (Ask ("Fermer ces " + $sel.Count + " application(s) ?`r`n`r`n" + ($sel -join ', ') + "`r`n`r`nCe qui n'est pas enregistré dedans sera perdu."))) { return }
+    $selN = @((UI 'LightApps').Children | Where-Object { $_.IsChecked } | ForEach-Object { [string]$_.Uid })
+    if (-not (Ask ("Fermer ces " + $sel.Count + " application(s) ?`r`n`r`n - " + ($selN -join "`r`n - ") + "`r`n`r`nElles se relanceront la prochaine fois que tu les ouvres. Ce qui n'est pas enregistré dedans sera perdu."))) { return }
     $before = @(Get-Process).Count; $fail = 0
     foreach ($n in $sel) { try { Stop-Process -Name $n -Force -ErrorAction Stop } catch { $fail++ } }
     Start-Sleep -Milliseconds 800
@@ -4750,7 +5806,7 @@ $svcFile = Join-Path $appDir 'services.txt'
 (UI 'SvcStop').Add_Click({
     $sel = @((UI 'LightSvc').Children | Where-Object { $_.IsChecked } | ForEach-Object { [string]$_.Tag })
     if ($sel.Count -eq 0) { (UI 'SvcMsg').Text = "Coche d'abord au moins un service."; return }
-    $noms = @((UI 'LightSvc').Children | Where-Object { $_.IsChecked } | ForEach-Object { ([string]$_.Content -split '   ·   ')[0] })
+    $noms = @((UI 'LightSvc').Children | Where-Object { $_.IsChecked } | ForEach-Object { [string]$_.Uid })
     if (-not (Ask ("Mettre ces " + $sel.Count + " service(s) en manuel ?`r`n`r`n - " + ($noms -join "`r`n - ") + "`r`n`r`nCes services sont sûrs à désactiver. Rien n'est supprimé : le bouton « Rétablir » les remet comme avant quand tu veux. Windows demandera les droits administrateur."))) { return }
     $code = @'
 $file = '__FILE__'
@@ -4798,6 +5854,23 @@ function Show-Apps {
     if ($script:appsBySize) { $rows = @($rows | Sort-Object Kb -Descending) } else { $rows = @($rows | Sort-Object Name) }
     (UI 'AppList').ItemsSource = $rows
     $script:appSel = @{}; Update-AppSel
+    Update-AppsTop
+}
+function Update-AppsTop {
+    try {
+        $all = @($script:apps); (UI 'AppsN').Text = [string]$all.Count
+        $tot = 0.0; foreach ($x in $all) { $tot += [double]$x.Kb }; (UI 'AppsTot').Text = Mo ($tot * 1KB)
+        $big = $all | Sort-Object { [double]$_.Kb } -Descending | Select-Object -First 1
+        if ($big) { (UI 'AppsBigName').Text = [string]$big.Name; (UI 'AppsBigSize').Text = [string]$big.Size; (UI 'AppsBigIco').Source = Get-ImgSrc ([string]$big.Ico) }
+    } catch {}
+}
+function Set-PingQual($p) {
+    $l = @('Hors ligne', '#FF6B6B', '#3A1519')
+    if ($p -ge 0 -and $p -lt 30) { $l = @('Excellent', '#3DDC84', '#173326') }
+    elseif ($p -ge 30 -and $p -lt 60) { $l = @('Bon', '#3DDC84', '#173326') }
+    elseif ($p -ge 60 -and $p -lt 100) { $l = @('Moyen', '#FBBF24', '#33280F') }
+    elseif ($p -ge 100) { $l = @('Mauvais', '#FF6B6B', '#3A1519') }
+    (UI 'PingQual').Text = $l[0]; (UI 'PingQual').Foreground = $brush.ConvertFromString($l[1]); (UI 'PingPill').Background = $brush.ConvertFromString($l[2])
 }
 $script:appSel = @{}
 function Update-AppSel {
@@ -5173,31 +6246,6 @@ $upgCode = {
     if ($a.CpuT -ge 90) { NewRow 'Refroidissement du processeur' ("" + $a.CpuT + " °C en ce moment : c'est trop. Dépoussière, vérifie le ventilateur, et pense à changer la pâte thermique ou le ventirad avant tout autre achat.") 2 }
     if ($a.GpuT -ge 88) { NewRow 'Refroidissement de la carte graphique' ("" + $a.GpuT + " °C en ce moment : c'est chaud. Dépoussière le boîtier et vérifie que l'air circule avant tout autre achat.") 2 }
 }
-(UI 'BtnUpg').Add_Click({
-    (UI 'BtnUpg').IsEnabled = $false
-    (UI 'ScanSummary').Text = 'Analyse de ton matériel en cours...'
-    $n = 0; $sg = 0.0; $sc = 0.0
-    for ($i = 0; $i -lt $hGpu.Count; $i++) { if ($hGpu[$i] -ge 60) { $n++; $sg += $hGpu[$i]; $sc += $hCpu[$i] } }
-    $ga = 0; $ca = 0; if ($n) { $ga = [int][math]::Round($sg / $n); $ca = [int][math]::Round($sc / $n) }
-    $rp = 0; foreach ($x in $hRam) { if ($x -gt $rp) { $rp = $x } }
-    Start-Bg $upgCode @{ GameMin = [int][math]::Floor($n / 60); GpuAvg = $ga; CpuAvg = $ca; RamPeak = [int]$rp; CpuT = [int]$sync.CpuT; GpuT = [int]$sync.GpuT } {
-        param($r)
-        (UI 'BtnUpg').IsEnabled = $true
-        $cols = '#3DDC84', '#FBBF24', '#FF5A6E'; $labels = 'Rien à changer', 'À améliorer', 'En premier'
-        $rows = @($r | Where-Object { $_.Name } | Sort-Object Level -Descending | ForEach-Object {
-            [pscustomobject]@{ Name = $_.Name; Detail = $_.Detail; Status = $labels[$_.Level]; Brush = $brush.ConvertFromString($cols[$_.Level]) }
-        })
-        (UI 'ScanList').ItemsSource = $rows
-        (UI 'ScanTag').Text = "CONSEILS D'UPGRADE"
-        (UI 'ScanCard').Visibility = 'Visible'
-        $top = @($r | Where-Object { $_.Level -eq 2 }); $mid = @($r | Where-Object { $_.Level -eq 1 })
-        $head = "Rien d'urgent à changer sur ce PC."
-        if ($top.Count) { $head = "À changer en premier : " + (($top | ForEach-Object { $_.Name }) -join ', ') + "." }
-        elseif ($mid.Count) { $head = "Rien d'urgent. À améliorer si tu veux : " + (($mid | ForEach-Object { $_.Name }) -join ', ') + "." }
-        (UI 'ScanSummary').Text = $head + " Ces conseils viennent uniquement de ce que l'appli mesure sur ton PC, pas de comparatifs."
-    }
-})
-
 # ---------- Rapport du PC ----------
 $reportCode = {
     param($a)
@@ -5620,6 +6668,7 @@ $tidyCats = [ordered]@{
     'Archives'      = 'zip', 'rar', '7z', 'tar', 'gz', 'iso'
     'Installateurs' = 'exe', 'msi', 'msix', 'appx'
 }
+$tidyLook = @{ 'Images' = @(0xE722, '#F472B6', '#2E1B2A'); 'Vidéos' = @(0xE714, '#FB923C', '#33220F'); 'Musique' = @(0xE8D6, '#34D399', '#173326'); 'Documents' = @(0xE8A5, '#38BDF8', '#14283A'); 'Archives' = @(0xE7B8, '#FBBF24', '#33280F'); 'Installateurs' = @(0xE896, '#FF6B6B', '#3A1519') }
 $tidyLog = Join-Path $appDir 'rangement.txt'
 $script:tidyDir = ''; $script:tidyPlan = @()
 function Get-TidyPlan($dir) {
@@ -5637,7 +6686,8 @@ function Show-Tidy($dir) {
     (UI 'TidyPath').Text = $dir; (UI 'TidyMsg').Text = ' '; (UI 'TidyOpen').IsEnabled = $true
     $rows = @($script:tidyPlan | Group-Object Cat | ForEach-Object {
         $sz = 0; foreach ($p in $_.Group) { $sz += $p.File.Length }
-        [pscustomobject]@{ Name = $_.Name; Count = "" + $_.Count + " fichier(s)"; Size = (Mo $sz); Sample = (($_.Group | Select-Object -First 4 | ForEach-Object { $_.File.Name }) -join ',  ') }
+        $lk = $tidyLook[[string]$_.Name]; if (-not $lk) { $lk = @(0xE8B7, '#A78BFA', '#26203A') }
+        [pscustomobject]@{ Name = $_.Name; Count = "" + $_.Count + " fichier(s)"; Size = (Mo $sz); Sample = (($_.Group | Select-Object -First 4 | ForEach-Object { $_.File.Name }) -join ',  '); Glyph = [string][char]$lk[0]; Col = $lk[1]; Bg = $lk[2] }
     })
     (UI 'TidyList').ItemsSource = $rows
     $all = @(Get-ChildItem -LiteralPath $dir -File -ErrorAction SilentlyContinue).Count
@@ -6220,7 +7270,7 @@ function Restart-App($before = '') {
 }
 (UI 'SetRestart').Add_Click({ if (-not (Restart-App)) { (UI 'SetMsg').Text = "Ferme puis rouvre OnePC pour appliquer." } })
 $startBox = UI 'SetStart'
-foreach ($k in 'Home', 'Proc', 'Net', 'Disk', 'Crash', 'Opti', 'Light', 'Care', 'Start', 'Drv', 'Games', 'Obs', 'Dc', 'Apps', 'Tidy', 'Wall', 'Tools') {
+foreach ($k in 'Home', 'Slow', 'Hw', 'Proc', 'Net', 'Disk', 'Crash', 'Opti', 'Light', 'Care', 'Start', 'Drv', 'Games', 'Obs', 'Dc', 'Apps', 'Tools', 'Bar', 'Tidy', 'Wall') {
     $ci = New-Object System.Windows.Controls.ComboBoxItem; $ci.Content = $pages[$k][2]; $ci.Tag = $k
     [void]$startBox.Items.Add($ci)
     if ($k -eq [string]$cfg.StartPage) { $startBox.SelectedItem = $ci }
@@ -6938,6 +7988,8 @@ Remove-Item -LiteralPath $file -Force
     if ($hasTask) { $todo += 'Nettoyage automatique hebdomadaire désactivé' }
     $hasRun = [bool](Get-ItemProperty -LiteralPath $runKeyPath -Name 'OnePC' -ErrorAction SilentlyContinue)
     if ($hasRun) { $todo += 'Lancement de OnePC avec Windows désactivé' }
+    $hasBar = (@($cfg.BarOrig | Where-Object { $_ }).Count -gt 0)
+    if ($hasBar) { $todo += 'Barre des tâches remise comme avant' }
     $note = ''; if ($adminCode.Count) { $note = "`r`n`r`nWindows demandera les droits administrateur une fois." }
     if (-not (Ask ("Remettre ces réglages comme avant ?`r`n`r`n - " + ($todo -join "`r`n - ") + $note))) { return }
 
@@ -6964,8 +8016,9 @@ Remove-Item -LiteralPath $file -Force
     if ($hasTheme) { $orig = [int]$cfg.ThemeOrig; Set-WinTheme $orig; $cfg.ThemeOrig = -1 }
     if ($hasTask) { try { Unregister-ScheduledTask -TaskName $careTask -Confirm:$false -ErrorAction Stop } catch { $skipped += 'nettoyage automatique' } }
     if ($hasRun) { Remove-ItemProperty -LiteralPath $runKeyPath -Name 'OnePC' -ErrorAction SilentlyContinue; (UI 'SetAuto').IsChecked = $false }
+    if ($hasBar) { try { if (-not (Restore-Bar)) { $skipped += 'barre des tâches' } } catch { $skipped += 'barre des tâches' } }
     Save-Cfg
-    Log 'Tout remis comme avant (profil, services, DNS, démarrage, fond, thème, tâches)'
+    Log 'Tout remis comme avant (profil, services, DNS, démarrage, fond, thème, barre des tâches, tâches)'
     if ($skipped.Count) { (UI 'ResetMsg').Text = "Fait, sauf : " + ($skipped -join ' ; ') + "." }
     else { (UI 'ResetMsg').Text = "C'est fait : tous les réglages modifiés par OnePC sont revenus à leur état d'origine." }
     Load-Log
@@ -6973,17 +8026,111 @@ Remove-Item -LiteralPath $file -Force
 
 # ---------- Journal ----------
 function Load-Log {
+$histCats = @(
+    @('Nettoyage', 'Nettoyage|nettoy|Cache|vidé|Corbeille|temporaires|Dossiers vides|Restes', 0xE74D, '#34D399'),
+    @('Pilotes', 'Pilote|pilote', 0xE950, '#38BDF8'),
+    @('Démarrage', 'Démarrage de Windows|au démarrage', 0xE7E8, '#FB923C'),
+    @('Programmes', 'Programme fermé|Applications fermées|Redémarrage demandé', 0xE9D9, '#F472B6'),
+    @('Applications', 'désinstall|Application|Jeu Steam', 0xE71D, '#FF6B6B'),
+    @('Jeu', 'Profil|alimentation|Mode Jeu|Jeu |Fortnite|Optimiser et lancer|Manette|Souris|Discord|OBS', 0xE7FC, '#A78BFA'),
+    @('Apparence', "Barre des tâches|Fond d'écran|Thème|Fréquence de l'écran|Couleur", 0xE7F4, '#FBBF24'),
+    @('Système', 'Services|DNS|Réseau|Wi-Fi|Windows|réparation|Démarrage rapide', 0xE713, '#60A5FA'),
+    @('Sauvegarde', 'Sauvegarde|Point de restauration|Tout remis|Réinitialisation|remis depuis', 0xE72E, '#3DDC84'),
+    @('Diagnostic', 'Assistant|Analyse|Diagnostic|Ticket', 0xEC4A, '#FF7A5C')
+)
     $rows = @()
     try {
         $l = @(Get-Content -LiteralPath $logFile -Encoding UTF8 -ErrorAction Stop | Where-Object { $_ } | Select-Object -Last 400); [array]::Reverse($l)
         foreach ($line in $l) {
             $t = ([string]$line).TrimStart([char]0xFEFF)
-            if ($t -match '^(\S+ \S+)\s+(.*)$') { $rows += Row $Matches[1] $Matches[2] '' } else { $rows += Row '' $t '' }
+            $d = $null; $txt = $t
+            if ($t -match '^(\d{2}/\d{2}/\d{4} \d{2}:\d{2})\s+(.*)$') { try { $d = [datetime]::ParseExact($Matches[1], 'dd/MM/yyyy HH:mm', [cultureinfo]::InvariantCulture) } catch {}; $txt = $Matches[2] }
+            $cat = @('Autre', '', 0xE946, '#9C9CA6')
+            foreach ($c in $histCats) { if ($txt -match $c[1]) { $cat = $c; break } }
+            $rows += [pscustomobject]@{ D = $d; T = $txt; Cat = $cat }
         }
     } catch {}
-    (UI 'HistList').ItemsSource = $rows
-    if ($rows.Count) { (UI 'HistInfo').Text = "" + $rows.Count + " modification(s) enregistrée(s), de la plus récente à la plus ancienne." }
-    else { (UI 'HistInfo').Text = "Rien pour l'instant : l'historique se remplit à chaque fois que OnePC modifie quelque chose sur ce PC." }
+    $script:histRows = $rows
+    (UI 'HistN').Text = [string]$rows.Count
+    $wk = (Get-Date).Date.AddDays(-6)
+    (UI 'HistWeek').Text = [string]@($rows | Where-Object { $_.D -and $_.D -ge $wk }).Count
+    (UI 'HistClean').Text = [string]@($rows | Where-Object { $_.Cat[0] -eq 'Nettoyage' }).Count
+    if ($rows.Count -and $rows[0].D) {
+        $ago = (Get-Date) - $rows[0].D
+        if ($ago.TotalMinutes -lt 60) { $s = "Il y a " + [int][math]::Max(1, $ago.TotalMinutes) + " min" }
+        elseif ($ago.TotalHours -lt 24) { $s = "Il y a " + [int]$ago.TotalHours + " h" }
+        else { $s = "Il y a " + [int]$ago.TotalDays + " jour(s)" }
+        (UI 'HistLast').Text = $s
+    } else { (UI 'HistLast').Text = '-' }
+    if ($rows.Count) { (UI 'HistInfo').Text = "Tout ce que OnePC a fait sur ce PC, du plus récent au plus ancien." }
+    else { (UI 'HistInfo').Text = "Rien pour l'instant : l'historique se remplit à chaque fois que OnePC fait quelque chose sur ce PC." }
+    # filtres
+    $fh = UI 'HistFilters'; $fh.Children.Clear()
+    if (-not $script:histCat) { $script:histCat = 'Tout' }
+    $present = @('Tout') + @($histCats | Where-Object { $cn = $_[0]; @($rows | Where-Object { $_.Cat[0] -eq $cn }).Count } | ForEach-Object { $_[0] })
+    if (@($rows | Where-Object { $_.Cat[0] -eq 'Autre' }).Count) { $present += 'Autre' }
+    if ($present -notcontains $script:histCat) { $script:histCat = 'Tout' }
+    foreach ($p in $present) {
+        $n = $rows.Count; if ($p -ne 'Tout') { $n = @($rows | Where-Object { $_.Cat[0] -eq $p }).Count }
+        $bt = New-Object System.Windows.Controls.Button; $bt.Style = $win.FindResource('Seg'); $bt.Tag = $p
+        $bt.Content = "$p  $n"; $bt.Margin = New-Object System.Windows.Thickness 0, 0, 6, 8
+        if ($p -eq $script:histCat) { $bt.Background = $brush.ConvertFromString($accent); $bt.Foreground = $brush.ConvertFromString('#FFFFFF'); $bt.FontWeight = 'SemiBold' }
+        else { $bt.Background = $brush.ConvertFromString('#17171B') }
+        $bt.Add_Click({ param($s, $e) $script:histCat = [string]$s.Tag; Load-Log })
+        [void]$fh.Children.Add($bt)
+    }
+    Show-HistRows
+}
+function Show-HistRows {
+    $h = UI 'HistHost'; $h.Children.Clear()
+    $list = @($script:histRows); if ($script:histCat -and $script:histCat -ne 'Tout') { $list = @($list | Where-Object { $_.Cat[0] -eq $script:histCat }) }
+    if (-not $list.Count) {
+        $e = New-Object System.Windows.Controls.Border; $e.Style = $win.FindResource('Card'); $e.Padding = New-Object System.Windows.Thickness 24
+        $t = New-Object System.Windows.Controls.TextBlock; $t.Text = "Rien à afficher ici pour l'instant."; $t.Foreground = $brush.ConvertFromString('#8E8E98'); $t.HorizontalAlignment = 'Center'
+        $e.Child = $t; [void]$h.Children.Add($e); return
+    }
+    $fr = [cultureinfo]'fr-FR'; $today = (Get-Date).Date
+    $groups = $list | Group-Object { if ($_.D) { $_.D.Date.ToString('yyyy-MM-dd') } else { '0' } }
+    foreach ($g in $groups) {
+        $first = $g.Group[0]
+        $lbl = 'SANS DATE'
+        if ($first.D) {
+            $dd = $first.D.Date
+            if ($dd -eq $today) { $lbl = "AUJOURD'HUI" } elseif ($dd -eq $today.AddDays(-1)) { $lbl = 'HIER' } else { $lbl = $dd.ToString('dddd d MMMM', $fr).ToUpper() }
+        }
+        $hd = New-Object System.Windows.Controls.TextBlock; $hd.Style = $win.FindResource('Tag'); $hd.Foreground = $brush.ConvertFromString('#8E8E98')
+        $hd.Text = $lbl + '  ·  ' + $g.Count + ' action(s)'; $hd.Margin = New-Object System.Windows.Thickness 4, 12, 0, 8
+        [void]$h.Children.Add($hd)
+        $card = New-Object System.Windows.Controls.Border; $card.Style = $win.FindResource('Card'); $card.Padding = New-Object System.Windows.Thickness 16, 10, 16, 10
+        $sp = New-Object System.Windows.Controls.StackPanel
+        $i = 0; $cnt = $g.Count
+        foreach ($r in $g.Group) {
+            $col = [string]$r.Cat[3]
+            $row = New-Object System.Windows.Controls.Grid
+            foreach ($w in 54, 44) { $cd = New-Object System.Windows.Controls.ColumnDefinition; $cd.Width = New-Object System.Windows.GridLength $w; [void]$row.ColumnDefinitions.Add($cd) }
+            $cd = New-Object System.Windows.Controls.ColumnDefinition; $cd.Width = New-Object System.Windows.GridLength 1, ([System.Windows.GridUnitType]::Star); [void]$row.ColumnDefinitions.Add($cd)
+            $tm = New-Object System.Windows.Controls.TextBlock; $tm.Foreground = $brush.ConvertFromString('#6C6C76'); $tm.FontSize = 12; $tm.VerticalAlignment = 'Center'
+            if ($r.D) { $tm.Text = $r.D.ToString('HH:mm') }
+            [void]$row.Children.Add($tm)
+            $ig = New-Object System.Windows.Controls.Grid; [System.Windows.Controls.Grid]::SetColumn($ig, 1)
+            $ln = New-Object System.Windows.Shapes.Rectangle; $ln.Width = 2; $ln.Fill = $brush.ConvertFromString('#2A2A31'); $ln.HorizontalAlignment = 'Center'
+            if ($i -eq 0) { $ln.VerticalAlignment = 'Bottom'; $ln.Height = 22 } elseif ($i -eq $cnt - 1) { $ln.VerticalAlignment = 'Top'; $ln.Height = 22 }
+            if ($cnt -gt 1) { [void]$ig.Children.Add($ln) }
+            $dot = New-Object System.Windows.Controls.Border; $dot.Width = 30; $dot.Height = 30; $dot.CornerRadius = New-Object System.Windows.CornerRadius 15
+            $dot.Background = $brush.ConvertFromString('#2E' + $col.TrimStart('#')); $dot.BorderBrush = $brush.ConvertFromString($col); $dot.BorderThickness = New-Object System.Windows.Thickness 1
+            $dot.VerticalAlignment = 'Center'; $dot.HorizontalAlignment = 'Center'
+            $gl = New-Object System.Windows.Controls.TextBlock; $gl.Text = [string][char][int]$r.Cat[2]; $gl.FontFamily = 'Segoe MDL2 Assets'; $gl.FontSize = 13
+            $gl.Foreground = $brush.ConvertFromString($col); $gl.HorizontalAlignment = 'Center'; $gl.VerticalAlignment = 'Center'; $dot.Child = $gl
+            [void]$ig.Children.Add($dot); [void]$row.Children.Add($ig)
+            $tx = New-Object System.Windows.Controls.StackPanel; $tx.Margin = New-Object System.Windows.Thickness 10, 9, 0, 9; $tx.VerticalAlignment = 'Center'
+            [System.Windows.Controls.Grid]::SetColumn($tx, 2)
+            $a = New-Object System.Windows.Controls.TextBlock; $a.Text = [string]$r.T; $a.TextWrapping = 'Wrap'; $a.Foreground = $brush.ConvertFromString('#E8E8EC')
+            $b = New-Object System.Windows.Controls.TextBlock; $b.Text = [string]$r.Cat[0]; $b.FontSize = 11; $b.Foreground = $brush.ConvertFromString($col); $b.Margin = New-Object System.Windows.Thickness 0, 2, 0, 0
+            [void]$tx.Children.Add($a); [void]$tx.Children.Add($b); [void]$row.Children.Add($tx)
+            [void]$sp.Children.Add($row); $i++
+        }
+        $card.Child = $sp; [void]$h.Children.Add($card)
+    }
 }
 (UI 'HistOpen').Add_Click({ if (Test-Path -LiteralPath $logFile) { Start-Process notepad.exe -ArgumentList ('"' + $logFile + '"') } })
 (UI 'HistClear').Add_Click({ if (Ask "Vider l'historique des modifications ?`r`nCela n'annule rien, la liste est seulement effacée.") { Remove-Item -LiteralPath $logFile -Force -ErrorAction SilentlyContinue; Load-Log } })
@@ -7054,7 +8201,13 @@ $searchIndex = @(
     @('Micro propre', 'Obs', 'micro bruit filtre voix obs'),
     @('Analyse du live', 'Obs', 'live saccade images perdues obs analyse'),
     @('Historique des modifications', 'Hist', 'journal annuler changements'),
-    @('Tout remettre comme avant', 'Set', 'annuler reinitialiser restaurer reglages')
+    @('Tout remettre comme avant', 'Set', 'annuler reinitialiser restaurer reglages'),
+    @('Mon PC rame : trouver la cause', 'Slow', 'lent rame lag ralenti lenteur pourquoi assistant'),
+    @("Fréquence de l'écran (Hz)", 'Hw', 'ecran 60 hz 144 hz 240 hz rafraichissement fluide'),
+    @('Activer le XMP / EXPO de la RAM', 'Hw', 'ram memoire xmp expo docp bios vitesse mhz'),
+    @("Conseils d'upgrade", 'Hw', 'upgrade changer carte graphique processeur ram ssd acheter'),
+    @('Personnaliser la barre des tâches', 'Bar', 'barre des taches gauche centre recherche widgets masquer secondes horloge fin de tache'),
+    @('Remettre mon PC à neuf', 'Fresh', 'formater formatage reinitialiser reset reinstaller windows sauvegarde')
 )
 $searchNorm = @($searchIndex | ForEach-Object { Norm ($_[0] + ' ' + $_[2] + ' ' + $pages[$_[1]][2]) })
 function Go-Search($key) { (UI 'SearchPop').IsOpen = $false; (UI 'SearchBox').Text = ''; Show-Page $key }
@@ -8026,8 +9179,8 @@ function Update-HzBtn {
     try {
         Ensure-Disp; $i = [PcmDisp.Disp]::Info()
         if ($script:hzBtn -and $i[2] -gt 0) {
-            if ($i[3] -gt $i[2]) { $script:hzBtn.Content = "Fréquence de l'écran : " + $i[2] + " Hz (peut monter à " + $i[3] + " Hz)" }
-            else { $script:hzBtn.Content = "Fréquence de l'écran : " + $i[2] + " Hz" }
+            if ($i[3] -gt $i[2]) { $script:hzDesc.Text = "En ce moment : " + $i[2] + " Hz. Ton écran peut monter à " + $i[3] + " Hz : clique pour y passer." }
+            else { $script:hzDesc.Text = "En ce moment : " + $i[2] + " Hz, le maximum de ton écran." }
         }
     } catch {}
 }
@@ -8170,29 +9323,68 @@ $toolGroups = @(
         @('Redémarrer dans le BIOS', '!bios', 'Plus besoin de marteler Suppr ou F2 au démarrage'),
         @('Menu de dépannage', '!advboot', 'Redémarre sur le menu avancé : mode sans échec, restauration, réparation')) }
 )
-$ghost = $win.FindResource('Ghost'); $card = $win.FindResource('Card'); $tagStyle = $win.FindResource('Tag')
+$ghost = $win.FindResource('Ghost'); $card = $win.FindResource('Card'); $tagStyle = $win.FindResource('Tag'); $tileStyle = $win.FindResource('Tile')
 $toolsHost = UI 'ToolsHost'
-$tagColors = '#38BDF8', '#34D399', '#FBBF24', '#F472B6', '#FB923C'; $script:tagIdx = 0
-function New-Card($title) {
+$tagColors = '#38BDF8', '#34D399', '#FBBF24', '#F472B6', '#FB923C', '#A78BFA'; $script:tagIdx = 0
+$grpGlyphs = @{ 'DIAGNOSTIC' = 0xE9D9; 'JEU ET AFFICHAGE' = 0xE7FC; 'SON, RÉSEAU ET ALIMENTATION' = 0xE767; 'APPLICATIONS ET WINDOWS' = 0xE713; 'DOSSIERS CACHÉS' = 0xE8B7; 'ACTIONS RAPIDES' = 0xE945 }
+$toolGlyphs = @{
+    'taskmgr' = 0xE9D9; 'resmon' = 0xEC4A; 'perfmon|/rel' = 0xE81C; 'eventvwr.msc' = 0xE7BA; 'msinfo32' = 0xE946; 'dxdiag' = 0xE7F4; 'mdsched' = 0xE950
+    'devmgmt.msc' = 0xE772; 'diskmgmt.msc' = 0xEDA2; 'services.msc' = 0xE713
+    '!hz' = 0xE7F4; 'ms-settings:display' = 0xE7F4; 'main.cpl' = 0xE962; 'SystemPropertiesPerformance.exe' = 0xE945
+    'ncpa.cpl' = 0xE839; 'ms-settings:network-status' = 0xE701; 'powercfg.cpl' = 0xE7E8; 'ms-settings:bluetooth' = 0xE702
+    '!page:Apps' = 0xE74D; 'ms-settings:startupapps' = 0xE7E8; 'ms-settings:defaultapps' = 0xE71D; 'ms-settings:windowsupdate' = 0xE895
+    'windowsdefender:' = 0xE72E; 'ms-settings:storagesense' = 0xEDA2; 'shell:Screenshots' = 0xE722; 'shell:AppsFolder' = 0xE71D; 'shell:RecycleBinFolder' = 0xE74D
+    '!explorer' = 0xE72C; '!deskicons' = 0xE7F8; '!clip' = 0xE8C8; '!bios' = 0xE7E8; '!advboot' = 0xE777
+}
+$script:toolTiles = New-Object System.Collections.ArrayList
+$script:toolCards = New-Object System.Collections.ArrayList
+function New-Card($title, $glyph) {
+    $col = $tagColors[$script:tagIdx % $tagColors.Count]; $script:tagIdx++
     $b = New-Object System.Windows.Controls.Border; $b.Style = $card; $b.Margin = New-Object System.Windows.Thickness 0, 0, 0, 14
+    $b.Padding = New-Object System.Windows.Thickness 18, 16, 8, 6
     $sp = New-Object System.Windows.Controls.StackPanel
-    $t = New-Object System.Windows.Controls.TextBlock; $t.Text = $title; $t.Style = $tagStyle
-    $t.Foreground = $brush.ConvertFromString($tagColors[$script:tagIdx % $tagColors.Count]); $script:tagIdx++
+    $hd = New-Object System.Windows.Controls.StackPanel; $hd.Orientation = 'Horizontal'; $hd.Margin = New-Object System.Windows.Thickness 0, 0, 0, 12
+    $dot = New-Object System.Windows.Controls.Border; $dot.Width = 8; $dot.Height = 8; $dot.CornerRadius = New-Object System.Windows.CornerRadius 4
+    $dot.Background = $brush.ConvertFromString($col); $dot.Margin = New-Object System.Windows.Thickness 0, 0, 10, 0; $dot.VerticalAlignment = 'Center'
+    $t = New-Object System.Windows.Controls.TextBlock; $t.Text = $title; $t.Style = $tagStyle; $t.Margin = New-Object System.Windows.Thickness 0
+    $t.Foreground = $brush.ConvertFromString($col); $t.VerticalAlignment = 'Center'
+    [void]$hd.Children.Add($dot); [void]$hd.Children.Add($t)
     $wp = New-Object System.Windows.Controls.WrapPanel
-    [void]$sp.Children.Add($t); [void]$sp.Children.Add($wp); $b.Child = $sp
+    [void]$sp.Children.Add($hd); [void]$sp.Children.Add($wp); $b.Child = $sp
     [void]$toolsHost.Children.Add($b)
+    [void]$script:toolCards.Add(@{ Card = $b; Wrap = $wp })
+    $wp.Tag = $col
     $wp
 }
+function New-ToolTile($wp, $title, $tag, $desc, $glyph) {
+    $col = [string]$wp.Tag
+    $bt = New-Object System.Windows.Controls.Button; $bt.Style = $tileStyle; $bt.Tag = $tag
+    $bt.Width = 272; $bt.Height = 76; $bt.Margin = New-Object System.Windows.Thickness 0, 0, 10, 10
+    $g = New-Object System.Windows.Controls.DockPanel
+    $ib = New-Object System.Windows.Controls.Border; $ib.Width = 40; $ib.Height = 40; $ib.CornerRadius = New-Object System.Windows.CornerRadius 10
+    $ib.Background = $brush.ConvertFromString('#24' + $col.TrimStart('#')); $ib.Margin = New-Object System.Windows.Thickness 0, 0, 12, 0; $ib.VerticalAlignment = 'Center'
+    $ic = New-Object System.Windows.Controls.TextBlock; $ic.Text = [string][char]$glyph; $ic.FontFamily = 'Segoe MDL2 Assets'; $ic.FontSize = 17
+    $ic.Foreground = $brush.ConvertFromString($col); $ic.HorizontalAlignment = 'Center'; $ic.VerticalAlignment = 'Center'
+    $ib.Child = $ic; [System.Windows.Controls.DockPanel]::SetDock($ib, 'Left'); [void]$g.Children.Add($ib)
+    $tx = New-Object System.Windows.Controls.StackPanel; $tx.VerticalAlignment = 'Center'
+    $a = New-Object System.Windows.Controls.TextBlock; $a.Text = $title; $a.FontWeight = 'SemiBold'; $a.FontSize = 13; $a.TextTrimming = 'CharacterEllipsis'
+    $d = New-Object System.Windows.Controls.TextBlock; $d.Text = [string]$desc; $d.FontSize = 11.5; $d.Foreground = $brush.ConvertFromString('#8E8E98')
+    $d.TextWrapping = 'Wrap'; $d.TextTrimming = 'CharacterEllipsis'; $d.MaxHeight = 31; $d.Margin = New-Object System.Windows.Thickness 0, 2, 0, 0
+    [void]$tx.Children.Add($a); [void]$tx.Children.Add($d); [void]$g.Children.Add($tx)
+    $bt.Content = $g
+    if ($desc) { $bt.ToolTip = $desc }
+    $bt.Add_Click({ param($sender, $e) Open-Tool ([string]$sender.Tag) })
+    [void]$wp.Children.Add($bt)
+    [void]$script:toolTiles.Add(@{ B = $bt; Key = (Norm ($title + ' ' + $desc)) })
+    @{ B = $bt; D = $d }
+}
 foreach ($grp in $toolGroups) {
-    $wp = New-Card $grp.T
+    $gg = 0xE713; if ($grpGlyphs.ContainsKey($grp.T)) { $gg = $grpGlyphs[$grp.T] }
+    $wp = New-Card $grp.T $gg
     foreach ($it in $grp.I) {
-        $bt = New-Object System.Windows.Controls.Button
-        $bt.Content = $it[0]; $bt.Tag = $it[1]; $bt.Style = $ghost
-        $bt.Margin = New-Object System.Windows.Thickness 0, 0, 8, 8
-        if ($it[2]) { $bt.ToolTip = $it[2] }
-        if ($it[1] -eq '!hz') { $script:hzBtn = $bt }
-        $bt.Add_Click({ param($sender, $e) Open-Tool ([string]$sender.Tag) })
-        [void]$wp.Children.Add($bt)
+        $gl = $gg; if ($toolGlyphs.ContainsKey($it[1])) { $gl = $toolGlyphs[$it[1]] }
+        $tt = New-ToolTile $wp $it[0] $it[1] $it[2] $gl
+        if ($it[1] -eq '!hz') { $script:hzBtn = $tt.B; $script:hzDesc = $tt.D }
     }
 }
 $keys = @(
@@ -8204,14 +9396,985 @@ $keys = @(
     @('Win + Flèches', 'Coller une fenêtre à gauche, à droite, en grand'), @('Win + Maj + Flèche', "Envoyer la fenêtre sur l'autre écran"),
     @('Alt + Entrée', 'Plein écran / fenêtré dans beaucoup de jeux'), @('Win + Pause', 'Fiche du PC (nom, processeur, RAM)')
 )
-$wp = New-Card 'CLAVIER : RACCOURCIS UTILES'
+$wp = New-Card 'CLAVIER : RACCOURCIS UTILES' 0xE765
 foreach ($k in $keys) {
-    $row = New-Object System.Windows.Controls.StackPanel; $row.Orientation = 'Horizontal'; $row.Width = 520
-    $row.Margin = New-Object System.Windows.Thickness 0, 0, 10, 9
-    $a = New-Object System.Windows.Controls.TextBlock; $a.Text = $k[0]; $a.Width = 170; $a.FontWeight = 'SemiBold'; $a.Foreground = $brush.ConvertFromString('#FBBF24')
-    $d = New-Object System.Windows.Controls.TextBlock; $d.Text = $k[1]; $d.Foreground = $brush.ConvertFromString('#CACAD2')
-    [void]$row.Children.Add($a); [void]$row.Children.Add($d); [void]$wp.Children.Add($row)
+    $row = New-Object System.Windows.Controls.Border; $row.Width = 410; $row.Margin = New-Object System.Windows.Thickness 0, 0, 10, 10
+    $row.Background = $brush.ConvertFromString('#141418'); $row.CornerRadius = New-Object System.Windows.CornerRadius 10
+    $row.Padding = New-Object System.Windows.Thickness 12, 9, 12, 9
+    $dp = New-Object System.Windows.Controls.StackPanel
+    $caps = New-Object System.Windows.Controls.WrapPanel
+    $parts = @($k[0] -split ' \+ ')
+    for ($i = 0; $i -lt $parts.Count; $i++) {
+        $kc = New-Object System.Windows.Controls.Border; $kc.CornerRadius = New-Object System.Windows.CornerRadius 6
+        $kc.Background = $brush.ConvertFromString('#24242B'); $kc.BorderBrush = $brush.ConvertFromString('#3A3A44')
+        $kc.BorderThickness = New-Object System.Windows.Thickness 1, 1, 1, 3; $kc.Padding = New-Object System.Windows.Thickness 9, 3, 9, 3
+        $kt = New-Object System.Windows.Controls.TextBlock; $kt.Text = $parts[$i]; $kt.FontWeight = 'SemiBold'; $kt.FontSize = 12; $kt.Foreground = $brush.ConvertFromString('#FBBF24')
+        $kc.Child = $kt; [void]$caps.Children.Add($kc)
+        if ($i -lt $parts.Count - 1) {
+            $pl = New-Object System.Windows.Controls.TextBlock; $pl.Text = '+'; $pl.Foreground = $brush.ConvertFromString('#6C6C76')
+            $pl.Margin = New-Object System.Windows.Thickness 6, 3, 6, 0; [void]$caps.Children.Add($pl)
+        }
+    }
+    $d = New-Object System.Windows.Controls.TextBlock; $d.Text = $k[1]; $d.Foreground = $brush.ConvertFromString('#CACAD2'); $d.FontSize = 12.5
+    $d.Margin = New-Object System.Windows.Thickness 0, 7, 0, 0; $d.TextWrapping = 'Wrap'
+    [void]$dp.Children.Add($caps); [void]$dp.Children.Add($d); $row.Child = $dp
+    [void]$wp.Children.Add($row)
+    [void]$script:toolTiles.Add(@{ B = $row; Key = (Norm ($k[0] + ' ' + $k[1])) })
 }
+(UI 'ToolsFind').Add_TextChanged({
+    $q = Norm ([string](UI 'ToolsFind').Text).Trim()
+    if ($q) { (UI 'ToolsFindHint').Visibility = 'Collapsed' } else { (UI 'ToolsFindHint').Visibility = 'Visible' }
+    foreach ($t in $script:toolTiles) { if (-not $q -or $t.Key -like ('*' + $q + '*')) { $t.B.Visibility = 'Visible' } else { $t.B.Visibility = 'Collapsed' } }
+    foreach ($c in $script:toolCards) {
+        $any = $false; foreach ($ch in $c.Wrap.Children) { if ($ch.Visibility -eq 'Visible') { $any = $true; break } }
+        if ($any) { $c.Card.Visibility = 'Visible' } else { $c.Card.Visibility = 'Collapsed' }
+    }
+})
+
+# ---------- Mon matériel : écran, RAM / XMP, conseils d'upgrade ----------
+$xmpGuides = [ordered]@{
+    'ASUS'     = @(
+        "Entre dans le BIOS : bouton « Redémarrer dans le BIOS » ci-dessous, ou appuie plusieurs fois sur Suppr (ou F2) dès que le PC s'allume.",
+        "Écran simple (EZ Mode) : trouve la ligne « X.M.P. », « EXPO » ou « D.O.C.P. » et choisis « Profile 1 » (ou « XMP I »).",
+        "Si tu es en mode avancé (touche F7 pour passer de l'un à l'autre) : onglet « Ai Tweaker », ligne « Ai Overclock Tuner », choisis « XMP I » ou « EXPO I ».",
+        "Appuie sur F10, puis valide « OK » : le PC enregistre et redémarre.")
+    'MSI'      = @(
+        "Entre dans le BIOS : bouton « Redémarrer dans le BIOS » ci-dessous, ou appuie plusieurs fois sur Suppr dès que le PC s'allume.",
+        "En haut à gauche de l'écran du BIOS, clique sur le bouton « XMP » (ou « A-XMP » / « EXPO ») pour l'allumer, puis choisis « Profile 1 ».",
+        "Tu ne le vois pas ? Passe en mode avancé (F7), onglet « OC », ligne « Extreme Memory Profile (XMP) » ou « AMD EXPO », mets « Profile 1 ».",
+        "Appuie sur F10, puis « Yes » : le PC enregistre et redémarre.")
+    'GIGABYTE' = @(
+        "Entre dans le BIOS : bouton « Redémarrer dans le BIOS » ci-dessous, ou appuie plusieurs fois sur Suppr dès que le PC s'allume.",
+        "Écran simple (Easy Mode) : clique sur « X.M.P. » (ou « EXPO ») et choisis « Profile1 ».",
+        "En mode avancé (F2) : onglet « Tweaker », ligne « Extreme Memory Profile (X.M.P.) », choisis « Profile1 ».",
+        "Appuie sur F10, puis « Yes » : le PC enregistre et redémarre.")
+    'ASROCK'   = @(
+        "Entre dans le BIOS : bouton « Redémarrer dans le BIOS » ci-dessous, ou appuie plusieurs fois sur F2 ou Suppr dès que le PC s'allume.",
+        "Passe en mode avancé (F6), onglet « OC Tweaker », rubrique « DRAM Configuration ».",
+        "Ligne « Load XMP Setting » (ou « Load EXPO Setting ») : choisis « XMP 2.0 Profile 1 » / « EXPO Profile 1 ».",
+        "Appuie sur F10, puis « Yes » : le PC enregistre et redémarre.")
+    'AUTRE'    = @(
+        "Entre dans le BIOS : bouton « Redémarrer dans le BIOS » ci-dessous, ou appuie plusieurs fois sur Suppr ou F2 dès que le PC s'allume.",
+        "Cherche une ligne qui contient « XMP », « EXPO », « DOCP » ou « Memory Profile ». Elle est souvent dans un onglet « Overclocking », « OC », « Tweaker » ou « Memory ».",
+        "Choisis « Profile 1 ».",
+        "Appuie sur F10 pour enregistrer et redémarrer.")
+}
+$script:hwBrand = 'AUTRE'; $script:hwRamIssue = 0
+try {
+    $bbm = [string](Get-CimInstance Win32_BaseBoard -ErrorAction Stop | Select-Object -First 1).Manufacturer
+    if ($bbm -match 'ASUS') { $script:hwBrand = 'ASUS' } elseif ($bbm -match 'Micro-Star|MSI') { $script:hwBrand = 'MSI' } elseif ($bbm -match 'Gigabyte') { $script:hwBrand = 'GIGABYTE' } elseif ($bbm -match 'ASRock') { $script:hwBrand = 'ASROCK' }
+} catch {}
+function Set-HwPill($p, $lvl, $txt) {
+    $cols = @(@('#173326', '#3DDC84'), @('#33280F', '#FBBF24'), @('#3A1519', '#FF6B6B'), @('#202026', '#B8B8C0'))
+    (UI ($p + 'Pill')).Background = $brush.ConvertFromString($cols[$lvl][0])
+    (UI ($p + 'State')).Foreground = $brush.ConvertFromString($cols[$lvl][1]); (UI ($p + 'State')).Text = $txt
+}
+function Get-RamInfo {
+    $r = @{ Go = 0; Cur = 0; Rated = 0; Type = ''; Count = 0; Laptop = $false }
+    try {
+        $mods = @(Get-CimInstance Win32_PhysicalMemory -ErrorAction Stop)
+        $r.Count = $mods.Count
+        $known = 2400, 2666, 2800, 2933, 3000, 3200, 3333, 3466, 3600, 3733, 3800, 3866, 4000, 4133, 4266, 4400, 4800, 5200, 5600, 6000, 6200, 6400, 6600, 6800, 7200, 7600, 8000
+        foreach ($x in $mods) {
+            $r.Go += [double]$x.Capacity
+            if ([int]$x.ConfiguredClockSpeed -gt $r.Cur) { $r.Cur = [int]$x.ConfiguredClockSpeed }
+            if ([int]$x.Speed -gt $r.Rated) { $r.Rated = [int]$x.Speed }
+            foreach ($m in [regex]::Matches([string]$x.PartNumber, '(?<!\d)(\d{4})(?!\d)')) { $v = [int]$m.Value; if ($known -contains $v -and $v -gt $r.Rated) { $r.Rated = $v } }
+            switch ([int]$x.SMBIOSMemoryType) { 24 { $r.Type = 'DDR3' } 26 { $r.Type = 'DDR4' } 34 { $r.Type = 'DDR5' } }
+        }
+        $r.Go = [math]::Round($r.Go / 1GB)
+        if ($r.Type -eq 'DDR4' -and $r.Cur -gt 0 -and $r.Cur -lt 1400) { $r.Cur *= 2 }
+        if ($r.Type -eq 'DDR5' -and $r.Cur -gt 0 -and $r.Cur -lt 3000) { $r.Cur *= 2 }
+    } catch {}
+    try { $r.Laptop = Test-Laptop } catch {}
+    $r
+}
+function Load-Hw {
+    (UI 'HwMsg').Text = ' '
+    # --- écran ---
+    try {
+        Ensure-Disp; $i = [PcmDisp.Disp]::Info()
+        if ($i[2] -le 0) { throw 'x' }
+        (UI 'HwHzBig').Text = "" + $i[2] + " Hz"
+        $res = "" + $i[0] + " x " + $i[1]
+        if (($i[3] - $i[2]) -ge 2) {
+            Set-HwPill 'HwHz' 2 ('Bridé à ' + $i[2] + ' Hz')
+            (UI 'HwHzSub').Text = "$res  ·  ton écran accepte jusqu'à " + $i[3] + " Hz"
+            (UI 'HwHzTxt').Text = "Ton écran tourne moins vite qu'il ne peut : en jeu, tout paraît moins fluide, même si ton PC calcule plein de FPS. Ça arrive souvent après une mise à jour du pilote graphique ou un changement de câble."
+            (UI 'HwHzFix').Content = "Passer à " + $i[3] + " Hz"; (UI 'HwHzFix').Tag = [int]$i[3]; (UI 'HwHzFix').Visibility = 'Visible'
+        } else {
+            (UI 'HwHzFix').Visibility = 'Collapsed'
+            (UI 'HwHzSub').Text = "$res  ·  c'est le maximum de ton écran à cette résolution"
+            if ($i[2] -le 61) {
+                Set-HwPill 'HwHz' 3 'Écran 60 Hz'
+                (UI 'HwHzTxt').Text = "Ton écran est un modèle 60 Hz : il ne peut pas aller plus vite. Si tu veux plus de fluidité en jeu, un écran 144 Hz ou plus est l'upgrade qui se voit le plus. Vérifie aussi que le câble est bien un DisplayPort ou un HDMI récent."
+            } else {
+                Set-HwPill 'HwHz' 0 'Au maximum'
+                (UI 'HwHzTxt').Text = "Rien à faire : ton écran affiche autant d'images par seconde qu'il le peut."
+            }
+        }
+    } catch {
+        Set-HwPill 'HwHz' 3 'Inconnu'; (UI 'HwHzBig').Text = '?'; (UI 'HwHzSub').Text = ' '
+        (UI 'HwHzTxt').Text = "Windows n'a pas donné la fréquence de l'écran. Regarde dans les réglages d'affichage, rubrique « Affichage avancé »."
+        (UI 'HwHzFix').Visibility = 'Collapsed'
+    }
+    # --- mémoire ---
+    $r = Get-RamInfo; $script:hwRamIssue = 0
+    if ($r.Cur -gt 0) { (UI 'HwRamBig').Text = "" + $r.Cur + " MHz" } else { (UI 'HwRamBig').Text = "" + $r.Go + " Go" }
+    $sub = "" + $r.Go + " Go"; if ($r.Type) { $sub += " " + $r.Type }; $sub += "  ·  " + $r.Count + " barrette(s)"
+    if ($r.Rated -gt $r.Cur -and $r.Cur -gt 0) { $sub += "  ·  donnée(s) pour " + $r.Rated + " MHz" }
+    (UI 'HwRamSub').Text = $sub
+    if ($r.Cur -le 0) {
+        Set-HwPill 'HwRam' 3 'Inconnu'
+        (UI 'HwRamTxt').Text = "Windows n'a pas donné la vitesse de ta mémoire."
+    } elseif ($r.Rated -ge $r.Cur + 150) {
+        $script:hwRamIssue = 2
+        Set-HwPill 'HwRam' 2 'Profil XMP pas activé'
+        (UI 'HwRamTxt').Text = "Ta RAM tourne à " + $r.Cur + " MHz alors qu'elle est faite pour " + $r.Rated + " MHz. Il suffit d'activer le profil XMP / EXPO dans le BIOS : c'est gratuit, sans risque, et ça donne des FPS plus stables."
+    } elseif (-not $r.Laptop -and (($r.Type -eq 'DDR4' -and $r.Cur -le 2400) -or ($r.Type -eq 'DDR5' -and $r.Cur -le 4800))) {
+        $script:hwRamIssue = 1
+        Set-HwPill 'HwRam' 1 'À vérifier'
+        (UI 'HwRamTxt').Text = "" + $r.Cur + " MHz, c'est la vitesse « de base » de la " + $r.Type + ". Beaucoup de barrettes gaming vont plus vite, mais seulement si le profil XMP / EXPO est activé dans le BIOS. Regarde le guide pour vérifier."
+    } elseif ($r.Laptop) {
+        Set-HwPill 'HwRam' 0 'OK'
+        (UI 'HwRamTxt').Text = "Sur un PC portable, la vitesse de la mémoire est réglée par le fabricant : il n'y a rien à activer."
+    } else {
+        Set-HwPill 'HwRam' 0 'Pleine vitesse'
+        (UI 'HwRamTxt').Text = "Ta mémoire tourne à sa vitesse prévue : le profil XMP / EXPO est déjà actif, rien à faire."
+    }
+    if ($r.Laptop) { (UI 'HwXmpShow').Visibility = 'Collapsed' } else { (UI 'HwXmpShow').Visibility = 'Visible' }
+    if ($script:hwRamIssue -eq 2) { Show-XmpGuide $script:hwBrand }
+}
+function Show-XmpGuide($brand) {
+    if (-not $xmpGuides.Contains($brand)) { $brand = 'AUTRE' }
+    $script:xmpShown = $brand
+    (UI 'HwXmpCard').Visibility = 'Visible'
+    $name = $brand; if ($brand -eq 'AUTRE') { $name = 'ta carte mère' } elseif ($brand -eq 'ASROCK') { $name = 'ASRock' } elseif ($brand -eq 'GIGABYTE') { $name = 'Gigabyte' }
+    (UI 'HwXmpTitle').Text = "GUIDE : ACTIVER LE XMP / EXPO SUR " + $name.ToUpper()
+    $det = ''; if ($script:hwBrand -ne 'AUTRE') { $det = "OnePC a détecté une carte mère " + $script:hwBrand + ". " }
+    (UI 'HwXmpIntro').Text = $det + "XMP (Intel) et EXPO (AMD) sont des profils enregistrés dans tes barrettes : les activer fait tourner ta RAM à la vitesse pour laquelle tu l'as payée. Les menus changent un peu selon les modèles, mais ça ressemble toujours à ça :"
+    $host2 = UI 'HwXmpSteps'; $host2.Children.Clear()
+    $n = 1
+    foreach ($st in $xmpGuides[$brand]) {
+        $row = New-Object System.Windows.Controls.DockPanel; $row.Margin = New-Object System.Windows.Thickness 0, 0, 0, 10
+        $c = New-Object System.Windows.Controls.Border; $c.Width = 26; $c.Height = 26; $c.CornerRadius = New-Object System.Windows.CornerRadius 13
+        $c.Background = $brush.ConvertFromString('#33280F'); $c.Margin = New-Object System.Windows.Thickness 0, 0, 12, 0; $c.VerticalAlignment = 'Top'
+        $ct = New-Object System.Windows.Controls.TextBlock; $ct.Text = [string]$n; $ct.FontWeight = 'Bold'; $ct.Foreground = $brush.ConvertFromString('#FBBF24')
+        $ct.HorizontalAlignment = 'Center'; $ct.VerticalAlignment = 'Center'; $c.Child = $ct
+        [System.Windows.Controls.DockPanel]::SetDock($c, 'Left'); [void]$row.Children.Add($c)
+        $t = New-Object System.Windows.Controls.TextBlock; $t.Text = $st; $t.TextWrapping = 'Wrap'; $t.Foreground = $brush.ConvertFromString('#E8E8EC')
+        $t.VerticalAlignment = 'Center'; $t.LineHeight = 19; [void]$row.Children.Add($t)
+        [void]$host2.Children.Add($row); $n++
+    }
+    (UI 'HwXmpWarn').Text = "Au premier redémarrage, l'écran peut rester noir une ou deux minutes, ou le PC redémarrer plusieurs fois : c'est normal, la carte mère teste la mémoire. Ne l'éteins pas pendant ce temps. Si le PC ne démarre vraiment plus, la plupart des cartes mères reviennent toutes seules aux réglages d'avant après quelques essais. Sinon, demande de l'aide sur le Discord avant de toucher à autre chose."
+    $bh = UI 'HwBrands'; $bh.Children.Clear()
+    foreach ($b in $xmpGuides.Keys) {
+        $bt = New-Object System.Windows.Controls.Button; $bt.Style = $win.FindResource('Seg'); $bt.Tag = $b
+        $lbl = $b; if ($b -eq 'AUTRE') { $lbl = 'Autre' } elseif ($b -eq 'ASROCK') { $lbl = 'ASRock' } elseif ($b -eq 'GIGABYTE') { $lbl = 'Gigabyte' }
+        $bt.Content = $lbl; $bt.Margin = New-Object System.Windows.Thickness 4, 0, 0, 0
+        if ($b -eq $brand) { $bt.Background = $brush.ConvertFromString($accent); $bt.Foreground = $brush.ConvertFromString('#FFFFFF') }
+        $bt.Add_Click({ param($s, $e) Show-XmpGuide ([string]$s.Tag) })
+        [void]$bh.Children.Add($bt)
+    }
+}
+(UI 'HwXmpShow').Add_Click({ if ((UI 'HwXmpCard').Visibility -eq 'Visible' -and $script:xmpShown) { (UI 'HwXmpCard').BringIntoView() } else { Show-XmpGuide $script:hwBrand; (UI 'HwXmpCard').BringIntoView() } })
+(UI 'HwBios').Add_Click({ Open-Tool '!bios'; if ([string](UI 'ToolsMsg').Text -match 'Annul') { (UI 'HwMsg').Text = [string](UI 'ToolsMsg').Text } })
+(UI 'HwBios2').Add_Click({ Open-Tool '!bios'; if ([string](UI 'ToolsMsg').Text -match 'Annul') { (UI 'HwMsg').Text = [string](UI 'ToolsMsg').Text } })
+(UI 'HwHzWin').Add_Click({ Open-Settings 'ms-settings:display-advanced' })
+(UI 'HwHzFix').Add_Click({
+    try {
+        Ensure-Disp; $i = [PcmDisp.Disp]::Info(); $to = [int](UI 'HwHzFix').Tag
+        if (-not (Ask ("Passer ton écran de " + $i[2] + " Hz à $to Hz ?`r`nL'écran devient noir une seconde."))) { return }
+        $r = [PcmDisp.Disp]::Set($to)
+        if ($r -eq 0) { Log ("Fréquence de l'écran : " + $i[2] + " Hz -> $to Hz"); (UI 'HwMsg').Text = "C'est fait : ton écran tourne maintenant à $to Hz." }
+        else { (UI 'HwMsg').Text = "Windows a refusé ce changement. Je t'ouvre la page « Affichage avancé » : choisis $to Hz dans « Choisir une fréquence d'actualisation »."; Open-Settings 'ms-settings:display-advanced' }
+    } catch { (UI 'HwMsg').Text = "Impossible de changer la fréquence : règle-la dans « Affichage avancé » de Windows."; Open-Settings 'ms-settings:display-advanced' }
+    Load-Hw; Update-HzBtn
+})
+function Run-Upg {
+    (UI 'HwUpgGo').IsEnabled = $false
+    (UI 'HwUpgHead').Text = 'Analyse de ton matériel en cours...'
+    $n = 0; $sg = 0.0; $sc = 0.0
+    for ($i = 0; $i -lt $hGpu.Count; $i++) { if ($hGpu[$i] -ge 60) { $n++; $sg += $hGpu[$i]; $sc += $hCpu[$i] } }
+    $ga = 0; $ca = 0; if ($n) { $ga = [int][math]::Round($sg / $n); $ca = [int][math]::Round($sc / $n) }
+    $rp = 0; foreach ($x in $hRam) { if ($x -gt $rp) { $rp = $x } }
+    Start-Bg $upgCode @{ GameMin = [int][math]::Floor($n / 60); GpuAvg = $ga; CpuAvg = $ca; RamPeak = [int]$rp; CpuT = [int]$sync.CpuT; GpuT = [int]$sync.GpuT } {
+        param($r)
+        (UI 'HwUpgGo').IsEnabled = $true; (UI 'HwUpgGo').Content = 'Relancer l''analyse'
+        $cols = '#3DDC84', '#FBBF24', '#FF5A6E'; $labels = 'Rien à changer', 'À améliorer', 'En premier'
+        $rows = @($r | Where-Object { $_.Name } | Sort-Object Level -Descending | ForEach-Object {
+            [pscustomobject]@{ Name = $_.Name; Detail = $_.Detail; Status = $labels[$_.Level]; Brush = $brush.ConvertFromString($cols[$_.Level]) }
+        })
+        (UI 'HwUpgList').ItemsSource = $rows
+        $top = @($r | Where-Object { $_.Level -eq 2 }); $mid = @($r | Where-Object { $_.Level -eq 1 })
+        $head = "Rien d'urgent à changer sur ce PC."
+        if ($top.Count) { $head = "À changer en premier : " + (($top | ForEach-Object { $_.Name }) -join ', ') + "." }
+        elseif ($mid.Count) { $head = "Rien d'urgent. À améliorer si tu veux : " + (($mid | ForEach-Object { $_.Name }) -join ', ') + "." }
+        (UI 'HwUpgHead').Text = $head + " Ces conseils viennent uniquement de ce que OnePC mesure sur ton PC."
+    }
+}
+(UI 'HwUpgGo').Add_Click({ Run-Upg })
+(UI 'BtnUpg').Add_Click({ Show-Page 'Hw'; Run-Upg })
+
+# ---------- Barre des tâches ----------
+$advKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+$stuckKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3'
+$isWin11 = ([Environment]::OSVersion.Version.Build -ge 22000)
+$barDefs = @(
+    @{ K = 'Al'; T = 'Position des icônes'; D = "Au centre comme Windows 11 de base, ou à gauche comme sur Windows 10."; P = $advKey; N = 'TaskbarAl'; O = @(@('À gauche', 0), @('Au centre', 1)); Def = 1; W11 = $true },
+    @{ K = 'Search'; T = 'Recherche'; D = "La barre de recherche prend beaucoup de place : appuyer sur la touche Windows puis taper suffit pour chercher."; P = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search'; N = 'SearchboxTaskbarMode'; O = @(@('Masquée', 0), @('Icône', 1), @('Barre', 2)); Def = 2 },
+    @{ K = 'Task'; T = 'Vue des tâches'; D = "Le bouton qui montre toutes tes fenêtres et tes bureaux (aussi : Win + Tab)."; P = $advKey; N = 'ShowTaskViewButton'; O = @(@('Masquée', 0), @('Visible', 1)); Def = 1 },
+    @{ K = 'Da'; T = 'Widgets'; D = "Météo et actualités dans le coin de la barre."; P = $advKey; N = 'TaskbarDa'; O = @(@('Masqués', 0), @('Visibles', 1)); Def = 1; W11 = $true },
+    @{ K = 'Glom'; T = 'Regrouper les fenêtres'; D = "« Jamais » affiche le nom de chaque fenêtre ouverte : pratique pour retrouver ton jeu ou Discord d'un coup d'œil."; P = $advKey; N = 'TaskbarGlomLevel'; O = @(@('Toujours', 0), @('Si pleine', 1), @('Jamais', 2)); Def = 0; Reload = $true },
+    @{ K = 'Sec'; T = "Secondes dans l'horloge"; D = "Affiche aussi les secondes à côté de l'heure."; P = $advKey; N = 'ShowSecondsInSystemClock'; O = @(@('Non', 0), @('Oui', 1)); Def = 0; Reload = $true },
+    @{ K = 'End'; T = '« Fin de tâche » au clic droit'; D = "Ferme de force un jeu ou une appli figée directement depuis la barre, sans ouvrir le Gestionnaire des tâches."; P = ($advKey + '\TaskbarDeveloperSettings'); N = 'TaskbarEndTask'; O = @(@('Non', 0), @('Oui', 1)); Def = 0; W11 = $true; Reload = $true },
+    @{ K = 'Hide'; T = 'Masquer automatiquement'; D = "La barre disparaît et revient dès que la souris touche le bas de l'écran. Plus de place pour tes fenêtres."; P = 'stuck'; N = 'AutoHide'; O = @(@('Non', 0), @('Oui', 1)); Def = 0; Reload = $true }
+)
+$barDefs = @($barDefs | Where-Object { $isWin11 -or -not $_.W11 })
+function Get-BarVal($d) {
+    try {
+        if ($d.P -eq 'stuck') { $b = [byte[]](Get-ItemProperty -LiteralPath $stuckKey -Name Settings -ErrorAction Stop).Settings; return [int](($b[8] -band 1) -eq 1) }
+        return [int](Get-ItemProperty -LiteralPath $d.P -Name $d.N -ErrorAction Stop).($d.N)
+    } catch { return [int]$d.Def }
+}
+function Save-BarOrig($d) {
+    $list = @($cfg.BarOrig | Where-Object { $_ })
+    foreach ($l in $list) { if (([string]$l).Split('|')[0] -eq $d.K) { return } }
+    $line = $d.K + '|0|'
+    try {
+        if ($d.P -eq 'stuck') { $line = $d.K + '|1|' + (Get-BarVal $d) }
+        else { $v = (Get-ItemProperty -LiteralPath $d.P -Name $d.N -ErrorAction Stop).($d.N); $line = $d.K + '|1|' + [int]$v }
+    } catch {}
+    $cfg.BarOrig = @($list + $line); Save-Cfg
+}
+function Write-BarVal($d, $v) {
+    if ($d.P -eq 'stuck') {
+        $b = [byte[]](Get-ItemProperty -LiteralPath $stuckKey -Name Settings -ErrorAction Stop).Settings
+        if ([int]$v) { $b[8] = [byte]($b[8] -bor 1) } else { $b[8] = [byte]($b[8] -band 0xFE) }
+        Set-ItemProperty -LiteralPath $stuckKey -Name Settings -Value $b -Type Binary -ErrorAction Stop
+    } else {
+        if (-not (Test-Path -LiteralPath $d.P)) { New-Item -Path $d.P -Force | Out-Null }
+        Set-ItemProperty -LiteralPath $d.P -Name $d.N -Value ([int]$v) -Type DWord -ErrorAction Stop
+    }
+}
+function Send-BarChange {
+    try {
+        if (-not ('PCM.Msg' -as [type])) {
+            Add-Type -Namespace PCM -Name Msg -MemberDefinition '[DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)] public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam, uint fuFlags, uint uTimeout, out UIntPtr lpdwResult);'
+        }
+        $res = [UIntPtr]::Zero
+        [void][PCM.Msg]::SendMessageTimeout([IntPtr]0xffff, 0x1A, [UIntPtr]::Zero, 'TraySettings', 2, 1000, [ref]$res)
+    } catch {}
+}
+function Restart-Bar {
+    Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2
+    if (-not (Get-Process -Name explorer -ErrorAction SilentlyContinue)) { Start-Process explorer }
+}
+function Set-Bar($k, $v) {
+    $d = $barDefs | Where-Object { $_.K -eq $k } | Select-Object -First 1
+    if (-not $d) { return }
+    try {
+        Save-BarOrig $d
+        Write-BarVal $d $v
+        Send-BarChange
+        if ($d.Reload) { Restart-Bar }
+        $lbl = ''; foreach ($o in $d.O) { if ([int]$o[1] -eq [int]$v) { $lbl = [string]$o[0] } }
+        Log ("Barre des tâches : " + $d.T + " -> " + $lbl)
+        (UI 'BarMsg').Text = $d.T + " : " + $lbl + ". Tu peux tout annuler à tout moment : Réglages, « Tout remettre comme avant »."
+    } catch {
+        if ($k -eq 'Da') { (UI 'BarMsg').Text = "Windows empêche les applis de changer les widgets. Je t'ouvre la page Windows où tu peux le faire en un clic."; Open-Settings 'ms-settings:taskbar' }
+        else { (UI 'BarMsg').Text = "Windows a refusé ce changement (" + $d.T + ")." }
+    }
+    Load-Bar
+}
+function New-BarIcon($glyph, $col, $size) {
+    $b = New-Object System.Windows.Controls.Border; $b.Width = 34; $b.Height = 34; $b.CornerRadius = New-Object System.Windows.CornerRadius 6
+    $b.Margin = New-Object System.Windows.Thickness 2, 0, 2, 0
+    $t = New-Object System.Windows.Controls.TextBlock; $t.Text = [string][char]$glyph; $t.FontFamily = 'Segoe MDL2 Assets'; $t.FontSize = $size
+    $t.Foreground = $brush.ConvertFromString($col); $t.HorizontalAlignment = 'Center'; $t.VerticalAlignment = 'Center'; $b.Child = $t
+    $b
+}
+function New-BarApp($col, $name, $wide) {
+    $b = New-Object System.Windows.Controls.Border; $b.Height = 34; $b.CornerRadius = New-Object System.Windows.CornerRadius 6
+    $b.Margin = New-Object System.Windows.Thickness 2, 0, 2, 0; $b.Padding = New-Object System.Windows.Thickness 7, 0, 7, 0
+    if ($wide) { $b.Background = $brush.ConvertFromString('#22FFFFFF') }
+    $sp = New-Object System.Windows.Controls.StackPanel; $sp.Orientation = 'Horizontal'; $sp.VerticalAlignment = 'Center'
+    $sq = New-Object System.Windows.Controls.Border; $sq.Width = 20; $sq.Height = 20; $sq.CornerRadius = New-Object System.Windows.CornerRadius 5; $sq.Background = $brush.ConvertFromString($col)
+    [void]$sp.Children.Add($sq)
+    if ($wide) { $t = New-Object System.Windows.Controls.TextBlock; $t.Text = $name; $t.Foreground = $brush.ConvertFromString('#FFFFFF'); $t.FontSize = 11.5; $t.Margin = New-Object System.Windows.Thickness 7, 0, 0, 0; $t.VerticalAlignment = 'Center'; [void]$sp.Children.Add($t) }
+    $b.Child = $sp
+    $b
+}
+function Update-BarPrev {
+    $v = @{}; foreach ($d in $barDefs) { $v[$d.K] = Get-BarVal $d }
+    if (-not $isWin11) { $v['Al'] = 0; $v['Da'] = 0 }
+    $mid = UI 'BarPrevIcons'; $left = UI 'BarPrevLeft'; $mid.Children.Clear(); $left.Children.Clear()
+    if ([int]$v['Al'] -eq 0) { $mid.HorizontalAlignment = 'Left'; $mid.Margin = New-Object System.Windows.Thickness 10, 0, 0, 0 } else { $mid.HorizontalAlignment = 'Center'; $mid.Margin = New-Object System.Windows.Thickness 0 }
+    if ([int]$v['Da'] -eq 1) {
+        $w = New-Object System.Windows.Controls.StackPanel; $w.Orientation = 'Horizontal'; $w.VerticalAlignment = 'Center'
+        $sun = New-Object System.Windows.Shapes.Ellipse; $sun.Width = 16; $sun.Height = 16; $sun.Fill = $brush.ConvertFromString('#FBBF24')
+        $tt = New-Object System.Windows.Controls.TextBlock; $tt.Text = '18°C'; $tt.Foreground = $brush.ConvertFromString('#FFFFFF'); $tt.FontSize = 11.5; $tt.Margin = New-Object System.Windows.Thickness 6, 0, 0, 0
+        [void]$w.Children.Add($sun); [void]$w.Children.Add($tt)
+        if ([int]$v['Al'] -eq 0) { $w.Margin = New-Object System.Windows.Thickness 0, 0, 0, 0; $wb = $w } else { [void]$left.Children.Add($w); $wb = $null }
+    } else { $wb = $null }
+    $logo = New-Object System.Windows.Controls.Border; $logo.Width = 34; $logo.Height = 34; $logo.Margin = New-Object System.Windows.Thickness 2, 0, 2, 0
+    $lg = New-Object System.Windows.Controls.WrapPanel; $lg.Width = 18; $lg.Height = 18; $lg.HorizontalAlignment = 'Center'; $lg.VerticalAlignment = 'Center'
+    for ($q = 0; $q -lt 4; $q++) { $sq = New-Object System.Windows.Controls.Border; $sq.Width = 8; $sq.Height = 8; $sq.Margin = New-Object System.Windows.Thickness 0, 0, 1, 1; $sq.Background = $brush.ConvertFromString('#5AB4FF'); [void]$lg.Children.Add($sq) }
+    $logo.Child = $lg; [void]$mid.Children.Add($logo)
+    switch ([int]$v['Search']) {
+        1 { [void]$mid.Children.Add((New-BarIcon 0xE721 '#FFFFFF' 14)) }
+        2 {
+            $s = New-Object System.Windows.Controls.Border; $s.Height = 30; $s.Width = 150; $s.CornerRadius = New-Object System.Windows.CornerRadius 15
+            $s.Background = $brush.ConvertFromString('#2EFFFFFF'); $s.Margin = New-Object System.Windows.Thickness 4, 0, 4, 0; $s.VerticalAlignment = 'Center'
+            $ss = New-Object System.Windows.Controls.StackPanel; $ss.Orientation = 'Horizontal'; $ss.VerticalAlignment = 'Center'; $ss.Margin = New-Object System.Windows.Thickness 12, 0, 0, 0
+            $si = New-Object System.Windows.Controls.TextBlock; $si.Text = [string][char]0xE721; $si.FontFamily = 'Segoe MDL2 Assets'; $si.FontSize = 11; $si.Foreground = $brush.ConvertFromString('#D0D0D8'); $si.VerticalAlignment = 'Center'
+            $st = New-Object System.Windows.Controls.TextBlock; $st.Text = 'Rechercher'; $st.Foreground = $brush.ConvertFromString('#D0D0D8'); $st.FontSize = 11.5; $st.Margin = New-Object System.Windows.Thickness 8, 0, 0, 0
+            [void]$ss.Children.Add($si); [void]$ss.Children.Add($st); $s.Child = $ss; [void]$mid.Children.Add($s)
+        }
+    }
+    if ([int]$v['Task'] -eq 1) {
+        $tv = New-Object System.Windows.Controls.Grid; $tv.Width = 34; $tv.Height = 34; $tv.Margin = New-Object System.Windows.Thickness 2, 0, 2, 0
+        foreach ($off in @(@(9, 10), @(14, 15))) {
+            $r1 = New-Object System.Windows.Controls.Border; $r1.Width = 13; $r1.Height = 10; $r1.CornerRadius = New-Object System.Windows.CornerRadius 2
+            $r1.BorderBrush = $brush.ConvertFromString('#FFFFFF'); $r1.BorderThickness = New-Object System.Windows.Thickness 1.4; $r1.Background = $brush.ConvertFromString('#1C1C22')
+            $r1.HorizontalAlignment = 'Left'; $r1.VerticalAlignment = 'Top'; $r1.Margin = New-Object System.Windows.Thickness $off[0], $off[1], 0, 0
+            [void]$tv.Children.Add($r1)
+        }
+        [void]$mid.Children.Add($tv)
+    }
+    $wide = ([int]$v['Glom'] -ge 1)
+    [void]$mid.Children.Add((New-BarApp '#FBBF24' 'Explorateur' $false))
+    [void]$mid.Children.Add((New-BarApp '#5865F2' 'Discord' $wide))
+    [void]$mid.Children.Add((New-BarApp '#FF5A3C' 'OnePC' $wide))
+    [void]$mid.Children.Add((New-BarApp '#38BDF8' 'Fortnite' $wide))
+    if ($wb) { [void]$mid.Children.Insert(0, $wb); $wb.Margin = New-Object System.Windows.Thickness 0, 0, 12, 0 }
+    $now = Get-Date
+    if ([int]$v['Sec'] -eq 1) { (UI 'BarPrevClock').Text = $now.ToString('HH:mm:ss') } else { (UI 'BarPrevClock').Text = $now.ToString('HH:mm') }
+    (UI 'BarPrevDate').Text = $now.ToString('dd/MM/yyyy')
+    if ([int]$v['Hide'] -eq 1) { (UI 'BarPrev').Opacity = 0.35; (UI 'BarPrevNote').Text = 'Barre masquée : elle revient quand la souris touche le bas de l''écran' }
+    else { (UI 'BarPrev').Opacity = 1; (UI 'BarPrevNote').Text = ' ' }
+}
+function Load-Bar {
+    $h = UI 'BarOpts'; $h.Children.Clear()
+    $segStyle = $win.FindResource('Seg'); $first = $true
+    foreach ($d in $barDefs) {
+        $cur = Get-BarVal $d
+        $row = New-Object System.Windows.Controls.Border; $row.Padding = New-Object System.Windows.Thickness 12, 12, 12, 12
+        if (-not $first) { $row.BorderBrush = $brush.ConvertFromString('#222227'); $row.BorderThickness = New-Object System.Windows.Thickness 0, 1, 0, 0 }
+        $first = $false
+        $dp = New-Object System.Windows.Controls.DockPanel
+        $seg = New-Object System.Windows.Controls.Border; $seg.Background = $brush.ConvertFromString('#111115'); $seg.CornerRadius = New-Object System.Windows.CornerRadius 9
+        $seg.Padding = New-Object System.Windows.Thickness 3; $seg.VerticalAlignment = 'Center'; $seg.Margin = New-Object System.Windows.Thickness 16, 0, 0, 0
+        $sp = New-Object System.Windows.Controls.StackPanel; $sp.Orientation = 'Horizontal'
+        foreach ($o in $d.O) {
+            $bt = New-Object System.Windows.Controls.Button; $bt.Style = $segStyle; $bt.Content = $o[0]; $bt.Tag = $d.K + '|' + $o[1]
+            if ([int]$o[1] -eq $cur) { $bt.Background = $brush.ConvertFromString($accent); $bt.Foreground = $brush.ConvertFromString('#FFFFFF'); $bt.FontWeight = 'SemiBold' }
+            $bt.Add_Click({ param($s, $e) $p = ([string]$s.Tag).Split('|'); if ($s.FontWeight -ne [System.Windows.FontWeights]::SemiBold) { Set-Bar $p[0] ([int]$p[1]) } })
+            [void]$sp.Children.Add($bt)
+        }
+        $seg.Child = $sp; [System.Windows.Controls.DockPanel]::SetDock($seg, 'Right'); [void]$dp.Children.Add($seg)
+        $tx = New-Object System.Windows.Controls.StackPanel; $tx.VerticalAlignment = 'Center'
+        $a = New-Object System.Windows.Controls.TextBlock; $a.Text = $d.T; $a.FontWeight = 'SemiBold'
+        $b = New-Object System.Windows.Controls.TextBlock; $b.Text = $d.D; $b.Foreground = $brush.ConvertFromString('#8E8E98'); $b.FontSize = 12; $b.TextWrapping = 'Wrap'; $b.Margin = New-Object System.Windows.Thickness 0, 3, 0, 0
+        [void]$tx.Children.Add($a); [void]$tx.Children.Add($b); [void]$dp.Children.Add($tx)
+        $row.Child = $dp; [void]$h.Children.Add($row)
+    }
+    Update-BarPrev
+}
+function Restore-Bar {
+    # remet les valeurs d'avant OnePC (appelé par « Tout remettre comme avant »)
+    $left = @()
+    foreach ($l in @($cfg.BarOrig | Where-Object { $_ })) {
+        $p = ([string]$l).Split('|'); $d = $barDefs | Where-Object { $_.K -eq $p[0] } | Select-Object -First 1
+        if (-not $d) { continue }
+        try {
+            if ($p[1] -eq '1') { Write-BarVal $d ([int]$p[2]) }
+            elseif ($d.P -ne 'stuck') { Remove-ItemProperty -LiteralPath $d.P -Name $d.N -ErrorAction SilentlyContinue }
+        } catch { $left += $l }
+    }
+    $cfg.BarOrig = @($left)
+    Send-BarChange; Restart-Bar
+    return ($left.Count -eq 0)
+}
+(UI 'BarRestart').Add_Click({ Restart-Bar; (UI 'BarMsg').Text = 'Barre des tâches rechargée.' })
+(UI 'BarWin').Add_Click({ Open-Settings 'ms-settings:taskbar' })
+(UI 'BarDefault').Add_Click({
+    if (-not (Ask "Remettre la barre des tâches comme Windows la règle de base ?`r`nElle disparaît une seconde le temps de se recharger.")) { return }
+    $bad = @()
+    foreach ($d in $barDefs) { try { Save-BarOrig $d; Write-BarVal $d $d.Def } catch { $bad += $d.T } }
+    Send-BarChange; Restart-Bar
+    Log 'Barre des tâches remise par défaut'
+    if ($bad.Count) { (UI 'BarMsg').Text = "Fait, sauf : " + ($bad -join ', ') + " (Windows a refusé)." } else { (UI 'BarMsg').Text = 'La barre des tâches est revenue aux réglages de base de Windows.' }
+    Load-Bar
+})
+
+# ---------- Assistant « Mon PC rame » ----------
+$slowCode = {
+    param($a)
+    function F($sev, $title, $why, $txt, $act, $lbl) { [pscustomobject]@{ Sev = $sev; Title = $title; Why = $why; Txt = $txt; Act = $act; Lbl = $lbl } }
+    function Nice($p) {
+        $n = [string]$p.ProcessName
+        try { $fd = [string]$p.MainModule.FileVersionInfo.FileDescription; if ($fd -and $fd.Trim().Length -ge 2 -and $fd.Length -le 50) { $n = $fd.Trim() } } catch {}
+        $n
+    }
+    function Size($b) { if ($b -ge 1GB) { ([math]::Round($b / 1GB, 1)).ToString([cultureinfo]'fr-FR') + ' Go' } else { '' + [math]::Round($b / 1MB) + ' Mo' } }
+    $out = @()
+    $sys = 'Idle', 'System', 'Registry', 'smss', 'csrss', 'wininit', 'winlogon', 'services', 'lsass', 'svchost', 'dwm', 'explorer', 'fontdrvhost', 'Memory Compression', 'powershell', 'audiodg', 'SearchHost', 'StartMenuExperienceHost', 'ShellExperienceHost', 'sihost', 'ctfmon', 'RuntimeBroker', 'WmiPrvSE', 'spoolsv', 'conhost', 'dllhost', 'taskhostw', 'Secure System', 'LsaIso', 'vmmem', 'TextInputHost', 'SystemSettings', 'Widgets', 'WidgetService', 'LockApp', 'SecurityHealthService', 'NisSrv'
+    $wu = 'TiWorker', 'TrustedInstaller', 'MoUsoCoreWorker', 'wuauclt', 'UsoClient', 'WaaSMedicAgent', 'setuphost', 'SetupHost'
+    $nCpu = [Environment]::ProcessorCount
+    # --- processeur : mesure sur 2 secondes, programme par programme ---
+    $t0 = @{}; foreach ($p in Get-Process) { try { $t0[$p.Id] = $p.TotalProcessorTime.TotalMilliseconds } catch {} }
+    $sw = [Diagnostics.Stopwatch]::StartNew(); Start-Sleep -Milliseconds 2200; $ms = $sw.Elapsed.TotalMilliseconds
+    $cpuBy = @{}; $procs = @(Get-Process)
+    foreach ($p in $procs) {
+        try {
+            if (-not $t0.ContainsKey($p.Id) -or $p.Id -eq 0) { continue }
+            $pc = 100 * ($p.TotalProcessorTime.TotalMilliseconds - $t0[$p.Id]) / ($ms * $nCpu)
+            if ($cpuBy.ContainsKey($p.ProcessName)) { $cpuBy[$p.ProcessName].Pct += $pc } else { $cpuBy[$p.ProcessName] = @{ Pct = $pc; P = $p } }
+        } catch {}
+    }
+    $topCpu = $cpuBy.GetEnumerator() | Where-Object { $_.Key -ne 'Idle' } | Sort-Object { $_.Value.Pct } -Descending | Select-Object -First 1
+    if ($topCpu -and $topCpu.Value.Pct -ge 20) {
+        $nm = $topCpu.Key; $pct = [int][math]::Round($topCpu.Value.Pct); $sev = 1; if ($pct -ge 45) { $sev = 2 }
+        if ($wu -contains $nm) { $out += F $sev 'Windows installe des mises à jour' "Windows installe des mises à jour en arrière-plan ($pct % du processeur)" "Tant que l'installation n'est pas finie, tout peut ramer. Laisse-la se terminer, puis redémarre le PC." 'wu' 'Voir Windows Update' }
+        elseif ($nm -eq 'MsMpEng') { $out += F 1 "L'antivirus fait une analyse" "l'antivirus de Windows analyse ton PC ($pct % du processeur)" "C'est temporaire : ça s'arrête tout seul en quelques minutes. Évite de lancer un jeu pendant ce temps." '' '' }
+        elseif ($nm -eq 'SearchIndexer' -or $nm -eq 'SearchProtocolHost') { $out += F 1 'Windows range tes fichiers' "Windows indexe tes fichiers pour la recherche ($pct % du processeur)" "C'est temporaire, souvent après avoir copié beaucoup de fichiers. Ça se calme tout seul." '' '' }
+        elseif ($sys -contains $nm) { $out += F $sev 'Un service de Windows travaille beaucoup' "un service de Windows ($nm) utilise $pct % du processeur" "Si ça dure plus de 10 minutes, un redémarrage règle le problème dans la plupart des cas." 'reboot' 'Redémarrer le PC' }
+        else { $nice = Nice $topCpu.Value.P; $out += F $sev ("$nice utilise beaucoup le processeur") ("$nice utilise $pct % de ton processeur") "Ferme-le si tu ne t'en sers pas en ce moment : ton PC retrouvera de la marge tout de suite." ('close:' + $nm) ("Fermer " + $nice) }
+    } elseif ([int]$a.Cpu -ge 85) {
+        $out += F 1 'Processeur très occupé' ("ton processeur est occupé à " + $a.Cpu + " %") "Plein de petits programmes travaillent en même temps. Regarde ce qui tourne et ferme ce qui ne sert pas." 'page:Proc' 'Voir ce qui tourne'
+    }
+    # --- mémoire ---
+    try {
+        $o = Get-CimInstance Win32_OperatingSystem
+        $tot = [double]$o.TotalVisibleMemorySize * 1KB; $used = $tot - [double]$o.FreePhysicalMemory * 1KB
+        $mp = [int](100 * $used / $tot)
+        $memBy = @{}
+        foreach ($p in $procs) { if ($sys -contains $p.ProcessName -or $p.ProcessName -eq 'MsMpEng') { continue }; if ($memBy.ContainsKey($p.ProcessName)) { $memBy[$p.ProcessName].B += $p.WorkingSet64 } else { $memBy[$p.ProcessName] = @{ B = $p.WorkingSet64; P = $p } } }
+        $tm = $memBy.GetEnumerator() | Sort-Object { $_.Value.B } -Descending | Select-Object -First 1
+        if ($mp -ge 80 -and $tm) {
+            $nice = Nice $tm.Value.P; $sev = 1; if ($mp -ge 88) { $sev = 2 }
+            $out += F $sev 'Mémoire presque pleine' ("ta mémoire est pleine à $mp %, et $nice en prend " + (Size $tm.Value.B)) ("Quand la mémoire est pleine, Windows se sert du disque à la place, et tout ralentit. Ferme $nice (ou ses onglets inutiles) pour libérer de la place.") ('close:' + $tm.Key) ("Fermer " + $nice)
+        }
+        $go = [math]::Round($tot / 1GB)
+        if ($go -le 8) { $out += F 1 'Peu de mémoire' "ton PC n'a que $go Go de mémoire" "C'est juste aujourd'hui, surtout avec un navigateur ou Discord ouverts. Passer à 16 Go est souvent l'upgrade le moins cher et le plus efficace." 'page:Hw' 'Conseils d''upgrade' }
+        $days = [int]((Get-Date) - $o.LastBootUpTime).TotalDays
+        if ($days -ge 5) { $out += F 1 "Pas de redémarrage depuis $days jours" "ton PC n'a pas redémarré depuis $days jours" "Éteindre ne suffit pas toujours (démarrage rapide de Windows) : choisis « Redémarrer » pour repartir à zéro." 'reboot' 'Redémarrer maintenant' }
+    } catch {}
+    # --- disque ---
+    try {
+        $c = Get-CimInstance Win32_LogicalDisk -Filter ("DeviceID='" + $env:SystemDrive + "'")
+        $fp = [int](100 * $c.FreeSpace / $c.Size)
+        if ($fp -lt 15) { $sev = 1; if ($fp -lt 8) { $sev = 2 }; $out += F $sev 'Disque presque plein' ("ton disque " + $env:SystemDrive + " est presque plein (plus que " + (Size $c.FreeSpace) + " de libre)") "Windows a besoin de place libre pour bien fonctionner. Un nettoyage récupère souvent plusieurs Go." 'page:Opti' 'Nettoyer le PC' }
+    } catch {}
+    try {
+        $dk = Get-CimInstance Win32_PerfFormattedData_PerfDisk_PhysicalDisk -Filter "Name='_Total'"
+        $busy = 100 - [int]$dk.PercentIdleTime
+        if ($busy -ge 90) { $out += F 2 'Disque à fond' "ton disque travaille à fond ($busy %)" "Tant que le disque est saturé, tout attend : ouverture des programmes, chargements. Ça vient souvent d'une mise à jour, d'un antivirus ou d'un téléchargement en cours." 'page:Proc' 'Voir ce qui tourne' }
+    } catch {}
+    try {
+        $sd = ([string]$env:SystemDrive).TrimEnd(':'); $num = (Get-Partition -DriveLetter $sd -ErrorAction Stop | Select-Object -First 1).DiskNumber
+        $pd = Get-PhysicalDisk -ErrorAction Stop | Where-Object { [string]$_.DeviceId -eq [string]$num } | Select-Object -First 1
+        if ($pd -and [string]$pd.MediaType -eq 'HDD') { $out += F 2 'Windows est sur un disque dur' "Windows est installé sur un vieux disque dur mécanique" "C'est la cause n°1 des PC lents : démarrage, ouverture des programmes, chargements. Passer sur un SSD change tout." 'page:Hw' 'Conseils d''upgrade' }
+    } catch {}
+    # --- démarrage ---
+    try {
+        $n = 0
+        foreach ($k in 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run', 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run', 'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run') { $i = Get-Item -LiteralPath $k -ErrorAction SilentlyContinue; if ($i) { $n += $i.ValueCount } }
+        if ($n -ge 9) { $out += F 1 'Trop de programmes au démarrage' "$n programmes se lancent tout seuls avec Windows" "Ils ralentissent le démarrage et tournent en fond tout le temps. Désactive ceux dont tu n'as pas besoin : ils restent installés." 'page:Start' 'Voir le démarrage' }
+    } catch {}
+    try { $pc = @($procs).Count; if ($pc -ge 280) { $out += F 1 'Beaucoup de choses en arrière-plan' "$pc processus tournent en même temps" "C'est beaucoup. La page Alléger coupe en un clic les applis et services qui ne servent à rien en fond." 'page:Light' 'Alléger Windows' } } catch {}
+    # --- alimentation ---
+    try {
+        $ap = [string](& powercfg /getactivescheme 2>$null)
+        if ($ap -match 'a1841308-3541-4fab-bc81-f71556f20b4a') { $out += F 2 "Mode Économie d'énergie" "ton PC est en mode Économie d'énergie" "Dans ce mode, Windows bride volontairement le processeur. Passe sur le profil Normal ou Jeu." 'page:Opti' 'Changer de profil' }
+    } catch {}
+    try {
+        $bt = @(Get-CimInstance Win32_Battery -ErrorAction Stop)
+        if ($bt.Count -and [int]$bt[0].BatteryStatus -eq 1) { $out += F 1 'Sur batterie' "ton PC portable est sur batterie" "Sur batterie, Windows et la carte graphique ralentissent pour tenir plus longtemps. Branche le chargeur pour jouer." '' '' }
+    } catch {}
+    # --- chauffe ---
+    if ([int]$a.CpuT -ge 90) { $out += F 2 'Le processeur chauffe trop' ("ton processeur est à " + $a.CpuT + " °C") "Au-delà de 90 °C, il ralentit tout seul pour se protéger. Dépoussière le PC et vérifie que les ventilateurs tournent." 'page:Hw' 'Mon matériel' }
+    if ([int]$a.GpuT -ge 85) { $out += F 1 'La carte graphique chauffe' ("ta carte graphique est à " + $a.GpuT + " °C") "Elle peut baisser ses performances pour se protéger. Vérifie que l'air circule bien dans le boîtier." '' '' }
+    # --- redémarrage en attente ---
+    $pend = (Test-Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired') -or (Test-Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending')
+    if ($pend) { $out += F 1 'Redémarrage en attente' "une mise à jour attend un redémarrage pour se finir" "Tant que le PC n'a pas redémarré, la mise à jour reste à moitié installée et peut ralentir Windows." 'reboot' 'Redémarrer maintenant' }
+    # --- écran ---
+    if ([int]$a.HzMax - [int]$a.HzCur -ge 2) { $out += F 1 ("Écran bloqué à " + $a.HzCur + " Hz") ("ton écran est réglé sur " + $a.HzCur + " Hz alors qu'il peut aller à " + $a.HzMax + " Hz") "Tout paraît moins fluide, même si le PC va bien. Un clic suffit pour passer au maximum." 'page:Hw' 'Régler l''écran' }
+    $out | Sort-Object Sev -Descending
+}
+$script:slowAnim = $null
+function Start-Slow {
+    (UI 'SlowGo').IsEnabled = $false; (UI 'SlowGoTxt').Text = 'Analyse...'
+    (UI 'SlowList').Children.Clear(); (UI 'SlowResTag').Visibility = 'Collapsed'; (UI 'SlowMsg').Text = ' '
+    (UI 'SlowHead').Text = 'Je cherche ce qui ralentit ton PC...'
+    $steps = @('Je regarde ce qui occupe le processeur...', 'Je vérifie la mémoire...', 'Je regarde le disque...', 'Je vérifie le démarrage et les mises à jour...', "Je vérifie l'alimentation, la chauffe et l'écran...")
+    $script:slowStep = 0; (UI 'SlowSub').Text = $steps[0]
+    $script:slowAnim = New-Object System.Windows.Threading.DispatcherTimer; $script:slowAnim.Interval = [TimeSpan]::FromMilliseconds(900)
+    $script:slowSteps = $steps
+    $script:slowAnim.Add_Tick({ $script:slowStep = [math]::Min($script:slowStep + 1, $script:slowSteps.Count - 1); (UI 'SlowSub').Text = $script:slowSteps[$script:slowStep] })
+    $script:slowAnim.Start()
+    $hc = 0; $hm = 0; try { Ensure-Disp; $i = [PcmDisp.Disp]::Info(); $hc = $i[2]; $hm = $i[3] } catch {}
+    Start-Bg $slowCode @{ Cpu = [int]$sync.Cpu; CpuT = [int]$sync.CpuT; GpuT = [int]$sync.GpuT; HzCur = $hc; HzMax = $hm } {
+        param($r)
+        try { $script:slowAnim.Stop() } catch {}
+        (UI 'SlowGo').IsEnabled = $true; (UI 'SlowGoTxt').Text = 'Relancer'; (UI 'SlowGoIco').Text = [string][char]0xE72C
+        Show-SlowResult @($r | Where-Object { $_ -and $_.Title })
+    }
+}
+function Show-SlowResult($list) {
+    $h = UI 'SlowList'; $h.Children.Clear()
+    $bad = @($list | Where-Object { $_.Sev -ge 1 })
+    if (-not $bad.Count) {
+        (UI 'SlowHead').Text = "Je ne vois rien d'anormal en ce moment."
+        (UI 'SlowSub').Text = "Ton PC n'est ni saturé, ni en train de chauffer, ni bridé. Si ça rame seulement en jeu, laisse OnePC ouvert pendant que tu joues, puis relance l'analyse juste après la partie. Tu peux aussi regarder la page Plantages si un jeu se ferme tout seul."
+        Log "Assistant Mon PC rame : rien d'anormal"
+        return
+    }
+    $main = $bad[0]
+    $w = [string]$main.Why; if ($w) { $w = $w.Substring(0, 1).ToUpper() + $w.Substring(1) }
+    (UI 'SlowHead').Text = $w + '.'
+    if ($bad.Count -gt 1) { (UI 'SlowSub').Text = "C'est la cause principale. J'ai trouvé " + ($bad.Count - 1) + " autre(s) chose(s) à regarder juste en dessous." }
+    else { (UI 'SlowSub').Text = "C'est la seule chose anormale que je vois. Le bouton pour régler ça est juste en dessous." }
+    (UI 'SlowResTag').Visibility = 'Visible'
+    $cols = @('#3DDC84', '#FBBF24', '#FF6B6B')
+    foreach ($f in $bad) {
+        $card = New-Object System.Windows.Controls.Border; $card.Background = $brush.ConvertFromString('#17171B'); $card.BorderBrush = $brush.ConvertFromString('#26262C')
+        $card.BorderThickness = New-Object System.Windows.Thickness 1; $card.CornerRadius = New-Object System.Windows.CornerRadius 12; $card.Margin = New-Object System.Windows.Thickness 0, 0, 0, 10
+        $g = New-Object System.Windows.Controls.Grid
+        $c0 = New-Object System.Windows.Controls.ColumnDefinition; $c0.Width = New-Object System.Windows.GridLength 5
+        $c1 = New-Object System.Windows.Controls.ColumnDefinition; $c1.Width = New-Object System.Windows.GridLength 1, ([System.Windows.GridUnitType]::Star)
+        $c2 = New-Object System.Windows.Controls.ColumnDefinition; $c2.Width = [System.Windows.GridLength]::Auto
+        [void]$g.ColumnDefinitions.Add($c0); [void]$g.ColumnDefinitions.Add($c1); [void]$g.ColumnDefinitions.Add($c2)
+        $bar = New-Object System.Windows.Controls.Border; $bar.Background = $brush.ConvertFromString($cols[[int]$f.Sev]); $bar.CornerRadius = New-Object System.Windows.CornerRadius 12, 0, 0, 12
+        [void]$g.Children.Add($bar)
+        $tx = New-Object System.Windows.Controls.StackPanel; $tx.Margin = New-Object System.Windows.Thickness 16, 13, 12, 14; [System.Windows.Controls.Grid]::SetColumn($tx, 1)
+        $hd = New-Object System.Windows.Controls.StackPanel; $hd.Orientation = 'Horizontal'
+        $pill = New-Object System.Windows.Controls.Border; $pill.CornerRadius = New-Object System.Windows.CornerRadius 8; $pill.Padding = New-Object System.Windows.Thickness 8, 1, 8, 2; $pill.Margin = New-Object System.Windows.Thickness 0, 0, 10, 0
+        $pl = New-Object System.Windows.Controls.TextBlock; $pl.FontSize = 11; $pl.FontWeight = 'SemiBold'
+        if ([int]$f.Sev -ge 2) { $pill.Background = $brush.ConvertFromString('#3A1519'); $pl.Foreground = $brush.ConvertFromString('#FF6B6B'); $pl.Text = 'Important' }
+        else { $pill.Background = $brush.ConvertFromString('#33280F'); $pl.Foreground = $brush.ConvertFromString('#FBBF24'); $pl.Text = 'À regarder' }
+        $pill.Child = $pl; [void]$hd.Children.Add($pill)
+        $t = New-Object System.Windows.Controls.TextBlock; $t.Text = [string]$f.Title; $t.FontWeight = 'SemiBold'; $t.FontSize = 14; $t.VerticalAlignment = 'Center'
+        [void]$hd.Children.Add($t)
+        $d = New-Object System.Windows.Controls.TextBlock; $d.Text = [string]$f.Txt; $d.TextWrapping = 'Wrap'; $d.Foreground = $brush.ConvertFromString('#9C9CA6'); $d.Margin = New-Object System.Windows.Thickness 0, 6, 0, 0; $d.LineHeight = 19
+        [void]$tx.Children.Add($hd); [void]$tx.Children.Add($d); [void]$g.Children.Add($tx)
+        if ($f.Act) {
+            $bt = New-Object System.Windows.Controls.Button; $bt.Style = $win.FindResource('Action'); $bt.Content = [string]$f.Lbl; $bt.Tag = [string]$f.Act
+            $bt.VerticalAlignment = 'Center'; $bt.Margin = New-Object System.Windows.Thickness 0, 0, 16, 0; [System.Windows.Controls.Grid]::SetColumn($bt, 2)
+            if ([int]$f.Sev -lt 2) { $bt.Style = $win.FindResource('Ghost') }
+            $bt.Add_Click({ param($s, $e) Do-SlowAct ([string]$s.Tag) })
+            [void]$g.Children.Add($bt)
+        }
+        $card.Child = $g; [void]$h.Children.Add($card)
+    }
+    Log ("Assistant Mon PC rame : " + [string]$main.Title)
+}
+function Do-SlowAct($act) {
+    if ($act -like 'page:*') { Show-Page $act.Substring(5); return }
+    if ($act -eq 'wu') { Open-Settings 'ms-settings:windowsupdate'; return }
+    if ($act -eq 'reboot') {
+        if (Ask "Redémarrer le PC maintenant ?`r`nEnregistre ton travail avant : le PC redémarre dans 10 secondes.") { Log 'Redémarrage demandé (assistant Mon PC rame)'; Start-Process shutdown -ArgumentList '/r /t 10' -WindowStyle Hidden }
+        return
+    }
+    if ($act -like 'close:*') {
+        $name = $act.Substring(6)
+        if ($protected -contains $name) { (UI 'SlowMsg').Text = "« $name » fait partie de Windows : je ne le ferme pas."; return }
+        if (-not (Ask "Fermer « $name » ?`r`nCe qui n'est pas enregistré dans ce programme sera perdu.")) { return }
+        try { Stop-Process -Name $name -Force -ErrorAction Stop; Log "Programme fermé : $name"; (UI 'SlowMsg').Text = "« $name » a été fermé. Relance l'analyse pour vérifier que c'est mieux." }
+        catch { (UI 'SlowMsg').Text = "Impossible de fermer « $name » (droits insuffisants ou déjà fermé)." }
+    }
+}
+(UI 'SlowGo').Add_Click({ Start-Slow })
+(UI 'HomeSlow').Add_Click({ Show-Page 'Slow'; Start-Slow })
+
+# ---------- Remettre mon PC à neuf ----------
+function Get-FreshFolders {
+    $dl = ''
+    try { $dl = [string](Get-ItemProperty -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders' -Name '{374DE290-123F-4565-9164-39C4925E467B}' -ErrorAction Stop).'{374DE290-123F-4565-9164-39C4925E467B}' } catch {}
+    if (-not $dl) { $dl = Join-Path $env:USERPROFILE 'Downloads' }
+    $l = @(
+        @{ N = 'Bureau'; P = [Environment]::GetFolderPath('Desktop') },
+        @{ N = 'Documents'; P = [Environment]::GetFolderPath('MyDocuments') },
+        @{ N = 'Images'; P = [Environment]::GetFolderPath('MyPictures') },
+        @{ N = 'Vidéos'; P = [Environment]::GetFolderPath('MyVideos') },
+        @{ N = 'Musique'; P = [Environment]::GetFolderPath('MyMusic') },
+        @{ N = 'Téléchargements'; P = $dl }
+    )
+    foreach ($x in $l) { $x.Od = ([string]$x.P -match '\\OneDrive') }
+    @($l | Where-Object { $_.P -and (Test-Path -LiteralPath $_.P) })
+}
+$freshSizeCode = {
+    param($paths)
+    $res = @{}
+    foreach ($p in $paths) {
+        $n = 0; $sz = [double]0; $st = New-Object System.Collections.Stack; $st.Push($p)
+        while ($st.Count) {
+            $d = $st.Pop()
+            try {
+                foreach ($e in [IO.Directory]::EnumerateFileSystemEntries($d)) {
+                    try {
+                        $a = [IO.File]::GetAttributes($e)
+                        if ($a -band [IO.FileAttributes]::Directory) { if (-not ($a -band [IO.FileAttributes]::ReparsePoint)) { $st.Push($e) } }
+                        else { $n++; $sz += (New-Object IO.FileInfo $e).Length }
+                    } catch {}
+                }
+            } catch {}
+        }
+        $res[$p] = @($n, $sz)
+    }
+    $res
+}
+$script:freshBoxes = @{}; $script:freshBuilt = $false; $script:freshPoll = $null; $script:freshRoot = ''; $script:freshBack = ''
+$freshTodoItems = @(
+    "Mots de passe : connecte-toi à ton compte Google, Microsoft ou Firefox dans ton navigateur, pour les retrouver après (ou note-les)",
+    "Codes de double authentification : vérifie que ton appli (Google Authenticator...) est sur ton téléphone, pas sur le PC",
+    "Clés de licence de tes logiciels payants (Office, antivirus, logiciels de montage...)",
+    "Sauvegardes de jeux qui ne sont pas dans le cloud (Steam et Epic sauvegardent la plupart en ligne)",
+    "Ce qui est rangé ailleurs que dans tes dossiers (par exemple C:\MesTrucs) : copie-le à la main sur ton disque de sauvegarde"
+)
+function Build-Fresh {
+    if ($script:freshBuilt) { return }
+    $script:freshBuilt = $true
+    $w = UI 'FreshWhat'; $w.Children.Clear(); $script:freshBoxes = @{}
+    $paths = @()
+    foreach ($f in Get-FreshFolders) {
+        $cb = New-Object System.Windows.Controls.CheckBox; $cb.Foreground = $brush.ConvertFromString('#E8E8EC'); $cb.Tag = $f.N
+        $cb.Content = $f.N + '  ·  calcul...'; $cb.IsChecked = (-not $f.Od); $cb.VerticalAlignment = 'Center'
+        if ($f.Od) { $cb.ToolTip = "Ce dossier est synchronisé avec OneDrive : il est déjà sauvegardé en ligne. Coche-le seulement si tu veux aussi une copie sur ton disque." }
+        $b = New-Object System.Windows.Controls.Border; $b.Width = 300; $b.Margin = New-Object System.Windows.Thickness 0, 0, 10, 10; $b.Padding = New-Object System.Windows.Thickness 12, 9, 12, 9
+        $b.Background = $brush.ConvertFromString('#141418'); $b.CornerRadius = New-Object System.Windows.CornerRadius 10; $b.Child = $cb
+        [void]$w.Children.Add($b); $script:freshBoxes[$f.N] = @{ C = $cb; P = $f.P; Od = $f.Od }
+        $paths += $f.P
+    }
+    foreach ($x in @(@('apps', 'Liste de mes logiciels'), @('drv', 'Mes pilotes'), @('onepc', 'OnePC et ses réglages'))) {
+        $cb = New-Object System.Windows.Controls.CheckBox; $cb.Foreground = $brush.ConvertFromString('#E8E8EC'); $cb.Content = $x[1]; $cb.IsChecked = $true
+        $b = New-Object System.Windows.Controls.Border; $b.Width = 300; $b.Margin = New-Object System.Windows.Thickness 0, 0, 10, 10; $b.Padding = New-Object System.Windows.Thickness 12, 9, 12, 9
+        $b.Background = $brush.ConvertFromString('#141418'); $b.CornerRadius = New-Object System.Windows.CornerRadius 10; $b.Child = $cb
+        [void]$w.Children.Add($b); $script:freshBoxes[$x[0]] = @{ C = $cb; P = ''; Od = $false }
+    }
+    $t = UI 'FreshTodo'; $t.Children.Clear()
+    foreach ($s in $freshTodoItems) {
+        $cb = New-Object System.Windows.Controls.CheckBox; $cb.Foreground = $brush.ConvertFromString('#CACAD2'); $cb.Margin = New-Object System.Windows.Thickness 0, 0, 0, 8
+        $tb = New-Object System.Windows.Controls.TextBlock; $tb.Text = $s; $tb.TextWrapping = 'Wrap'; $cb.Content = $tb
+        [void]$t.Children.Add($cb)
+    }
+    Start-Bg $freshSizeCode $paths {
+        param($r)
+        $h = $r | Select-Object -Last 1
+        foreach ($k in @($script:freshBoxes.Keys)) {
+            $x = $script:freshBoxes[$k]; if (-not $x.P) { continue }
+            if ($h -and $h.ContainsKey($x.P)) { $v = $h[$x.P]; $txt = $k + '  ·  ' + (Mo ([double]$v[1])); if ($x.Od) { $txt += '  (OneDrive)' }; $x.C.Content = $txt }
+            else { $x.C.Content = $k }
+        }
+    }
+}
+function Set-FreshTab($n) {
+    foreach ($i in 1..3) {
+        if ($i -eq $n) { (UI ('FreshP' + $i)).Visibility = 'Visible' } else { (UI ('FreshP' + $i)).Visibility = 'Collapsed' }
+        $col = '#2A2A31'; if ($i -eq $n) { $col = $accent } elseif ($i -eq 1 -and [string]$cfg.FreshOk) { $col = '#2F9E5B' }
+        (UI ('FreshNum' + $i)).Background = $brush.ConvertFromString($col)
+    }
+    $script:freshTab = $n
+}
+function Show-Fresh {
+    Build-Fresh
+    if ([string]$cfg.FreshDest) { (UI 'FreshDest').Text = [string]$cfg.FreshDest; (UI 'FreshDest').Foreground = $brush.ConvertFromString('#E8E8EC') }
+    if ([string]$cfg.FreshOk) {
+        (UI 'FreshSt1').Text = 'Sauvegarde vérifiée'; (UI 'FreshSt1').Foreground = $brush.ConvertFromString('#3DDC84')
+        (UI 'FreshSt2').Text = 'Prêt quand tu veux'; (UI 'FreshC0').IsChecked = $true
+        if ((UI 'FreshSaveBox').Visibility -ne 'Visible' -and (Test-Path -LiteralPath ([string]$cfg.FreshOk))) { [void](Verify-Fresh ([string]$cfg.FreshOk) $true) }
+    } else {
+        (UI 'FreshSt1').Text = 'À faire'; (UI 'FreshSt1').Foreground = $brush.ConvertFromString('#8E8E98')
+        (UI 'FreshSt2').Text = "Bloqué tant que la sauvegarde n'est pas vérifiée"; (UI 'FreshC0').IsChecked = $false
+    }
+    if (-not $script:freshTab) { Set-FreshTab 1 } else { Set-FreshTab $script:freshTab }
+    Update-FreshGo
+}
+(UI 'FreshTab1').Add_Click({ Set-FreshTab 1 })
+(UI 'FreshTab2').Add_Click({ Set-FreshTab 2 })
+(UI 'FreshTab3').Add_Click({ Set-FreshTab 3 })
+(UI 'FreshPick').Add_Click({
+    $p = Pick-Folder 'Choisis ton disque externe ou ta clé USB pour la sauvegarde'
+    if (-not $p) { return }
+    $drive = ([IO.Path]::GetPathRoot($p)).TrimEnd('\')
+    if ($drive -ieq ([string]$env:SystemDrive).TrimEnd('\')) {
+        (UI 'FreshMsg1').Text = "Impossible : " + $drive + " est le disque de Windows. La sauvegarde serait effacée avec le reste. Choisis un disque externe ou une clé USB."
+        (UI 'FreshMsg1').Foreground = $brush.ConvertFromString('#FF6B6B'); return
+    }
+    $cfg.FreshDest = $p; Save-Cfg
+    $free = ''; try { $di = New-Object IO.DriveInfo $drive; $free = '  ·  ' + (Mo ([double]$di.AvailableFreeSpace)) + ' libres' } catch {}
+    (UI 'FreshDest').Text = $p + $free; (UI 'FreshDest').Foreground = $brush.ConvertFromString('#E8E8EC')
+    (UI 'FreshMsg1').Text = ' '; (UI 'FreshMsg1').Foreground = $brush.ConvertFromString('#B8B8C0')
+})
+(UI 'FreshSave').Add_Click({
+    $dest = [string]$cfg.FreshDest
+    if (-not $dest -or -not (Test-Path -LiteralPath $dest)) { (UI 'FreshMsg1').Text = "Choisis d'abord ton disque de sauvegarde (est-il bien branché ?)."; return }
+    $items = @(); $need = [double]0
+    foreach ($k in @($script:freshBoxes.Keys)) {
+        $x = $script:freshBoxes[$k]
+        if ($x.P -and $x.C.IsChecked) { $items += , @($k, $x.P) }
+    }
+    $doApps = [bool]$script:freshBoxes['apps'].C.IsChecked; $doDrv = [bool]$script:freshBoxes['drv'].C.IsChecked; $doOne = [bool]$script:freshBoxes['onepc'].C.IsChecked
+    if (-not $items.Count -and -not $doApps -and -not $doDrv -and -not $doOne) { (UI 'FreshMsg1').Text = 'Coche au moins une chose à sauvegarder.'; return }
+    $root = Join-Path $dest ('OnePC-Sauvegarde-' + (Get-Date).ToString('yyyy-MM-dd_HHmm'))
+    $q = { param($s) "'" + ([string]$s).Replace("'", "''") + "'" }
+    $itemsCode = (($items | ForEach-Object { '[void]$items.Add(@(' + (& $q $_[0]) + ', ' + (& $q $_[1]) + '))' }) -join "`r`n")
+    $self = [string]$env:SELF; if ($appExe -and (Test-Path -LiteralPath $appExe)) { $self = $appExe }
+    $code = @'
+$Host.UI.RawUI.WindowTitle = 'OnePC : sauvegarde avant de remettre le PC a neuf'
+$root = __ROOT__
+New-Item -ItemType Directory -Path $root -Force | Out-Null
+function CountF($p) {
+    $n = 0; $sz = [double]0; $st = New-Object System.Collections.Stack; $st.Push($p)
+    while ($st.Count) { $d = $st.Pop(); try { foreach ($e in [IO.Directory]::EnumerateFileSystemEntries($d)) { try { $a = [IO.File]::GetAttributes($e); if ($a -band [IO.FileAttributes]::Directory) { if (-not ($a -band [IO.FileAttributes]::ReparsePoint)) { $st.Push($e) } } else { $n++; $sz += (New-Object IO.FileInfo $e).Length } } catch {} } } catch {} }
+    @($n, $sz)
+}
+$man = New-Object System.Collections.Generic.List[string]
+$man.Add('ONEPC-SAUVEGARDE|1|' + (Get-Date).ToString('dd/MM/yyyy HH:mm'))
+$items = New-Object System.Collections.ArrayList
+__ITEMS__
+foreach ($it in $items) {
+    if (-not $it) { continue }
+    Write-Host ''; Write-Host ('=== ' + $it[0] + ' ===') -ForegroundColor Cyan
+    $dst = Join-Path $root ('Fichiers\' + $it[0])
+    & robocopy $it[1] $dst /E /XJ /R:1 /W:1 /NP /NDL /NFL /NJH /MT:8
+    $rc = $LASTEXITCODE
+    $s = CountF $it[1]; $d = CountF $dst
+    $man.Add('DOSSIER|' + $it[0] + '|' + $it[1] + '|' + $s[0] + '|' + $d[0] + '|' + $d[1] + '|' + $rc)
+}
+if (__APPS__) {
+    Write-Host ''; Write-Host '=== Liste de tes logiciels ===' -ForegroundColor Cyan
+    $names = @()
+    foreach ($k in 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*') {
+        foreach ($a in @(Get-ItemProperty -Path $k -ErrorAction SilentlyContinue)) { if ($a.DisplayName -and -not $a.SystemComponent -and -not $a.ParentKeyName) { $names += [string]$a.DisplayName } }
+    }
+    $names = @($names | Sort-Object -Unique)
+    Set-Content -LiteralPath (Join-Path $root 'logiciels.txt') -Value $names -Encoding UTF8
+    $js = 0
+    if (Get-Command winget -ErrorAction SilentlyContinue) { & winget export -o (Join-Path $root 'logiciels.json'); if (Test-Path -LiteralPath (Join-Path $root 'logiciels.json')) { $js = 1 } }
+    $man.Add('APPS|' + $names.Count + '|' + $js)
+}
+if (__DRV__) {
+    Write-Host ''; Write-Host '=== Tes pilotes ===' -ForegroundColor Cyan
+    $pd = Join-Path $root 'Pilotes'; New-Item -ItemType Directory -Path $pd -Force | Out-Null
+    & pnputil /export-driver * $pd | Out-Null
+    $man.Add('PILOTES|' + @(Get-ChildItem -LiteralPath $pd -Recurse -Filter *.inf -ErrorAction SilentlyContinue).Count)
+}
+if (__ONE__) {
+    $od = Join-Path $root 'OnePC'; New-Item -ItemType Directory -Path $od -Force | Out-Null
+    foreach ($f in @(Get-ChildItem -LiteralPath __APPDIR__ -File -ErrorAction SilentlyContinue | Where-Object { $_.Extension -in '.json', '.txt' -and $_.Name -notlike 'licence*' })) { Copy-Item -LiteralPath $f.FullName -Destination $od -Force }
+    $self = __SELF__
+    if ($self -and (Test-Path -LiteralPath $self)) { Copy-Item -LiteralPath $self -Destination (Join-Path $root (Split-Path -Leaf $self)) -Force }
+    $man.Add('ONEPC|1')
+}
+Set-Content -LiteralPath (Join-Path $root 'sauvegarde-onepc.txt') -Value $man -Encoding UTF8
+Write-Host ''
+Write-Host 'Sauvegarde terminee. Retourne dans OnePC : il verifie que tout est bien la.' -ForegroundColor Green
+Read-Host 'Appuie sur Entree pour fermer cette fenetre'
+'@
+    $code = $code.Replace('__ROOT__', (& $q $root)).Replace('__ITEMS__', $itemsCode).Replace('__APPS__', $(if ($doApps) { '$true' } else { '$false' }))
+    $code = $code.Replace('__DRV__', $(if ($doDrv) { '$true' } else { '$false' })).Replace('__ONE__', $(if ($doOne) { '$true' } else { '$false' }))
+    $code = $code.Replace('__APPDIR__', (& $q $appDir)).Replace('__SELF__', (& $q $self))
+    if (-not (Ask ("Lancer la sauvegarde vers`r`n$root ?`r`n`r`nUne fenêtre va s'ouvrir et montrer l'avancement. Windows demandera les droits administrateur (pour copier tes pilotes). Ne débranche pas le disque avant la fin."))) { return }
+    if (-not (Run-Console $code -Admin)) { (UI 'FreshMsg1').Text = 'Annulé (droits administrateur refusés).'; return }
+    $script:freshRoot = $root; $cfg.FreshOk = ''; Save-Cfg
+    (UI 'FreshMsg1').Text = "Sauvegarde en cours dans la fenêtre noire... OnePC vérifiera tout seul dès qu'elle sera finie."
+    Log ("Sauvegarde avant remise à neuf lancée vers " + $root)
+    if ($script:freshPoll) { $script:freshPoll.Stop() }
+    $script:freshPoll = New-Object System.Windows.Threading.DispatcherTimer; $script:freshPoll.Interval = [TimeSpan]::FromSeconds(3)
+    $script:freshPoll.Add_Tick({ if (Test-Path -LiteralPath (Join-Path $script:freshRoot 'sauvegarde-onepc.txt')) { $script:freshPoll.Stop(); Start-Sleep -Milliseconds 500; [void](Verify-Fresh $script:freshRoot $false) } })
+    $script:freshPoll.Start()
+})
+function Find-FreshRoot($p) {
+    if (-not $p) { return '' }
+    if (Test-Path -LiteralPath (Join-Path $p 'sauvegarde-onepc.txt')) { return $p }
+    $d = @(Get-ChildItem -LiteralPath $p -Directory -Filter 'OnePC-Sauvegarde-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'sauvegarde-onepc.txt') })
+    if ($d.Count) { return $d[0].FullName }
+    ''
+}
+function Read-FreshMan($root) {
+    $m = @{ Ok = $true; Files = 0; Size = [double]0; Dirs = @(); Apps = -1; Json = $false; Drv = -1; One = $false; Date = '' }
+    foreach ($l in @(Get-Content -LiteralPath (Join-Path $root 'sauvegarde-onepc.txt') -Encoding UTF8 -ErrorAction Stop)) {
+        $p = ([string]$l).Split('|')
+        switch ($p[0]) {
+            'ONEPC-SAUVEGARDE' { $m.Date = $p[2] }
+            'DOSSIER' {
+                $sn = [int]$p[3]; $dn = [int]$p[4]; $rc = [int]$p[6]
+                $ok = ($rc -lt 8 -and $dn -ge ($sn - [math]::Max(3, [int]($sn * 0.005))))
+                if (-not $ok) { $m.Ok = $false }
+                $m.Files += $dn; $m.Size += [double]$p[5]
+                $m.Dirs += , @($p[1], $sn, $dn, $ok, $p[2])
+            }
+            'APPS' { $m.Apps = [int]$p[1]; $m.Json = ($p[2] -eq '1') }
+            'PILOTES' { $m.Drv = [int]$p[1] }
+            'ONEPC' { $m.One = $true }
+        }
+    }
+    $m
+}
+function Verify-Fresh($root, $quiet) {
+    try { $m = Read-FreshMan $root } catch { (UI 'FreshMsg1').Text = "Pas de sauvegarde OnePC complète dans ce dossier (la fenêtre de sauvegarde est-elle finie ?)."; return $false }
+    $nf = $m.Files.ToString('N0', [cultureinfo]'fr-FR')
+    $lines = @()
+    if ($m.Ok) { $lines += "✓  Sauvegarde vérifiée : $nf fichiers (" + (Mo $m.Size) + "), le " + $m.Date }
+    else { $lines += "✗  Sauvegarde INCOMPLÈTE : certains fichiers n'ont pas été copiés. Ne réinitialise pas le PC : relance la sauvegarde, ou copie ces dossiers à la main." }
+    foreach ($d in $m.Dirs) {
+        $mark = '✓'; if (-not $d[3]) { $mark = '✗' }
+        $lines += "   $mark  " + $d[0] + " : " + $d[2].ToString('N0', [cultureinfo]'fr-FR') + " / " + $d[1].ToString('N0', [cultureinfo]'fr-FR') + " fichiers"
+    }
+    if ($m.Apps -ge 0) { $t = "   ✓  Liste de " + $m.Apps + " logiciels"; if ($m.Json) { $t += " (réinstallables automatiquement)" }; $lines += $t }
+    if ($m.Drv -ge 0) { $lines += "   ✓  " + $m.Drv + " pilotes" }
+    if ($m.One) { $lines += "   ✓  OnePC et ses réglages" }
+    $lines += "   Dossier : " + $root
+    (UI 'FreshSaveRes').Text = ($lines -join "`r`n")
+    $bx = UI 'FreshSaveBox'; $bx.Visibility = 'Visible'
+    if ($m.Ok) {
+        $bx.Background = $brush.ConvertFromString('#10261A'); $bx.BorderBrush = $brush.ConvertFromString('#2F7A4E'); (UI 'FreshSaveRes').Foreground = $brush.ConvertFromString('#B8F0CC')
+        if ([string]$cfg.FreshOk -ne $root) { $cfg.FreshOk = $root; Save-Cfg; Log ("Sauvegarde complète vérifiée : $nf fichiers dans " + $root) }
+        if (-not $quiet) { (UI 'FreshMsg1').Text = "Tout est bien sauvegardé. Tu peux passer à l'étape 2 quand tu veux." }
+    } else {
+        $bx.Background = $brush.ConvertFromString('#2A0F14'); $bx.BorderBrush = $brush.ConvertFromString('#E5484D'); (UI 'FreshSaveRes').Foreground = $brush.ConvertFromString('#F5C2C2')
+        if ([string]$cfg.FreshOk -eq $root) { $cfg.FreshOk = ''; Save-Cfg }
+    }
+    Show-FreshState
+    $m.Ok
+}
+function Show-FreshState {
+    if ([string]$cfg.FreshOk) {
+        (UI 'FreshSt1').Text = 'Sauvegarde vérifiée'; (UI 'FreshSt1').Foreground = $brush.ConvertFromString('#3DDC84')
+        (UI 'FreshSt2').Text = 'Prêt quand tu veux'; (UI 'FreshC0').IsChecked = $true
+    } else {
+        (UI 'FreshSt1').Text = 'À faire'; (UI 'FreshSt1').Foreground = $brush.ConvertFromString('#8E8E98')
+        (UI 'FreshSt2').Text = "Bloqué tant que la sauvegarde n'est pas vérifiée"; (UI 'FreshC0').IsChecked = $false
+    }
+    if ($script:freshTab) { Set-FreshTab $script:freshTab }
+    Update-FreshGo
+}
+(UI 'FreshCheck').Add_Click({
+    $r = $script:freshRoot; if (-not $r) { $r = [string]$cfg.FreshOk }
+    if (-not $r -or -not (Test-Path -LiteralPath $r)) { $r = Find-FreshRoot ([string]$cfg.FreshDest) }
+    if (-not $r) { $p = Pick-Folder 'Choisis le dossier de ta sauvegarde OnePC'; $r = Find-FreshRoot $p }
+    if (-not $r) { (UI 'FreshMsg1').Text = "Je ne trouve pas de sauvegarde OnePC terminée. Lance d'abord la sauvegarde, et attends la fin dans la fenêtre noire."; return }
+    [void](Verify-Fresh $r $false)
+})
+# --- étape 2 : verrous ---
+$script:freshCount = -1
+$script:freshTimer = New-Object System.Windows.Threading.DispatcherTimer; $script:freshTimer.Interval = [TimeSpan]::FromSeconds(1)
+$script:freshTimer.Add_Tick({
+    $script:freshCount--
+    if ($script:freshCount -le 0) { $script:freshTimer.Stop(); $script:freshCount = 0; (UI 'FreshGo').IsEnabled = $true; (UI 'FreshGo').Content = 'Ouvrir la réinitialisation de Windows' }
+    else { (UI 'FreshGo').Content = "Lis encore une fois les avertissements... " + $script:freshCount + " s" }
+})
+function Update-FreshGo {
+    $ok = [bool][string]$cfg.FreshOk
+    foreach ($n in 'FreshC1', 'FreshC2', 'FreshC3', 'FreshC4') { if (-not (UI $n).IsChecked) { $ok = $false } }
+    if ([string](UI 'FreshType').Text -cne 'FORMATER') { $ok = $false }
+    if (-not $ok) {
+        $script:freshTimer.Stop(); $script:freshCount = -1
+        (UI 'FreshGo').IsEnabled = $false; (UI 'FreshGo').Content = 'Ouvrir la réinitialisation de Windows'
+        if (-not [string]$cfg.FreshOk) { (UI 'FreshMsg2').Text = "Bloqué : OnePC n'a pas encore vérifié ta sauvegarde (étape 1)." } else { (UI 'FreshMsg2').Text = ' ' }
+        return
+    }
+    if ($script:freshCount -eq -1) { $script:freshCount = 6; (UI 'FreshGo').IsEnabled = $false; (UI 'FreshGo').Content = "Lis encore une fois les avertissements... 5 s"; $script:freshTimer.Start() }
+}
+foreach ($n in 'FreshC1', 'FreshC2', 'FreshC3', 'FreshC4') { (UI $n).Add_Click({ Update-FreshGo }) }
+(UI 'FreshType').Add_TextChanged({ Update-FreshGo })
+(UI 'FreshGo').Add_Click({
+    if (-not (Ask ("DERNIÈRE VÉRIFICATION`r`n`r`nTa sauvegarde : " + [string]$cfg.FreshOk + "`r`n`r`nSi tu choisis « Supprimer tout » dans Windows, tout ce qui n'est pas dans cette sauvegarde sera perdu pour toujours.`r`n`r`nOuvrir maintenant la réinitialisation de Windows ?"))) { return }
+    Log 'Réinitialisation de Windows ouverte (Remettre mon PC à neuf)'
+    try { Start-Process -FilePath (Join-Path $env:windir 'System32\systemreset.exe') -ArgumentList '-factoryreset' -ErrorAction Stop; (UI 'FreshMsg2').Text = "La fenêtre de Windows est ouverte. Prends ton temps et lis bien chaque écran avant de cliquer." }
+    catch { (UI 'FreshMsg2').Text = "Je t'ouvre la page Récupération de Windows : clique sur « Réinitialiser le PC »."; Open-Settings 'ms-settings:recovery' }
+    (UI 'FreshType').Text = ''
+})
+(UI 'FreshUsb').Add_Click({
+    $u = 'https://www.microsoft.com/fr-fr/software-download/windows11'; if (-not $isWin11) { $u = 'https://www.microsoft.com/fr-fr/software-download/windows10' }
+    try { Start-Process $u } catch {}
+    (UI 'FreshMsg2').Text = "Sur la page de Microsoft, télécharge « l'outil de création de support », branche une clé USB vide de 8 Go ou plus, et suis les étapes. Fais quand même l'étape 1 avant !"
+})
+# --- étape 3 : tout remettre ---
+$freshTileDefs = @(
+    @('apps', 0xE71D, 'Réinstaller mes logiciels', "Discord, Steam, Chrome... d'après la liste sauvegardée"),
+    @('drv', 0xE950, 'Remettre mes pilotes', 'Les pilotes copiés avant la réinitialisation'),
+    @('files', 0xE8B7, 'Remettre mes fichiers', 'Bureau, Documents, Images... sans écraser le plus récent'),
+    @('cfg', 0xE713, 'Remettre mes réglages OnePC', 'Couleur, jeux, préférences (OnePC redémarre)')
+)
+$script:freshTileBtns = @()
+foreach ($d in $freshTileDefs) {
+    $bt = New-Object System.Windows.Controls.Button; $bt.Style = $tileStyle; $bt.Tag = $d[0]; $bt.Width = 250; $bt.Height = 84; $bt.IsEnabled = $false
+    $bt.Margin = New-Object System.Windows.Thickness 0, 0, 10, 10
+    $g = New-Object System.Windows.Controls.DockPanel
+    $ib = New-Object System.Windows.Controls.Border; $ib.Width = 40; $ib.Height = 40; $ib.CornerRadius = New-Object System.Windows.CornerRadius 10
+    $ib.Background = $brush.ConvertFromString('#1A3A2A'); $ib.Margin = New-Object System.Windows.Thickness 0, 0, 12, 0; $ib.VerticalAlignment = 'Center'
+    $ic = New-Object System.Windows.Controls.TextBlock; $ic.Text = [string][char]$d[1]; $ic.FontFamily = 'Segoe MDL2 Assets'; $ic.FontSize = 17; $ic.Foreground = $brush.ConvertFromString('#34D399')
+    $ic.HorizontalAlignment = 'Center'; $ic.VerticalAlignment = 'Center'; $ib.Child = $ic
+    [System.Windows.Controls.DockPanel]::SetDock($ib, 'Left'); [void]$g.Children.Add($ib)
+    $tx = New-Object System.Windows.Controls.StackPanel; $tx.VerticalAlignment = 'Center'
+    $a = New-Object System.Windows.Controls.TextBlock; $a.Text = $d[2]; $a.FontWeight = 'SemiBold'
+    $b = New-Object System.Windows.Controls.TextBlock; $b.Text = $d[3]; $b.FontSize = 11.5; $b.TextWrapping = 'Wrap'; $b.Foreground = $brush.ConvertFromString('#8E8E98'); $b.Margin = New-Object System.Windows.Thickness 0, 2, 0, 0
+    [void]$tx.Children.Add($a); [void]$tx.Children.Add($b); [void]$g.Children.Add($tx)
+    $bt.Content = $g
+    $bt.Add_Click({ param($s, $e) Do-FreshRestore ([string]$s.Tag) })
+    [void](UI 'FreshTiles').Children.Add($bt); $script:freshTileBtns += $bt
+}
+(UI 'FreshPickBack').Add_Click({
+    $p = Pick-Folder 'Choisis ta sauvegarde OnePC (le dossier OnePC-Sauvegarde-... ou le disque qui la contient)'
+    $r = Find-FreshRoot $p
+    if (-not $r) { (UI 'FreshBackInfo').Text = "Pas de sauvegarde OnePC dans ce dossier."; (UI 'FreshBackInfo').Foreground = $brush.ConvertFromString('#FF6B6B'); return }
+    try { $m = Read-FreshMan $r } catch { (UI 'FreshBackInfo').Text = 'Sauvegarde illisible.'; return }
+    $script:freshBack = $r
+    (UI 'FreshBackInfo').Text = "Sauvegarde du " + $m.Date + " : " + $m.Files.ToString('N0', [cultureinfo]'fr-FR') + " fichiers (" + (Mo $m.Size) + ")"
+    (UI 'FreshBackInfo').Foreground = $brush.ConvertFromString('#3DDC84')
+    foreach ($b in $script:freshTileBtns) {
+        $on = $true
+        switch ([string]$b.Tag) {
+            'apps' { $on = (Test-Path -LiteralPath (Join-Path $r 'logiciels.txt')) }
+            'drv' { $on = (Test-Path -LiteralPath (Join-Path $r 'Pilotes')) }
+            'files' { $on = (Test-Path -LiteralPath (Join-Path $r 'Fichiers')) }
+            'cfg' { $on = (Test-Path -LiteralPath (Join-Path $r 'OnePC\reglages.json')) }
+        }
+        $b.IsEnabled = $on
+    }
+    (UI 'FreshRAll').IsEnabled = $true
+})
+function Get-FreshRestoreCode($what) {
+    $r = $script:freshBack; $q = { param($s) "'" + ([string]$s).Replace("'", "''") + "'" }
+    $c = @()
+    if ($what -contains 'files') {
+        foreach ($f in Get-FreshFolders) {
+            $src = Join-Path $r ('Fichiers\' + $f.N)
+            if (Test-Path -LiteralPath $src) { $c += "Write-Host ''; Write-Host '=== " + $f.N.Replace("'", "''") + " ===' -ForegroundColor Cyan; & robocopy " + (& $q $src) + " " + (& $q $f.P) + " /E /XO /R:1 /W:1 /NP /NDL /NFL /NJH /MT:8" }
+        }
+    }
+    if ($what -contains 'drv') { $c += "Write-Host ''; Write-Host '=== Pilotes ===' -ForegroundColor Cyan; & pnputil /add-driver " + (& $q (Join-Path $r 'Pilotes\*.inf')) + " /subdirs /install" }
+    if ($what -contains 'apps') {
+        $js = Join-Path $r 'logiciels.json'
+        $c += "Write-Host ''; Write-Host '=== Logiciels ===' -ForegroundColor Cyan"
+        $c += "if ((Test-Path -LiteralPath " + (& $q $js) + ") -and (Get-Command winget -ErrorAction SilentlyContinue)) { & winget import -i " + (& $q $js) + " --ignore-unavailable } else { Write-Host 'Installation automatique impossible : la liste de tes logiciels va s''ouvrir.' -ForegroundColor Yellow; Start-Process notepad.exe -ArgumentList " + (& $q ('"' + (Join-Path $r 'logiciels.txt') + '"')) + " }"
+    }
+    $c += "Write-Host ''; Write-Host 'Termine.' -ForegroundColor Green; Read-Host 'Appuie sur Entree pour fermer'"
+    $c -join "`r`n"
+}
+function Do-FreshRestore($what) {
+    if (-not $script:freshBack) { (UI 'FreshMsg3').Text = "Choisis d'abord ta sauvegarde."; return }
+    switch ($what) {
+        'cfg' {
+            if (-not (Ask "Remettre tes réglages OnePC sauvegardés ?`r`nOnePC va se fermer et se rouvrir.")) { return }
+            $src = (Join-Path $script:freshBack 'OnePC\reglages.json').Replace("'", "''")
+            Log 'Réglages OnePC remis depuis la sauvegarde'
+            if (-not (Restart-App ("Copy-Item -LiteralPath '" + $src + "' -Destination '" + $cfgFile.Replace("'", "''") + "' -Force;"))) { (UI 'FreshMsg3').Text = "Impossible de redémarrer OnePC tout seul : ferme-le et rouvre-le." }
+            return
+        }
+        'drv' { if (Run-Console (Get-FreshRestoreCode @('drv')) -Admin) { Log 'Pilotes remis depuis la sauvegarde'; (UI 'FreshMsg3').Text = 'Installation des pilotes dans la fenêtre noire...' } else { (UI 'FreshMsg3').Text = 'Annulé (droits administrateur refusés).' } }
+        'apps' { if (Run-Console (Get-FreshRestoreCode @('apps'))) { Log 'Réinstallation des logiciels lancée'; (UI 'FreshMsg3').Text = "Réinstallation dans la fenêtre noire. Si winget te pose une question, réponds O (oui)." } }
+        'files' { if (Run-Console (Get-FreshRestoreCode @('files'))) { Log 'Fichiers remis depuis la sauvegarde'; (UI 'FreshMsg3').Text = 'Copie de tes fichiers dans la fenêtre noire...' } }
+        'all' {
+            if (-not (Ask "Tout remettre d'un coup (fichiers, pilotes, logiciels) ?`r`nWindows demandera les droits administrateur. Ensuite, clique sur « Remettre mes réglages OnePC » si tu veux aussi tes réglages.")) { return }
+            if (Run-Console (Get-FreshRestoreCode @('files', 'drv', 'apps')) -Admin) { Log 'Remise en place complète lancée (fichiers, pilotes, logiciels)'; (UI 'FreshMsg3').Text = 'Tout se remet en place dans la fenêtre noire. Ça peut prendre un moment.' } else { (UI 'FreshMsg3').Text = 'Annulé (droits administrateur refusés).' }
+        }
+    }
+}
+(UI 'FreshRAll').Add_Click({ Do-FreshRestore 'all' })
 
 # ---------- Rafraîchissement de l'affichage ----------
 $timer = New-Object System.Windows.Threading.DispatcherTimer
@@ -8239,8 +10402,9 @@ $timer.Add_Tick({
         (UI 'ProcBig').Text = [string]$sync.ProcCount
         $up = (Get-Date) - $os.LastBootUpTime
         (UI 'InfoUp').Text = "" + [int][math]::Floor($up.TotalHours) + " h " + $up.Minutes.ToString('00') + " min"
-        if ((UI 'PageProc').Visibility -eq 'Visible' -and -not (UI 'ProcList').IsMouseOver) { (UI 'ProcList').ItemsSource = $sync.Procs }
+        if ((UI 'PageProc').Visibility -eq 'Visible' -and -not (UI 'ProcList').IsMouseOver) { Show-Procs }
         if ($sync.Ping -ge 0) { (UI 'PingVal').Text = "" + $sync.Ping + " ms" } else { (UI 'PingVal').Text = 'Hors ligne' }
+        try { Set-PingQual ([int]$sync.Ping) } catch {}
         (UI 'DownVal').Text = (N $sync.Down); (UI 'UpVal').Text = (N $sync.Up)
         (UI 'NetInfo').Text = $sync.NetInfo
         $script:ticks++
