@@ -6,7 +6,7 @@ exit /b
 : fin batch #>
 
 Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
-$appVersion = '1.7.0'
+$appVersion = '1.7.1'
 $updBase = 'https://raw.githubusercontent.com/milassfn/OnePC/main/'
 $updUrl = $updBase + 'OnePC.cmd'
 # Clé publique de licence : posée ici par l'Atelier au moment de fabriquer OnePC.exe (vide = fichier de travail, sans licence)
@@ -462,6 +462,12 @@ $xaml = @'
                       <TextBlock Text="Optimisation" Margin="12,0,0,0"/>
                     </StackPanel>
                   </Button>
+                  <Button x:Name="NavCheck" Style="{StaticResource Nav}">
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                      <TextBlock Text="Bilan santé" Margin="12,0,0,0"/>
+                    </StackPanel>
+                  </Button>
                   <Button x:Name="NavHw" Style="{StaticResource Nav}">
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="&#xE7F8;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
@@ -530,10 +536,16 @@ $xaml = @'
                       <TextBlock Text="Souris" Margin="12,0,0,0"/>
                     </StackPanel>
                   </Button>
+                  <Button x:Name="NavMic" Style="{StaticResource Nav}">
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="&#xE720;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                      <TextBlock Text="Micro" Margin="12,0,0,0"/>
+                    </StackPanel>
+                  </Button>
                   <Button x:Name="NavDc" Style="{StaticResource Nav}">
                     <StackPanel Orientation="Horizontal">
-                      <TextBlock Text="&#xE8BD;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
-                      <TextBlock Text="Discord" Margin="12,0,0,0"/>
+                      <Image x:Name="DcLogoNav" Width="16" Height="16" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                      <TextBlock Text="Discord" Margin="11,0,0,0"/>
                     </StackPanel>
                   </Button>
                   <Button x:Name="NavObs" Style="{StaticResource Nav}">
@@ -604,22 +616,35 @@ $xaml = @'
                       <TextBlock Text="Raccourcis" Margin="12,0,0,0"/>
                     </StackPanel>
                   </Button>
-                  <Button x:Name="NavBar" Style="{StaticResource Nav}">
-                    <StackPanel Orientation="Horizontal">
-                      <TextBlock Text="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
-                      <TextBlock Text="Barre des tâches" Margin="12,0,0,0"/>
-                    </StackPanel>
-                  </Button>
                   <Button x:Name="NavTidy" Style="{StaticResource Nav}">
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
                       <TextBlock Text="Rangement" Margin="12,0,0,0"/>
                     </StackPanel>
                   </Button>
+                </StackPanel>
+              </Border>
+              <Button x:Name="GrpPerso" Style="{StaticResource Nav}">
+                <DockPanel Width="192" LastChildFill="True">
+                  <TextBlock x:Name="GrpPersoChev" DockPanel.Dock="Right" Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="9" VerticalAlignment="Center" Opacity="0.7"/>
+                  <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                    <TextBlock Text="Personnalisation" Margin="12,0,0,0"/>
+                  </StackPanel>
+                </DockPanel>
+              </Button>
+              <Border x:Name="GrpPersoBody" Visibility="Collapsed" Margin="19,0,0,6" BorderBrush="#2A2A31" BorderThickness="1,0,0,0" Padding="8,0,0,0">
+                <StackPanel>
                   <Button x:Name="NavWall" Style="{StaticResource Nav}">
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
                       <TextBlock Text="Fond d'écran" Margin="12,0,0,0"/>
+                    </StackPanel>
+                  </Button>
+                  <Button x:Name="NavBar" Style="{StaticResource Nav}">
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                      <TextBlock Text="Barre des tâches" Margin="12,0,0,0"/>
                     </StackPanel>
                   </Button>
                 </StackPanel>
@@ -718,6 +743,13 @@ $xaml = @'
           </StackPanel>
         </Grid>
 
+        <!-- filigrane : visible sur toutes les captures, ne gêne aucun clic -->
+        <Border x:Name="WaterMark" Grid.Row="1" Panel.ZIndex="60" IsHitTestVisible="False" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,22,12" Opacity="0.42">
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="OnePC" FontWeight="Black" FontSize="12.5" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+            <TextBlock x:Name="WaterId" Text="" FontSize="10.5" FontWeight="SemiBold" Foreground="#C4B5FD" Margin="7,1,0,0" VerticalAlignment="Center"/>
+          </StackPanel>
+        </Border>
         <!-- ===== Accueil ===== -->
         <ScrollViewer x:Name="PageHome" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8"><StackPanel Margin="26,4,22,12" MaxWidth="1250">
           <Border CornerRadius="18" Padding="26,22" BorderBrush="#2E2E36" BorderThickness="1" Margin="0,0,0,14">
@@ -953,132 +985,286 @@ $xaml = @'
         </StackPanel></ScrollViewer>
 
         <!-- ===== Pilotes ===== -->
-        <Grid x:Name="PageDrv" Grid.Row="1" Margin="26,4,26,20" MaxWidth="1250" Visibility="Collapsed">
-          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-          <StackPanel Grid.Row="0">
-            <Border Style="{StaticResource Card}" Padding="18,14">
-              <DockPanel>
-                <Button x:Name="DrvAutoGo" DockPanel.Dock="Right" Style="{StaticResource Action}" Content="Rechercher les mises à jour" Margin="14,0,0,0" VerticalAlignment="Center"/>
-                <StackPanel>
-                  <TextBlock Text="PILOTES : CARTE GRAPHIQUE, PROCESSEUR, PUIS LE RESTE — TU VALIDES CHAQUE PILOTE" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,4"/>
-                  <TextBlock x:Name="DrvAutoGpu" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                  <TextBlock x:Name="DrvAutoInfo" Foreground="#CACAD2" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/>
+        <ScrollViewer x:Name="PageDrv" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <Border CornerRadius="18" Padding="28,24" BorderBrush="#2E2E36" BorderThickness="1" Margin="0,0,0,16">
+              <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                  <GradientStop Color="#10283A" Offset="0"/>
+                  <GradientStop Color="#17171B" Offset="0.6"/>
+                  <GradientStop Color="#1C1440" Offset="1"/>
+                </LinearGradientBrush>
+              </Border.Background>
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="PILOTES" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
+                  <TextBlock Text="Tes pilotes à jour, en un clic" FontSize="25" FontWeight="Bold" TextWrapping="Wrap"/>
+                  <Border HorizontalAlignment="Left" CornerRadius="9" Background="#22FFFFFF" Padding="10,5" Margin="0,12,0,0">
+                    <TextBlock x:Name="DrvAutoGpu" FontWeight="SemiBold" FontSize="12.5" TextTrimming="CharacterEllipsis"/>
+                  </Border>
+                  <TextBlock x:Name="DrvAutoInfo" Foreground="#CACAD2" FontSize="13" Margin="0,12,0,0" TextWrapping="Wrap" LineHeight="21"/>
+                  <WrapPanel Margin="0,16,0,0">
+                    <Button x:Name="DrvAutoGo" Style="{StaticResource Action}" Content="Vérifier et mettre à jour" Margin="0,0,10,8"/>
+                    <TextBlock Text="Carte graphique, puis processeur, puis le reste. Tu valides chaque pilote." Foreground="#8E8E98" FontSize="12" VerticalAlignment="Center" Margin="4,0,0,8" TextWrapping="Wrap"/>
+                  </WrapPanel>
+                </StackPanel>
+                <Grid Grid.Column="1" Width="132" Height="132" Margin="24,0,0,0" VerticalAlignment="Center">
+                  <Ellipse Fill="#1A38BDF8"/>
+                  <Ellipse Margin="14" Stroke="#38BDF8" StrokeThickness="3"/>
+                  <TextBlock Text="&#xE950;" FontFamily="Segoe MDL2 Assets" FontSize="40" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+              </Grid>
+            </Border>
+
+            <WrapPanel Margin="0,0,0,14">
+              <Button x:Name="TabGen" Style="{StaticResource Ghost}" Content="Tous les pilotes" Margin="0,0,8,0"/>
+              <Button x:Name="TabNv" Style="{StaticResource Ghost}" Content="NVIDIA" Margin="0,0,8,0"/>
+              <Button x:Name="TabAmd" Style="{StaticResource Ghost}" Content="AMD" Margin="0,0,8,0"/>
+            </WrapPanel>
+
+            <StackPanel x:Name="DrvGen">
+              <DockPanel Margin="4,4,0,10">
+                <Button x:Name="BtnRefresh" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Actualiser" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="PILOTES INSTALLÉS" Style="{StaticResource Tag}" Foreground="#8E8E98" Margin="0"/>
+                  <TextBlock x:Name="DrvCount" Text="Carte graphique, processeur, réseau, audio, Bluetooth, stockage" Foreground="#B8B8C0" FontSize="12.5" Margin="0,3,0,0"/>
                 </StackPanel>
               </DockPanel>
-            </Border>
-            <StackPanel Orientation="Horizontal" Margin="0,14,0,14">
-            <Button x:Name="TabGen" Style="{StaticResource Ghost}" Content="Tous les pilotes"/>
-            <Button x:Name="TabNv" Style="{StaticResource Ghost}" Content="NVIDIA"/>
-            <Button x:Name="TabAmd" Style="{StaticResource Ghost}" Content="AMD"/>
-          </StackPanel>
-          </StackPanel>
-          <Grid x:Name="DrvGen" Grid.Row="1">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/><RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/><RowDefinition Height="150"/>
-          </Grid.RowDefinitions>
-          <StackPanel Grid.Row="0">
-            <TextBlock Text="Pilotes installés" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock Text="Carte graphique, processeur, réseau, audio, Bluetooth, stockage" Style="{StaticResource Dim}" Margin="0,0,0,12"/>
-          </StackPanel>
-          <Border Grid.Row="1" Style="{StaticResource Card}" Padding="16,12">
-            <DockPanel>
-              <Grid DockPanel.Dock="Top" Margin="0,0,22,8">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="90"/><ColumnDefinition Width="*"/><ColumnDefinition Width="150"/>
-                  <ColumnDefinition Width="130"/><ColumnDefinition Width="80"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="TYPE" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="1" Text="PÉRIPHÉRIQUE" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="2" Text="FABRICANT" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="3" Text="VERSION" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-                <TextBlock Grid.Column="4" Text="DATE" Style="{StaticResource Tag}" Margin="0" Foreground="#8E8E98"/>
-              </Grid>
-              <ScrollViewer VerticalScrollBarVisibility="Visible">
-                <ItemsControl x:Name="DrvList">
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <Border BorderBrush="#222227" BorderThickness="0,1,0,0" Padding="0,7">
-                        <Grid Margin="0,0,14,0">
-                          <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90"/><ColumnDefinition Width="*"/><ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="130"/><ColumnDefinition Width="80"/>
-                          </Grid.ColumnDefinitions>
-                          <TextBlock Grid.Column="0" Text="{Binding Type}" Foreground="#FBBF24"/>
-                          <TextBlock Grid.Column="1" Text="{Binding Device}" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                          <TextBlock Grid.Column="2" Text="{Binding Maker}" Foreground="#8E8E98" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
-                          <TextBlock Grid.Column="3" Text="{Binding Version}" Foreground="#8E8E98"/>
-                          <TextBlock Grid.Column="4" Text="{Binding Date}" Foreground="#8E8E98"/>
-                        </Grid>
+              <ItemsControl x:Name="DrvList" Margin="0,0,-10,0">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Width="262" Margin="0,0,10,10" CornerRadius="14" Background="#17171B" BorderBrush="#26262C" BorderThickness="1" Padding="14,12">
+                      <DockPanel>
+                        <Border x:Name="ic" DockPanel.Dock="Left" Width="38" Height="38" CornerRadius="11" Background="#252530" Margin="0,0,12,0" VerticalAlignment="Top">
+                          <TextBlock x:Name="gl" Text="&#xE964;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#B8B8C0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel>
+                          <TextBlock x:Name="ty" Text="{Binding Type}" FontSize="10.5" FontWeight="Bold" Foreground="#B8B8C0"/>
+                          <TextBlock Text="{Binding Device}" FontWeight="SemiBold" FontSize="13" TextWrapping="Wrap" MaxHeight="36" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                          <TextBlock Text="{Binding Maker}" Foreground="#8E8E98" FontSize="11.5" TextTrimming="CharacterEllipsis" Margin="0,3,0,0"/>
+                          <TextBlock Foreground="#6C6C76" FontSize="11.5" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"><Run Text="Version "/><Run Text="{Binding Version, Mode=OneWay}"/><Run Text="  ·  "/><Run Text="{Binding Date, Mode=OneWay}"/></TextBlock>
+                        </StackPanel>
+                      </DockPanel>
+                    </Border>
+                    <DataTemplate.Triggers>
+                      <DataTrigger Binding="{Binding Type}" Value="Graphique"><Setter TargetName="gl" Property="Text" Value="&#xE7F4;"/><Setter TargetName="gl" Property="Foreground" Value="#34D399"/><Setter TargetName="ty" Property="Foreground" Value="#34D399"/><Setter TargetName="ic" Property="Background" Value="#12291F"/></DataTrigger>
+                      <DataTrigger Binding="{Binding Type}" Value="Processeur"><Setter TargetName="gl" Property="Text" Value="&#xE950;"/><Setter TargetName="gl" Property="Foreground" Value="#38BDF8"/><Setter TargetName="ty" Property="Foreground" Value="#38BDF8"/><Setter TargetName="ic" Property="Background" Value="#0F2433"/></DataTrigger>
+                      <DataTrigger Binding="{Binding Type}" Value="Réseau"><Setter TargetName="gl" Property="Text" Value="&#xE968;"/><Setter TargetName="gl" Property="Foreground" Value="#A78BFA"/><Setter TargetName="ty" Property="Foreground" Value="#A78BFA"/><Setter TargetName="ic" Property="Background" Value="#231C3A"/></DataTrigger>
+                      <DataTrigger Binding="{Binding Type}" Value="Audio"><Setter TargetName="gl" Property="Text" Value="&#xE767;"/><Setter TargetName="gl" Property="Foreground" Value="#F472B6"/><Setter TargetName="ty" Property="Foreground" Value="#F472B6"/><Setter TargetName="ic" Property="Background" Value="#2E1726"/></DataTrigger>
+                      <DataTrigger Binding="{Binding Type}" Value="Bluetooth"><Setter TargetName="gl" Property="Text" Value="&#xE702;"/><Setter TargetName="gl" Property="Foreground" Value="#60A5FA"/><Setter TargetName="ty" Property="Foreground" Value="#60A5FA"/><Setter TargetName="ic" Property="Background" Value="#121F33"/></DataTrigger>
+                      <DataTrigger Binding="{Binding Type}" Value="Stockage"><Setter TargetName="gl" Property="Text" Value="&#xEDA2;"/><Setter TargetName="gl" Property="Foreground" Value="#FB923C"/><Setter TargetName="ty" Property="Foreground" Value="#FB923C"/><Setter TargetName="ic" Property="Background" Value="#2E1B10"/></DataTrigger>
+                    </DataTemplate.Triggers>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <Grid Margin="0,8,0,0">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="3*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="2*"/></Grid.ColumnDefinitions>
+                <Border Grid.Column="0" CornerRadius="16" Padding="20,18" BorderBrush="#1F4D3A" BorderThickness="1">
+                  <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#112A20" Offset="0"/><GradientStop Color="#17171B" Offset="0.7"/></LinearGradientBrush>
+                  </Border.Background>
+                  <StackPanel>
+                    <DockPanel>
+                      <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2234D399" Margin="0,0,14,0">
+                        <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                       </Border>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </ScrollViewer>
-            </DockPanel>
-          </Border>
-          <StackPanel Grid.Row="2" Margin="0,14,0,14">
-            <StackPanel Orientation="Horizontal">
-              <Button x:Name="BtnSearch" Style="{StaticResource Action}" Content="Rechercher des mises à jour"/>
-              <Button x:Name="BtnInstall" Style="{StaticResource Action}" Content="Installer les pilotes trouvés" IsEnabled="False"/>
-              <Button x:Name="BtnRefresh" Style="{StaticResource Ghost}" Content="Actualiser la liste"/>
+                      <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="WINDOWS UPDATE" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,2"/>
+                        <TextBlock Text="Réseau, audio, Bluetooth et le reste" FontWeight="SemiBold" FontSize="15"/>
+                      </StackPanel>
+                    </DockPanel>
+                    <WrapPanel Margin="0,16,0,0">
+                      <Button x:Name="BtnSearch" Style="{StaticResource Ghost}" Content="Rechercher" Margin="0,0,8,8"/>
+                      <Button x:Name="BtnInstall" Style="{StaticResource Action}" Content="Installer les pilotes trouvés" IsEnabled="False" Margin="0,0,8,8"/>
+                    </WrapPanel>
+                    <Border CornerRadius="12" Background="#0D1A14" BorderBrush="#1F4D3A" BorderThickness="1" Padding="12,10" Margin="0,6,0,0">
+                      <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#34D399" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                        <TextBox x:Name="Log" Background="Transparent" Foreground="#D8F5E6" BorderThickness="0" IsReadOnly="True" MaxHeight="110" Padding="0"
+                                 TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontSize="12.5"/>
+                      </DockPanel>
+                    </Border>
+                  </StackPanel>
+                </Border>
+                <Border Grid.Column="2" CornerRadius="16" Padding="20,18" BorderBrush="#4D3F1A" BorderThickness="1">
+                  <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#2A2410" Offset="0"/><GradientStop Color="#17171B" Offset="0.7"/></LinearGradientBrush>
+                  </Border.Background>
+                  <StackPanel>
+                    <DockPanel Margin="0,0,0,14">
+                      <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#22FBBF24" Margin="0,0,14,0">
+                        <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                      </Border>
+                      <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="SITES OFFICIELS" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,0,0,2"/>
+                        <TextBlock Text="Pour tout faire toi-même" FontWeight="SemiBold" FontSize="15"/>
+                      </StackPanel>
+                    </DockPanel>
+                      <Button x:Name="BtnGpu" Style="{StaticResource Tile}" Margin="0,0,0,8">
+                        <DockPanel>
+                          <TextBlock DockPanel.Dock="Right" Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#6C6C76" VerticalAlignment="Center"/>
+                          <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="10" Background="#12291F" Margin="0,0,12,0">
+                            <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Border>
+                          <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Carte graphique" FontWeight="SemiBold"/>
+                            <TextBlock Text="NVIDIA, AMD ou Intel" Foreground="#8E8E98" FontSize="11.5" Margin="0,1,0,0"/>
+                          </StackPanel>
+                        </DockPanel>
+                      </Button>
+                      <Button x:Name="BtnCpu" Style="{StaticResource Tile}" Margin="0,0,0,8">
+                        <DockPanel>
+                          <TextBlock DockPanel.Dock="Right" Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#6C6C76" VerticalAlignment="Center"/>
+                          <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="10" Background="#0F2433" Margin="0,0,12,0">
+                            <TextBlock Text="&#xE950;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Border>
+                          <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Processeur / chipset" FontWeight="SemiBold"/>
+                            <TextBlock Text="AMD Ryzen ou Intel" Foreground="#8E8E98" FontSize="11.5" Margin="0,1,0,0"/>
+                          </StackPanel>
+                        </DockPanel>
+                      </Button>
+                      <Button x:Name="BtnWU" Style="{StaticResource Tile}" Margin="0,0,0,8">
+                        <DockPanel>
+                          <TextBlock DockPanel.Dock="Right" Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#6C6C76" VerticalAlignment="Center"/>
+                          <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="10" Background="#231C3A" Margin="0,0,12,0">
+                            <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Border>
+                          <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Windows Update" FontWeight="SemiBold"/>
+                            <TextBlock Text="Ouvre les paramètres de Windows" Foreground="#8E8E98" FontSize="11.5" Margin="0,1,0,0"/>
+                          </StackPanel>
+                        </DockPanel>
+                      </Button>
+                  </StackPanel>
+                </Border>
+              </Grid>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-              <Button x:Name="BtnGpu" Style="{StaticResource Ghost}" Content="Site officiel carte graphique"/>
-              <Button x:Name="BtnCpu" Style="{StaticResource Ghost}" Content="Site officiel processeur / chipset"/>
-              <Button x:Name="BtnWU" Style="{StaticResource Ghost}" Content="Ouvrir Windows Update"/>
+
+            <StackPanel x:Name="DrvNv" Visibility="Collapsed">
+              <Border CornerRadius="18" Padding="26,22" BorderBrush="#3D5710" BorderThickness="1">
+                <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1C3310" Offset="0"/><GradientStop Color="#17171B" Offset="0.75"/></LinearGradientBrush></Border.Background>
+                <Grid>
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="CARTE GRAPHIQUE NVIDIA" Style="{StaticResource Tag}" Foreground="#76B900"/>
+                    <TextBlock x:Name="NvName" FontSize="22" FontWeight="Bold" TextWrapping="Wrap" LineHeight="28"/>
+                    <Border HorizontalAlignment="Left" CornerRadius="12" Background="#1F76B900" BorderBrush="#5576B900" BorderThickness="1" Padding="12,9" Margin="0,14,0,0">
+                      <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#76B900" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                        <TextBlock x:Name="NvVer" Foreground="#E8E8EC" LineHeight="20" TextWrapping="Wrap" FontSize="12.5"/>
+                      </DockPanel>
+                    </Border>
+                    <WrapPanel Margin="0,16,0,0">
+                      <Button x:Name="NvDl" Style="{StaticResource Action}" Content="Installer le dernier pilote" Margin="0,0,10,6"/>
+                      <TextBlock Text="Dernier pilote « Game Ready », trouvé chez NVIDIA et installé pour toi." Foreground="#8E8E98" FontSize="12" VerticalAlignment="Center" Margin="4,0,0,6" TextWrapping="Wrap" MaxWidth="420"/>
+                    </WrapPanel>
+                    <TextBlock x:Name="NvMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                  </StackPanel>
+                  <Grid Grid.Column="1" Width="120" Height="120" Margin="24,0,0,0" VerticalAlignment="Center">
+                    <Ellipse Fill="#1A76B900"/>
+                    <Ellipse Margin="12" Stroke="#76B900" StrokeThickness="3"/>
+                    <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="36" Foreground="#76B900" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Grid>
+                </Grid>
+              </Border>
+              <DockPanel Margin="0,20,0,10">
+                <Border DockPanel.Dock="Left" Width="4" CornerRadius="2" Background="#76B900" Margin="0,2,10,2"/>
+                <TextBlock Text="Autres outils" FontWeight="SemiBold" FontSize="15"/>
+              </DockPanel>
+              <UniformGrid Columns="2">
+<Button x:Name="NvApp" Style="{StaticResource Tile}" Margin="0,0,5,8">
+  <DockPanel>
+    <TextBlock DockPanel.Dock="Right" Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#6C6C76" VerticalAlignment="Center"/>
+    <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="10" Background="#2676B900" Margin="0,0,12,0">
+      <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#76B900" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Border>
+    <StackPanel VerticalAlignment="Center">
+      <TextBlock Text="Ouvrir NVIDIA App" FontWeight="SemiBold"/>
+      <TextBlock Text="Te prévient à chaque nouvelle version" Foreground="#8E8E98" FontSize="11.5" Margin="0,1,0,0" TextWrapping="Wrap"/>
+    </StackPanel>
+  </DockPanel>
+</Button>
+<Button x:Name="NvGet" Style="{StaticResource Tile}" Margin="5,0,0,8">
+  <DockPanel>
+    <TextBlock DockPanel.Dock="Right" Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#6C6C76" VerticalAlignment="Center"/>
+    <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="10" Background="#2638BDF8" Margin="0,0,12,0">
+      <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Border>
+    <StackPanel VerticalAlignment="Center">
+      <TextBlock Text="Installer NVIDIA App" FontWeight="SemiBold"/>
+      <TextBlock Text="Depuis le site officiel de NVIDIA" Foreground="#8E8E98" FontSize="11.5" Margin="0,1,0,0" TextWrapping="Wrap"/>
+    </StackPanel>
+  </DockPanel>
+</Button>
+              </UniformGrid>
+            </StackPanel>
+
+            <StackPanel x:Name="DrvAmd" Visibility="Collapsed">
+              <Border CornerRadius="18" Padding="26,22" BorderBrush="#733136" BorderThickness="1">
+                <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3A1219" Offset="0"/><GradientStop Color="#17171B" Offset="0.75"/></LinearGradientBrush></Border.Background>
+                <Grid>
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="MATÉRIEL AMD" Style="{StaticResource Tag}" Foreground="#FF5A5F"/>
+                    <TextBlock x:Name="AmdName" FontSize="22" FontWeight="Bold" TextWrapping="Wrap" LineHeight="28"/>
+                    <Border HorizontalAlignment="Left" CornerRadius="12" Background="#1FFF5A5F" BorderBrush="#55FF5A5F" BorderThickness="1" Padding="12,9" Margin="0,14,0,0">
+                      <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#FF5A5F" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                        <TextBlock x:Name="AmdVer" Foreground="#E8E8EC" LineHeight="20" TextWrapping="Wrap" FontSize="12.5"/>
+                      </DockPanel>
+                    </Border>
+                    <WrapPanel Margin="0,16,0,0">
+                      <Button x:Name="AmdDl" Style="{StaticResource Action}" Content="Installer le dernier pilote" Margin="0,0,10,6"/>
+                      <TextBlock Text="Dernier pilote Adrenalin pour ta Radeon et chipset pour ton Ryzen, directement chez AMD." Foreground="#8E8E98" FontSize="12" VerticalAlignment="Center" Margin="4,0,0,6" TextWrapping="Wrap" MaxWidth="420"/>
+                    </WrapPanel>
+                    <TextBlock x:Name="AmdMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                  </StackPanel>
+                  <Grid Grid.Column="1" Width="120" Height="120" Margin="24,0,0,0" VerticalAlignment="Center">
+                    <Ellipse Fill="#1AFF5A5F"/>
+                    <Ellipse Margin="12" Stroke="#FF5A5F" StrokeThickness="3"/>
+                    <TextBlock Text="&#xE950;" FontFamily="Segoe MDL2 Assets" FontSize="36" Foreground="#FF5A5F" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Grid>
+                </Grid>
+              </Border>
+              <DockPanel Margin="0,20,0,10">
+                <Border DockPanel.Dock="Left" Width="4" CornerRadius="2" Background="#FF5A5F" Margin="0,2,10,2"/>
+                <TextBlock Text="Autres outils" FontWeight="SemiBold" FontSize="15"/>
+              </DockPanel>
+              <UniformGrid Columns="2">
+<Button x:Name="AmdApp" Style="{StaticResource Tile}" Margin="0,0,5,8">
+  <DockPanel>
+    <TextBlock DockPanel.Dock="Right" Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#6C6C76" VerticalAlignment="Center"/>
+    <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="10" Background="#26FF5A5F" Margin="0,0,12,0">
+      <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#FF5A5F" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Border>
+    <StackPanel VerticalAlignment="Center">
+      <TextBlock Text="Ouvrir AMD Software" FontWeight="SemiBold"/>
+      <TextBlock Text="« Rechercher les mises à jour » dedans" Foreground="#8E8E98" FontSize="11.5" Margin="0,1,0,0" TextWrapping="Wrap"/>
+    </StackPanel>
+  </DockPanel>
+</Button>
+<Button x:Name="AmdChip" Style="{StaticResource Tile}" Margin="5,0,0,8">
+  <DockPanel>
+    <TextBlock DockPanel.Dock="Right" Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#6C6C76" VerticalAlignment="Center"/>
+    <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="10" Background="#26FB923C" Margin="0,0,12,0">
+      <TextBlock Text="&#xE950;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Border>
+    <StackPanel VerticalAlignment="Center">
+      <TextBlock Text="Pilotes chipset Ryzen" FontWeight="SemiBold"/>
+      <TextBlock Text="Page officielle des pilotes AMD" Foreground="#8E8E98" FontSize="11.5" Margin="0,1,0,0" TextWrapping="Wrap"/>
+    </StackPanel>
+  </DockPanel>
+</Button>
+              </UniformGrid>
             </StackPanel>
           </StackPanel>
-          <Border Grid.Row="3" Style="{StaticResource Card}" Padding="14,10">
-            <TextBox x:Name="Log" Background="Transparent" Foreground="#CACAD2" BorderThickness="0" IsReadOnly="True"
-                     TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12"/>
-          </Border>
-          </Grid>
-          <StackPanel x:Name="DrvNv" Grid.Row="1" Visibility="Collapsed">
-            <TextBlock Text="Pilotes NVIDIA" Style="{StaticResource H}" Margin="0,0,0,12"/>
-            <Border Style="{StaticResource Card}">
-              <StackPanel>
-                <TextBlock Text="CARTE GRAPHIQUE NVIDIA" Style="{StaticResource Tag}" Foreground="#F472B6"/>
-                <TextBlock x:Name="NvName" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap"/>
-                <TextBlock x:Name="NvVer" Foreground="#CACAD2" Margin="0,8,0,0" LineHeight="21" TextWrapping="Wrap"/>
-              </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
-              <StackPanel>
-                <TextBlock Text="METTRE À JOUR" Style="{StaticResource Tag}" Foreground="#FB923C"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="21" Text="Le pilote le plus récent se télécharge sur le site de NVIDIA : choisis ta carte, prends le pilote « Game Ready » pour jouer, puis installe-le. L'application NVIDIA App peut aussi le faire automatiquement et te prévenir à chaque nouvelle version."/>
-                <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
-                <Button x:Name="NvDl" Style="{StaticResource Action}" Content="Installer le dernier pilote"/>
-                <Button x:Name="NvApp" Style="{StaticResource Ghost}" Content="Ouvrir NVIDIA App"/>
-                <Button x:Name="NvGet" Style="{StaticResource Ghost}" Content="Installer NVIDIA App"/>
-                </StackPanel>
-                <TextBlock x:Name="NvMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0"/>
-              </StackPanel>
-            </Border>
-          </StackPanel>
-          <StackPanel x:Name="DrvAmd" Grid.Row="1" Visibility="Collapsed">
-            <TextBlock Text="Pilotes AMD" Style="{StaticResource H}" Margin="0,0,0,12"/>
-            <Border Style="{StaticResource Card}">
-              <StackPanel>
-                <TextBlock Text="MATÉRIEL AMD" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-                <TextBlock x:Name="AmdName" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap"/>
-                <TextBlock x:Name="AmdVer" Foreground="#CACAD2" Margin="0,8,0,0" LineHeight="21" TextWrapping="Wrap"/>
-              </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
-              <StackPanel>
-                <TextBlock Text="METTRE À JOUR" Style="{StaticResource Tag}" Foreground="#34D399"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="21" Text="Sur le site d'AMD, l'outil de détection automatique trouve tout seul le bon pilote Adrenalin pour ta carte Radeon et le pilote chipset pour ton Ryzen. L'application AMD Software a aussi un bouton « Rechercher les mises à jour »."/>
-                <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
-                <Button x:Name="AmdDl" Style="{StaticResource Action}" Content="Installer le dernier pilote"/>
-                <Button x:Name="AmdApp" Style="{StaticResource Ghost}" Content="Ouvrir AMD Software"/>
-                <Button x:Name="AmdChip" Style="{StaticResource Ghost}" Content="Pilotes chipset Ryzen"/>
-                </StackPanel>
-                <TextBlock x:Name="AmdMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0"/>
-              </StackPanel>
-            </Border>
-          </StackPanel>
-        </Grid>
+        </ScrollViewer>
 
         <!-- ===== Programmes ===== -->
         <Grid x:Name="PageProc" Grid.Row="1" Margin="26,4,26,20" MaxWidth="1250" Visibility="Collapsed">
@@ -1300,6 +1486,64 @@ $xaml = @'
                   </StackPanel>
                 </DockPanel>
               </Border>
+              <Border CornerRadius="16" Padding="22,20" BorderBrush="#3D2E6B" BorderThickness="1" Margin="0,14,0,0">
+                <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#221A3E" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
+                <StackPanel>
+                  <DockPanel Margin="0,0,0,16">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26A78BFA" Margin="0,0,14,0"><TextBlock Text="&#xE7FC;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <StackPanel VerticalAlignment="Center">
+                      <TextBlock Text="TEST DE DRIFT" Style="{StaticResource Tag}" Foreground="#A78BFA" Margin="0,0,0,2"/>
+                      <TextBlock Text="Ta manette vise toute seule ? Vérifie tes sticks et tes gâchettes" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/>
+                    </StackPanel>
+                  </DockPanel>
+                  <WrapPanel>
+                  <StackPanel Margin="0,0,24,0">
+                    <Canvas Width="170" Height="170">
+                      <Ellipse Width="170" Height="170" Fill="#101018" Stroke="#3A3550" StrokeThickness="2"/>
+                      <Ellipse x:Name="PadDzL" Width="0" Height="0" Canvas.Left="85" Canvas.Top="85" Fill="#22FBBF24" Stroke="#FBBF24" StrokeThickness="1.5" StrokeDashArray="3 2"/>
+                      <Line X1="85" Y1="10" X2="85" Y2="160" Stroke="#2A2A38" StrokeThickness="1"/>
+                      <Line X1="10" Y1="85" X2="160" Y2="85" Stroke="#2A2A38" StrokeThickness="1"/>
+                      <Ellipse x:Name="PadDotL" Width="18" Height="18" Canvas.Left="76" Canvas.Top="76" Fill="#A78BFA" Stroke="#FFFFFF" StrokeThickness="2"/>
+                    </Canvas>
+                    <TextBlock Text="Stick gauche" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    <TextBlock x:Name="PadValL" Text="X 0 %  ·  Y 0 %" Foreground="#8E8E98" FontSize="12" HorizontalAlignment="Center"/>
+                  </StackPanel>
+                  <StackPanel Margin="0,0,24,0">
+                    <Canvas Width="170" Height="170">
+                      <Ellipse Width="170" Height="170" Fill="#101018" Stroke="#3A3550" StrokeThickness="2"/>
+                      <Ellipse x:Name="PadDzR" Width="0" Height="0" Canvas.Left="85" Canvas.Top="85" Fill="#22FBBF24" Stroke="#FBBF24" StrokeThickness="1.5" StrokeDashArray="3 2"/>
+                      <Line X1="85" Y1="10" X2="85" Y2="160" Stroke="#2A2A38" StrokeThickness="1"/>
+                      <Line X1="10" Y1="85" X2="160" Y2="85" Stroke="#2A2A38" StrokeThickness="1"/>
+                      <Ellipse x:Name="PadDotR" Width="18" Height="18" Canvas.Left="76" Canvas.Top="76" Fill="#A78BFA" Stroke="#FFFFFF" StrokeThickness="2"/>
+                    </Canvas>
+                    <TextBlock Text="Stick droit" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    <TextBlock x:Name="PadValR" Text="X 0 %  ·  Y 0 %" Foreground="#8E8E98" FontSize="12" HorizontalAlignment="Center"/>
+                  </StackPanel>
+                  <StackPanel VerticalAlignment="Center" Margin="0,0,0,10">
+                    <TextBlock Text="Gâchette gauche (LT / L2)" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                    <Grid Height="14" Width="200" HorizontalAlignment="Left" Margin="0,0,0,4">
+                      <Border CornerRadius="7" Background="#1E1E2A"/>
+                      <Border x:Name="PadTrL" CornerRadius="7" Background="#F472B6" RenderTransformOrigin="0,0.5"/>
+                    </Grid>
+                    <TextBlock x:Name="PadTrVL" Text="0 %" Foreground="#8E8E98" FontSize="12" Margin="0,0,0,14"/>
+                    <TextBlock Text="Gâchette droite (RT / R2)" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                    <Grid Height="14" Width="200" HorizontalAlignment="Left" Margin="0,0,0,4">
+                      <Border CornerRadius="7" Background="#1E1E2A"/>
+                      <Border x:Name="PadTrR" CornerRadius="7" Background="#F472B6" RenderTransformOrigin="0,0.5"/>
+                    </Grid>
+                    <TextBlock x:Name="PadTrVR" Text="0 %" Foreground="#8E8E98" FontSize="12" Margin="0,0,0,14"/>
+                  </StackPanel>
+                  </WrapPanel>
+                  <TextBlock x:Name="PadTestSrc" Text="Clique sur « Lancer le test » puis bouge tes sticks et appuie sur tes gâchettes." Foreground="#B8B8C0" FontSize="12.5" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                  <WrapPanel Margin="0,12,0,0">
+                    <Button x:Name="PadTestGo" Style="{StaticResource Action}" Content="Lancer le test" Margin="0,0,8,6"/>
+                    <Button x:Name="PadRest" Style="{StaticResource Ghost}" Content="Mesurer le drift au repos (5 s)" Margin="0,0,8,6" ToolTip="Pose la manette sans toucher les sticks : OnePC mesure s'ils bougent tout seuls."/>
+                  </WrapPanel>
+                  <Border x:Name="PadDriftBox" Visibility="Collapsed" CornerRadius="12" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" Padding="16,12" Margin="0,8,0,0">
+                    <TextBlock x:Name="PadDriftRes" TextWrapping="Wrap" LineHeight="21"/>
+                  </Border>
+                </StackPanel>
+              </Border>
           </StackPanel>
         </ScrollViewer>
         <!-- ===== Souris ===== -->
@@ -1403,188 +1647,243 @@ $xaml = @'
           </StackPanel>
         </ScrollViewer>
         <!-- ===== Optimisation ===== -->
-        <ScrollViewer x:Name="PageOpti" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed"><StackPanel Margin="26,4,22,12" MaxWidth="1250">
-          <TextBlock Text="Optimisation" Style="{StaticResource H}" Margin="0,0,0,2"/>
-          <TextBlock Text="Nettoyage, mode jeu, mises à jour des logiciels et réparation de Windows" Style="{StaticResource Dim}" Margin="0,0,0,4"/>
-          <TextBlock x:Name="OptiMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,0,0,8"/>
-          <Grid Margin="0,4,0,0">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Style="{StaticResource Card}" Height="195">
-              <DockPanel>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                  <Button x:Name="BtnScan" Style="{StaticResource Ghost}" Content="Analyser"/>
-                  <Button x:Name="BtnClean" Style="{StaticResource Action}" Content="Nettoyer"/>
-                </StackPanel>
-                <StackPanel>
-                  <TextBlock Text="NETTOYAGE" Style="{StaticResource Tag}" Foreground="#FBBF24"/>
-                  <TextBlock x:Name="CleanInfo" TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="20"
-                             Text="Supprime les fichiers temporaires de plus de 24 h, le cache de Windows Update et vide la corbeille. Clique sur Analyser pour voir la place récupérable."/>
-                </StackPanel>
-              </DockPanel>
-            </Border>
-            <Border Grid.Column="2" Style="{StaticResource Card}" Height="195">
-              <DockPanel>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                  <Button x:Name="BtnGame" Style="{StaticResource Action}" Content="Jeu"/>
-                  <Button x:Name="BtnChill" Style="{StaticResource Ghost}" Content="Chill"/>
-                  <Button x:Name="BtnEco" Style="{StaticResource Ghost}" Content="Éco"/>
-                  <Button x:Name="BtnOrig" Style="{StaticResource Ghost}" Content="Mode d'origine" ToolTip="Remet le mode d'alimentation que ton PC avait avant que OnePC y touche"/>
-                </StackPanel>
-                <StackPanel>
-                  <TextBlock Text="PROFILS" Style="{StaticResource Tag}" Foreground="#F472B6"/>
-                  <TextBlock Text="Mode d'alimentation actuel" Style="{StaticResource Dim}"/>
-                  <TextBlock x:Name="PowerInfo" Text="..." FontSize="18" FontWeight="SemiBold" Margin="0,2,0,6" TextTrimming="CharacterEllipsis"/>
-                  <TextBlock TextWrapping="Wrap" Foreground="#CACAD2"
-                             Text="Jeu : performances élevées + Mode Jeu de Windows. Chill : équilibré, pour tous les jours. Éco : économie d'énergie, PC plus frais et plus silencieux."/>
-                </StackPanel>
-              </DockPanel>
-            </Border>
-          </Grid>
-          <Grid Margin="0,14,0,0">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Style="{StaticResource Card}" Height="195">
-              <DockPanel>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                  <Button x:Name="BtnWinget" Style="{StaticResource Action}" Content="Mettre à jour mes logiciels"/>
-                </StackPanel>
-                <StackPanel>
-                  <TextBlock Text="LOGICIELS" Style="{StaticResource Tag}" Foreground="#FB923C"/>
-                  <TextBlock TextWrapping="Wrap" Foreground="#CACAD2"
-                             Text="Ouvre une fenêtre qui liste les logiciels ayant une mise à jour (navigateur, Discord, Steam...) avec l'outil winget de Windows, puis te demande si tu veux tout mettre à jour."/>
-                </StackPanel>
-              </DockPanel>
-            </Border>
-            <Border Grid.Column="2" Style="{StaticResource Card}" Height="195">
-              <DockPanel>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                  <Button x:Name="BtnRepair" Style="{StaticResource Ghost}" Content="Vérifier et réparer Windows"/>
-                </StackPanel>
-                <StackPanel>
-                  <TextBlock Text="RÉPARATION" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-                  <TextBlock TextWrapping="Wrap" Foreground="#CACAD2"
-                             Text="Lance les deux vérifications officielles de Windows (DISM puis SFC) dans une fenêtre administrateur. À utiliser quand le PC bugge. Compte 15 à 30 minutes."/>
-                </StackPanel>
-              </DockPanel>
-            </Border>
-          </Grid>
-          <Grid Margin="0,14,0,0">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Style="{StaticResource Card}" Height="195">
-              <DockPanel>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                  <Button x:Name="BtnDefender" Style="{StaticResource Action}" Content="Analyse antivirus rapide"/>
-                  <Button x:Name="BtnRestore" Style="{StaticResource Ghost}" Content="Point de restauration"/>
-                </StackPanel>
-                <StackPanel>
-                  <TextBlock Text="SÉCURITÉ" Style="{StaticResource Tag}" Foreground="#34D399"/>
-                  <TextBlock TextWrapping="Wrap" Foreground="#CACAD2"
-                             Text="Analyse rapide avec Windows Defender, ou création d'un point de restauration avant de gros changements."/>
-                </StackPanel>
-              </DockPanel>
-            </Border>
-            <Border Grid.Column="2" Style="{StaticResource Card}" Height="195">
-              <DockPanel>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                  <Button x:Name="FastToggle" Style="{StaticResource Action}" Content="Désactiver le démarrage rapide"/>
-                  <Button x:Name="FullOff" Style="{StaticResource Ghost}" Content="Arrêt complet"/>
-                </StackPanel>
-                <StackPanel>
-                  <TextBlock Text="EXTINCTION DU PC" Style="{StaticResource Tag}" Foreground="#FB923C"/>
-                  <TextBlock x:Name="FastInfo" Text="..." FontSize="15" FontWeight="SemiBold" Margin="0,0,0,6"/>
-                  <TextBlock x:Name="FastMsg" TextWrapping="Wrap" Foreground="#CACAD2"
-                             Text="Avec le démarrage rapide, « Arrêter » met Windows en veille profonde au lieu de l'éteindre vraiment : extinction qui traîne, PC « allumé depuis » des jours, bugs qui s'accumulent."/>
-                </StackPanel>
-              </DockPanel>
-            </Border>
-          </Grid>
+        <ScrollViewer x:Name="PageOpti" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed"><StackPanel Margin="26,4,22,12" MaxWidth="1100">
+<Border CornerRadius="18" Padding="28,22" BorderBrush="#2E2E36" BorderThickness="1" Margin="0,0,0,16">
+  <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#24183F" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/><GradientStop Color="#10283A" Offset="1"/></LinearGradientBrush></Border.Background>
+  <Grid>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <StackPanel VerticalAlignment="Center">
+      <TextBlock Text="OPTIMISATION" Style="{StaticResource Tag}" Foreground="#A78BFA"/>
+      <TextBlock Text="Ton PC plus propre, plus rapide" FontSize="25" FontWeight="Bold" TextWrapping="Wrap"/>
+      <TextBlock Text="Nettoyage, mode jeu, mises à jour des logiciels et réparation de Windows. Tout est réversible." Foreground="#CACAD2" FontSize="13" Margin="0,8,0,0" TextWrapping="Wrap" LineHeight="21"/>
+      <TextBlock x:Name="OptiMsg" Text=" " Foreground="#C4B5FD" FontSize="12.5" FontWeight="SemiBold" Margin="0,10,0,0" TextWrapping="Wrap"/>
+    </StackPanel>
+    <Grid Grid.Column="1" Width="116" Height="116" Margin="24,0,0,0" VerticalAlignment="Center">
+      <Ellipse Fill="#1AA78BFA"/>
+      <Ellipse Margin="12" Stroke="#A78BFA" StrokeThickness="3"/>
+      <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="36" Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Grid>
+  </Grid>
+</Border><Grid>
+<Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="14"/><RowDefinition Height="Auto"/><RowDefinition Height="14"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+<Border Grid.Row="0" Grid.Column="0" CornerRadius="16" Padding="20,18" BorderBrush="#5F4C1D" BorderThickness="1" >
+<Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3D331C" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+<DockPanel>
+<DockPanel DockPanel.Dock="Top">
+  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FBBF24" Margin="0,0,14,0" VerticalAlignment="Top">
+    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  </Border>
+  <StackPanel VerticalAlignment="Center">
+    <TextBlock Text="NETTOYAGE" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,0,0,2"/>
+    <TextBlock Text="Fais de la place" FontWeight="SemiBold" FontSize="15" TextWrapping="Wrap"/>
+  </StackPanel>
+</DockPanel>
+<WrapPanel DockPanel.Dock="Bottom" Margin="0,14,0,0"><Button x:Name="BtnScan" Style="{StaticResource Ghost}" Content="Analyser" Margin="0,0,8,6"/><Button x:Name="BtnClean" Style="{StaticResource Action}" Content="Nettoyer" Margin="0,0,8,6"/></WrapPanel>
+<StackPanel Margin="0,14,0,0"><Border CornerRadius="12" Background="#211D13" BorderBrush="#50411D" BorderThickness="1" Padding="12,10"><TextBlock x:Name="CleanInfo" TextWrapping="Wrap" Foreground="#E8E8EC" LineHeight="20" Text="Supprime les fichiers temporaires de plus de 24 h, le cache de Windows Update et vide la corbeille. Clique sur Analyser pour voir la place récupérable."/></Border></StackPanel>
+</DockPanel>
+</Border>
+<Border Grid.Row="0" Grid.Column="2" CornerRadius="16" Padding="20,18" BorderBrush="#5D344C" BorderThickness="1" >
+<Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3C2635" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+<DockPanel>
+<DockPanel DockPanel.Dock="Top">
+  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26F472B6" Margin="0,0,14,0" VerticalAlignment="Top">
+    <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  </Border>
+  <StackPanel VerticalAlignment="Center">
+    <TextBlock Text="PROFILS" Style="{StaticResource Tag}" Foreground="#F472B6" Margin="0,0,0,2"/>
+    <TextBlock x:Name="PowerInfo" Text="..." FontSize="18" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+  </StackPanel>
+</DockPanel>
+<WrapPanel DockPanel.Dock="Bottom" Margin="0,14,0,0"><Button x:Name="BtnGame" Style="{StaticResource Action}" Content="Jeu" Margin="0,0,8,6"/><Button x:Name="BtnChill" Style="{StaticResource Ghost}" Content="Chill" Margin="0,0,8,6"/><Button x:Name="BtnEco" Style="{StaticResource Ghost}" Content="Éco" Margin="0,0,8,6"/><Button x:Name="BtnOrig" Style="{StaticResource Ghost}" Content="Mode d'origine" Margin="0,0,8,6" ToolTip="Remet le mode d'alimentation que ton PC avait avant que OnePC y touche"/></WrapPanel>
+<StackPanel Margin="0,14,0,0"><TextBlock Text="Mode d'alimentation actuel" Foreground="#8E8E98" FontSize="11.5" Margin="0,0,0,6"/><TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="20" Text="Jeu : performances élevées + Mode Jeu de Windows. Chill : équilibré, pour tous les jours. Éco : économie d'énergie, PC plus frais et plus silencieux."/></StackPanel>
+</DockPanel>
+</Border>
+<Border Grid.Row="2" Grid.Column="0" CornerRadius="16" Padding="20,18" BorderBrush="#5F3E25" BorderThickness="1" >
+<Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3D2B20" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+<DockPanel>
+<DockPanel DockPanel.Dock="Top">
+  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FB923C" Margin="0,0,14,0" VerticalAlignment="Top">
+    <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  </Border>
+  <StackPanel VerticalAlignment="Center">
+    <TextBlock Text="LOGICIELS" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0,0,0,2"/>
+    <TextBlock Text="Tes applis à jour" FontWeight="SemiBold" FontSize="15" TextWrapping="Wrap"/>
+  </StackPanel>
+</DockPanel>
+<WrapPanel DockPanel.Dock="Bottom" Margin="0,14,0,0"><Button x:Name="BtnWinget" Style="{StaticResource Action}" Content="Mettre à jour mes logiciels" Margin="0,0,8,6"/></WrapPanel>
+<StackPanel Margin="0,14,0,0"><TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="20" Text="Ouvre une fenêtre qui liste les logiciels ayant une mise à jour (navigateur, Discord, Steam...) avec l'outil winget de Windows, puis te demande si tu veux tout mettre à jour."/></StackPanel>
+</DockPanel>
+</Border>
+<Border Grid.Row="2" Grid.Column="2" CornerRadius="16" Padding="20,18" BorderBrush="#214C61" BorderThickness="1" >
+<Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1C3340" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+<DockPanel>
+<DockPanel DockPanel.Dock="Top">
+  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2638BDF8" Margin="0,0,14,0" VerticalAlignment="Top">
+    <TextBlock Text="&#xE90F;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  </Border>
+  <StackPanel VerticalAlignment="Center">
+    <TextBlock Text="RÉPARATION" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,0,0,2"/>
+    <TextBlock Text="Windows qui bugge ?" FontWeight="SemiBold" FontSize="15" TextWrapping="Wrap"/>
+  </StackPanel>
+</DockPanel>
+<WrapPanel DockPanel.Dock="Bottom" Margin="0,14,0,0"><Button x:Name="BtnRepair" Style="{StaticResource Ghost}" Content="Vérifier et réparer Windows" Margin="0,0,8,6"/></WrapPanel>
+<StackPanel Margin="0,14,0,0"><TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="20" Text="Lance les deux vérifications officielles de Windows (DISM puis SFC) dans une fenêtre administrateur. À utiliser quand le PC bugge. Compte 15 à 30 minutes."/></StackPanel>
+</DockPanel>
+</Border>
+<Border Grid.Row="4" Grid.Column="0" CornerRadius="16" Padding="20,18" BorderBrush="#205343" BorderThickness="1" >
+<Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1B3630" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+<DockPanel>
+<DockPanel DockPanel.Dock="Top">
+  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2634D399" Margin="0,0,14,0" VerticalAlignment="Top">
+    <TextBlock Text="&#xEA18;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  </Border>
+  <StackPanel VerticalAlignment="Center">
+    <TextBlock Text="SÉCURITÉ" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,2"/>
+    <TextBlock Text="Antivirus et sauvegarde" FontWeight="SemiBold" FontSize="15" TextWrapping="Wrap"/>
+  </StackPanel>
+</DockPanel>
+<WrapPanel DockPanel.Dock="Bottom" Margin="0,14,0,0"><Button x:Name="BtnDefender" Style="{StaticResource Action}" Content="Analyse antivirus rapide" Margin="0,0,8,6"/><Button x:Name="BtnRestore" Style="{StaticResource Ghost}" Content="Point de restauration" Margin="0,0,8,6"/></WrapPanel>
+<StackPanel Margin="0,14,0,0"><TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="20" Text="Analyse rapide avec Windows Defender, ou création d'un point de restauration avant de gros changements."/></StackPanel>
+</DockPanel>
+</Border>
+<Border Grid.Row="4" Grid.Column="2" CornerRadius="16" Padding="20,18" BorderBrush="#5F333C" BorderThickness="1" >
+<Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3D262D" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+<DockPanel>
+<DockPanel DockPanel.Dock="Top">
+  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FB7185" Margin="0,0,14,0" VerticalAlignment="Top">
+    <TextBlock Text="&#xE7E8;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FB7185" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  </Border>
+  <StackPanel VerticalAlignment="Center">
+    <TextBlock Text="EXTINCTION DU PC" Style="{StaticResource Tag}" Foreground="#FB7185" Margin="0,0,0,2"/>
+    <TextBlock x:Name="FastInfo" Text="..." FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/>
+  </StackPanel>
+</DockPanel>
+<WrapPanel DockPanel.Dock="Bottom" Margin="0,14,0,0"><Button x:Name="FastToggle" Style="{StaticResource Action}" Content="Désactiver le démarrage rapide" Margin="0,0,8,6"/><Button x:Name="FullOff" Style="{StaticResource Ghost}" Content="Arrêt complet" Margin="0,0,8,6"/><Button x:Name="BtnReboot" Style="{StaticResource Ghost}" Content="Redémarrer" Margin="0,0,8,6"/></WrapPanel>
+<StackPanel Margin="0,14,0,0"><TextBlock x:Name="FastMsg" TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="20" Text="Avec le démarrage rapide, « Arrêter » met Windows en veille profonde au lieu de l'éteindre vraiment : extinction qui traîne, PC « allumé depuis » des jours, bugs qui s'accumulent."/></StackPanel>
+</DockPanel>
+</Border>
+</Grid>
         </StackPanel></ScrollViewer>
 
         <!-- ===== Réseau ===== -->
-        <ScrollViewer x:Name="PageNet" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed"><StackPanel Margin="26,4,22,12" MaxWidth="1250">
-          <TextBlock Text="Réseau" Style="{StaticResource H}" Margin="0,0,0,2"/>
-          <TextBlock Text="Ta connexion en direct, et les outils pour la rendre plus rapide et plus stable." Style="{StaticResource Dim}" Margin="0,0,0,14"/>
+        <ScrollViewer x:Name="PageNet" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed"><StackPanel Margin="26,4,22,12" MaxWidth="1100">
+          <Border CornerRadius="18" Padding="28,22" BorderBrush="#1F4D3A" BorderThickness="1" Margin="0,0,0,16">
+            <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#0F2A22" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/><GradientStop Color="#10283A" Offset="1"/></LinearGradientBrush></Border.Background>
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+              <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="RÉSEAU" Style="{StaticResource Tag}" Foreground="#34D399"/>
+                <TextBlock Text="Ta connexion en direct" FontSize="25" FontWeight="Bold" TextWrapping="Wrap"/>
+                <TextBlock Text="Ton ping, ton débit, et les outils pour rendre ta connexion plus rapide et plus stable en jeu." Foreground="#CACAD2" FontSize="13" Margin="0,8,0,0" TextWrapping="Wrap" LineHeight="21"/>
+              </StackPanel>
+              <Grid Grid.Column="1" Width="116" Height="116" Margin="24,0,0,0" VerticalAlignment="Center">
+                <Ellipse Fill="#1A34D399"/>
+                <Ellipse Margin="12" Stroke="#34D399" StrokeThickness="3"/>
+                <TextBlock Text="&#xE701;" FontFamily="Segoe MDL2 Assets" FontSize="36" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Grid>
+            </Grid>
+          </Border>
           <Grid>
             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="18,14">
+            <Border Grid.Column="0" CornerRadius="16" Padding="20,18" BorderBrush="#643651" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#43293A" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
                 <DockPanel>
                   <Border x:Name="PingPill" DockPanel.Dock="Right" CornerRadius="10" Padding="10,3" Background="#202026" VerticalAlignment="Center">
                     <TextBlock x:Name="PingQual" Text="..." FontSize="11.5" FontWeight="SemiBold" Foreground="#B8B8C0"/>
                   </Border>
                   <StackPanel Orientation="Horizontal">
-                    <Border Width="30" Height="30" CornerRadius="9" Background="#2E1B2A" Margin="0,0,10,0"><TextBlock Text="&#xEC4A;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <Border Width="36" Height="36" CornerRadius="11" Background="#2AF472B6" Margin="0,0,10,0"><TextBlock Text="&#xEC4A;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
                     <TextBlock Text="PING" Style="{StaticResource Tag}" Foreground="#F472B6" Margin="0" VerticalAlignment="Center"/>
                   </StackPanel>
                 </DockPanel>
-                <TextBlock x:Name="PingVal" Text="..." FontSize="32" FontWeight="Bold" Margin="0,12,0,0"/>
-                <TextBlock Text="Temps de réponse vers internet (1.1.1.1). Plus c'est bas, mieux c'est." Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                  <TextBlock x:Name="PingVal" Text="..." FontSize="40" FontWeight="Black"/>
+                  
+                </StackPanel>
+                <TextBlock Text="Temps de réponse vers internet (1.1.1.1). Plus c'est bas, mieux c'est." Foreground="#B8B8C0" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0"/>
               </StackPanel>
             </Border>
-            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="18,14">
+            <Border Grid.Column="2" CornerRadius="16" Padding="20,18" BorderBrush="#664226" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#442F21" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                  <Border Width="30" Height="30" CornerRadius="9" Background="#33220F" Margin="0,0,10,0"><TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                  <TextBlock Text="RÉCEPTION" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0" VerticalAlignment="Center"/>
+                <DockPanel>
+                  <StackPanel Orientation="Horizontal">
+                    <Border Width="36" Height="36" CornerRadius="11" Background="#2AFB923C" Margin="0,0,10,0"><TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <TextBlock Text="RÉCEPTION" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0" VerticalAlignment="Center"/>
+                  </StackPanel>
+                </DockPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                  <TextBlock x:Name="DownVal" Text="..." FontSize="40" FontWeight="Black"/>
+                  <TextBlock Text="Mbit/s" Foreground="#8E8E98" VerticalAlignment="Bottom" Margin="8,0,0,9" FontSize="14"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                  <TextBlock x:Name="DownVal" Text="..." FontSize="32" FontWeight="Bold"/>
-                  <TextBlock Text="Mbit/s" Foreground="#8E8E98" VerticalAlignment="Bottom" Margin="8,0,0,7"/>
-                </StackPanel>
-                <TextBlock Text="Ce que ton PC télécharge en ce moment." Style="{StaticResource Dim}" Margin="0,2,0,0"/>
+                <TextBlock Text="Ce que ton PC télécharge en ce moment." Foreground="#B8B8C0" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0"/>
               </StackPanel>
             </Border>
-            <Border Grid.Column="4" Style="{StaticResource Card}" Padding="18,14">
+            <Border Grid.Column="4" CornerRadius="16" Padding="20,18" BorderBrush="#225168" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1D3847" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                  <Border Width="30" Height="30" CornerRadius="9" Background="#14283A" Margin="0,0,10,0"><TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                  <TextBlock Text="ENVOI" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0" VerticalAlignment="Center"/>
+                <DockPanel>
+                  <StackPanel Orientation="Horizontal">
+                    <Border Width="36" Height="36" CornerRadius="11" Background="#2A38BDF8" Margin="0,0,10,0"><TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <TextBlock Text="ENVOI" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0" VerticalAlignment="Center"/>
+                  </StackPanel>
+                </DockPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                  <TextBlock x:Name="UpVal" Text="..." FontSize="40" FontWeight="Black"/>
+                  <TextBlock Text="Mbit/s" Foreground="#8E8E98" VerticalAlignment="Bottom" Margin="8,0,0,9" FontSize="14"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                  <TextBlock x:Name="UpVal" Text="..." FontSize="32" FontWeight="Bold"/>
-                  <TextBlock Text="Mbit/s" Foreground="#8E8E98" VerticalAlignment="Bottom" Margin="8,0,0,7"/>
-                </StackPanel>
-                <TextBlock Text="Ce que ton PC envoie en ce moment." Style="{StaticResource Dim}" Margin="0,2,0,0"/>
+                <TextBlock Text="Ce que ton PC envoie en ce moment." Foreground="#B8B8C0" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0"/>
               </StackPanel>
             </Border>
           </Grid>
           <Grid Margin="0,14,0,0">
             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="18,16">
+            <Border Grid.Column="0" CornerRadius="16" Padding="22,20" BorderBrush="#205343" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1B332D" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="MA CONNEXION" Style="{StaticResource Tag}" Foreground="#34D399"/>
-                <TextBlock x:Name="NetInfo" Text="Lecture en cours..." LineHeight="22" Foreground="#CACAD2" TextWrapping="Wrap"/>
+                <DockPanel Margin="0,0,0,14">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2634D399" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE839;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="MA CONNEXION" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,2"/><TextBlock Text="Ton réseau en ce moment" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                </DockPanel>
+                <Border CornerRadius="12" Background="#0D1A14" BorderBrush="#1F4D3A" BorderThickness="1" Padding="14,10">
+                  <TextBlock x:Name="NetInfo" Text="Lecture en cours..." LineHeight="22" Foreground="#E8E8EC" TextWrapping="Wrap"/>
+                </Border>
                 <WrapPanel Margin="0,14,0,0">
-                  <Button x:Name="BtnDns" Style="{StaticResource Ghost}" Content="Vider le cache DNS" ToolTip="Utile quand un site ou un jeu n'arrive plus à se connecter alors qu'internet marche"/>
+                  <Button x:Name="BtnDns" Style="{StaticResource Ghost}" Content="Vider le cache DNS" Margin="0,0,10,6" ToolTip="Utile quand un site ou un jeu n'arrive plus à se connecter alors qu'internet marche"/>
                   <TextBlock x:Name="NetMsg" Text=" " Foreground="#B8B8C0" VerticalAlignment="Center" TextWrapping="Wrap"/>
                 </WrapPanel>
               </StackPanel>
             </Border>
-            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="18,16">
+            <Border Grid.Column="2" CornerRadius="16" Padding="22,20" BorderBrush="#5D344C" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#382432" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="TEST DE DÉBIT" Style="{StaticResource Tag}" Foreground="#F472B6"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="Mesure la vraie vitesse de ta connexion (serveurs Cloudflare). Environ 15 secondes, jusqu'à 350 Mo de données : évite en partage de connexion mobile."/>
+                <DockPanel Margin="0,0,0,14">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26F472B6" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xEC4A;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="TEST DE DÉBIT" Style="{StaticResource Tag}" Foreground="#F472B6" Margin="0,0,0,2"/><TextBlock Text="La vraie vitesse de ta connexion" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                </DockPanel>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" FontSize="12.5" Text="Serveurs Cloudflare. Environ 15 secondes, jusqu'à 350 Mo de données : évite en partage de connexion mobile."/>
                 <WrapPanel Margin="0,12,0,0">
-                  <Button x:Name="SpeedGo" Style="{StaticResource Action}" Content="Lancer le test"/>
+                  <Button x:Name="SpeedGo" Style="{StaticResource Action}" Content="Lancer le test" Margin="0,0,12,6"/>
                   <TextBlock x:Name="SpeedMsg" Text=" " Foreground="#E8E8EC" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap"/>
                 </WrapPanel>
-                <Border Background="#141418" CornerRadius="10" Padding="12,8" Margin="0,12,0,0">
-                  <TextBlock x:Name="SpeedHist" Foreground="#8E8E98" LineHeight="20" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap"/>
+                <Border Background="#1A1016" BorderBrush="#4A2A3E" BorderThickness="1" CornerRadius="12" Padding="14,10" Margin="0,10,0,0">
+                  <TextBlock x:Name="SpeedHist" Foreground="#CACAD2" LineHeight="20" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap"/>
                 </Border>
               </StackPanel>
             </Border>
           </Grid>
           <Grid Margin="0,14,0,0">
             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Style="{StaticResource Card}" Padding="18,16">
+            <Border Grid.Column="0" CornerRadius="16" Padding="22,20" BorderBrush="#5F4C1D" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#39301C" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="SERVEUR DNS" Style="{StaticResource Tag}" Foreground="#FBBF24"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Margin="0,0,0,12" Text="Le DNS traduit les noms de sites en adresses. Celui de Cloudflare ou de Google est souvent plus rapide et plus fiable que celui de la box. Demande les droits administrateur."/>
+                <DockPanel Margin="0,0,0,14">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FBBF24" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="SERVEUR DNS" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,0,0,2"/><TextBlock Text="Des sites et des jeux qui répondent plus vite" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                </DockPanel>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" FontSize="12.5" Margin="0,0,0,12" Text="Le DNS traduit les noms de sites en adresses. Celui de Cloudflare ou de Google est souvent plus rapide et plus fiable que celui de la box. Demande les droits administrateur."/>
                 <WrapPanel>
                   <Button x:Name="DnsCf" Style="{StaticResource Ghost}" Content="Cloudflare (1.1.1.1)" Margin="0,0,8,8"/>
                   <Button x:Name="DnsGoogle" Style="{StaticResource Ghost}" Content="Google (8.8.8.8)" Margin="0,0,8,8"/>
@@ -1593,37 +1892,41 @@ $xaml = @'
                 <TextBlock x:Name="DnsMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
               </StackPanel>
             </Border>
-            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="18,16">
+            <Border Grid.Column="2" CornerRadius="16" Padding="22,20" BorderBrush="#453C62" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#2C283C" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="MOTS DE PASSE WI-FI ENREGISTRÉS" Style="{StaticResource Tag}" Foreground="#A78BFA"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Margin="0,0,0,12" Text="Les réseaux Wi-Fi déjà enregistrés sur ce PC, avec leur mot de passe : pratique pour connecter un téléphone ou une console."/>
+                <DockPanel Margin="0,0,0,14">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26A78BFA" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="MOTS DE PASSE WI-FI" Style="{StaticResource Tag}" Foreground="#A78BFA" Margin="0,0,0,2"/><TextBlock Text="Pour connecter un téléphone ou une console" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                </DockPanel>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" FontSize="12.5" Margin="0,0,0,12" Text="Les réseaux Wi-Fi déjà enregistrés sur ce PC, avec leur mot de passe."/>
                 <WrapPanel><Button x:Name="WifiShow" Style="{StaticResource Ghost}" Content="Afficher les mots de passe"/></WrapPanel>
                 <TextBlock x:Name="WifiMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/>
                 <ItemsControl x:Name="WifiList" ItemTemplate="{StaticResource RowCard}" Margin="0,8,0,0"/>
               </StackPanel>
             </Border>
           </Grid>
-          <Border Style="{StaticResource Card}" Margin="0,14,0,0" Padding="18,16">
+          <Border CornerRadius="16" Padding="22,20" BorderBrush="#214C61" BorderThickness="1" Margin="0,14,0,0">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1B2F3C" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
             <StackPanel>
-              <DockPanel>
-                <Button x:Name="ConnScan" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Actualiser" Margin="12,0,0,0" VerticalAlignment="Top"/>
-                <StackPanel>
-                  <TextBlock Text="APPLICATIONS CONNECTÉES À INTERNET" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-                  <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="Les programmes qui ont des connexions ouvertes en ce moment. Pratique pour repérer ce qui utilise internet pendant que tu joues (mise à jour, synchro, lanceur...)."/>
-                </StackPanel>
-              </DockPanel>
+              <DockPanel Margin="0,0,0,14">
+                  <Button x:Name="ConnScan" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Actualiser" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2638BDF8" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="APPLICATIONS CONNECTÉES À INTERNET" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,0,0,2"/><TextBlock Text="Ce qui utilise ta connexion pendant que tu joues" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                </DockPanel>
+              <TextBlock TextWrapping="Wrap" Foreground="#B8B8C0" FontSize="12.5" LineHeight="19" Text="Mises à jour, synchros, lanceurs... Pratique pour repérer ce qui ralentit ta connexion en partie."/>
               <ItemsControl x:Name="ConnList" ItemTemplate="{StaticResource RowCard}" Margin="0,12,0,0"/>
             </StackPanel>
           </Border>
-          <Border Style="{StaticResource Card}" Margin="0,14,0,0" Padding="18,16">
+          <Border CornerRadius="16" Padding="22,20" BorderBrush="#205343" BorderThickness="1" Margin="0,14,0,0">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1B332D" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
             <StackPanel>
-              <DockPanel>
-                <Button x:Name="DevScan" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Chercher les appareils" Margin="12,0,0,0" VerticalAlignment="Top"/>
-                <StackPanel>
-                  <TextBlock Text="APPAREILS SUR TON RÉSEAU" Style="{StaticResource Tag}" Foreground="#34D399"/>
-                  <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="Ta box, tes téléphones, tes consoles, ta télé... tout ce qui est connecté chez toi. Dure quelques secondes."/>
-                </StackPanel>
-              </DockPanel>
+              <DockPanel Margin="0,0,0,14">
+                  <Button x:Name="DevScan" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Chercher les appareils" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2634D399" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE968;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="APPAREILS SUR TON RÉSEAU" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,2"/><TextBlock Text="Tout ce qui est connecté chez toi" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                </DockPanel>
+              <TextBlock TextWrapping="Wrap" Foreground="#B8B8C0" FontSize="12.5" LineHeight="19" Text="Ta box, tes téléphones, tes consoles, ta télé... Dure quelques secondes."/>
               <TextBlock x:Name="DevMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/>
               <ItemsControl x:Name="DevList" ItemTemplate="{StaticResource RowCard}" Margin="0,8,0,0"/>
             </StackPanel>
@@ -1887,89 +2190,135 @@ $xaml = @'
         </StackPanel></ScrollViewer>
 
         <!-- ===== Rangement ===== -->
-        <ScrollViewer x:Name="PageTidy" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed"><StackPanel Margin="26,4,22,12" MaxWidth="1250">
-          <TextBlock Text="Rangement des fichiers" Style="{StaticResource H}" Margin="0,0,0,2"/>
-          <TextBlock Text="Un dossier en bazar ? OnePC trie les fichiers en vrac dans des sous-dossiers (Images, Vidéos, Documents...). Rien n'est supprimé, et tu peux tout annuler." Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,0,0,14"/>
-          <TextBlock Text="1 · CHOISIS UN DOSSIER" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="2,0,0,8"/>
-          <UniformGrid Columns="4" Margin="0,0,0,6">
-            <Button x:Name="TidyDl" Style="{StaticResource Tile}" Margin="0,0,10,0" Height="78">
+        <ScrollViewer x:Name="PageTidy" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed"><StackPanel Margin="26,4,22,12" MaxWidth="1100">
+          <Border CornerRadius="18" Padding="28,22" BorderBrush="#2E2E36" BorderThickness="1" Margin="0,0,0,18">
+            <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#10283A" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/><GradientStop Color="#1F1A3A" Offset="1"/></LinearGradientBrush></Border.Background>
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+              <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="RANGEMENT" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
+                <TextBlock Text="Un dossier en bazar ? Rangé en un clic" FontSize="25" FontWeight="Bold" TextWrapping="Wrap"/>
+                <TextBlock Text="OnePC trie les fichiers en vrac dans des sous-dossiers : Images, Vidéos, Documents... Rien n'est supprimé, et tu peux tout annuler." Foreground="#CACAD2" FontSize="13" Margin="0,8,0,0" TextWrapping="Wrap" LineHeight="21"/>
+                <WrapPanel Margin="0,12,0,0">
+                  <Border CornerRadius="9" Background="#2234D399" Padding="10,4" Margin="0,0,8,6"><TextBlock Text="✓  Rien n'est supprimé" Foreground="#34D399" FontSize="12" FontWeight="SemiBold"/></Border>
+                  <Border CornerRadius="9" Background="#2238BDF8" Padding="10,4" Margin="0,0,8,6"><TextBlock Text="↶  Annulable" Foreground="#38BDF8" FontSize="12" FontWeight="SemiBold"/></Border>
+                  <Border CornerRadius="9" Background="#22A78BFA" Padding="10,4" Margin="0,0,8,6"><TextBlock Text="👁  Aperçu avant de ranger" Foreground="#A78BFA" FontSize="12" FontWeight="SemiBold"/></Border>
+                </WrapPanel>
+              </StackPanel>
+              <Grid Grid.Column="1" Width="116" Height="116" Margin="24,0,0,0" VerticalAlignment="Center">
+                <Ellipse Fill="#1A38BDF8"/>
+                <Ellipse Margin="12" Stroke="#38BDF8" StrokeThickness="3"/>
+                <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="36" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Grid>
+            </Grid>
+          </Border>
+
+          <DockPanel Margin="0,0,0,10"><Border DockPanel.Dock="Left" Width="26" Height="26" CornerRadius="13" Background="#38BDF8" Margin="0,0,10,0"><TextBlock Text="1" FontWeight="Bold" FontSize="12.5" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="Choisis un dossier" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"/></DockPanel>
+          <UniformGrid Columns="4" Margin="0,0,0,18">
+            <Button x:Name="TidyDl" Style="{StaticResource Tile}" Margin="0,0,10,0" Height="96">
               <DockPanel>
-                <Border Width="40" Height="40" CornerRadius="10" Background="#14283A" Margin="0,0,12,0"><TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                <StackPanel VerticalAlignment="Center"><TextBlock Text="Téléchargements" FontWeight="SemiBold"/><TextBlock Text="Souvent le plus en bazar" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+                <Border Width="48" Height="48" CornerRadius="14" Background="#2A38BDF8" Margin="2,0,14,0"><TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <StackPanel VerticalAlignment="Center"><TextBlock Text="Téléchargements" FontWeight="Bold" FontSize="14.5"/><TextBlock Text="Souvent le plus en bazar" Foreground="#8E8E98" FontSize="11.5" TextWrapping="Wrap" Margin="0,2,0,0"/></StackPanel>
               </DockPanel>
             </Button>
-            <Button x:Name="TidyDesk" Style="{StaticResource Tile}" Margin="0,0,10,0" Height="78">
+            <Button x:Name="TidyDesk" Style="{StaticResource Tile}" Margin="0,0,10,0" Height="96">
               <DockPanel>
-                <Border Width="40" Height="40" CornerRadius="10" Background="#33220F" Margin="0,0,12,0"><TextBlock Text="&#xE7F8;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                <StackPanel VerticalAlignment="Center"><TextBlock Text="Bureau" FontWeight="SemiBold"/><TextBlock Text="Les fichiers posés à la va-vite" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+                <Border Width="48" Height="48" CornerRadius="14" Background="#2AFB923C" Margin="2,0,14,0"><TextBlock Text="&#xE7F8;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <StackPanel VerticalAlignment="Center"><TextBlock Text="Bureau" FontWeight="Bold" FontSize="14.5"/><TextBlock Text="Les fichiers posés à la va-vite" Foreground="#8E8E98" FontSize="11.5" TextWrapping="Wrap" Margin="0,2,0,0"/></StackPanel>
               </DockPanel>
             </Button>
-            <Button x:Name="TidyDocs" Style="{StaticResource Tile}" Margin="0,0,10,0" Height="78">
+            <Button x:Name="TidyDocs" Style="{StaticResource Tile}" Margin="0,0,10,0" Height="96">
               <DockPanel>
-                <Border Width="40" Height="40" CornerRadius="10" Background="#173326" Margin="0,0,12,0"><TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                <StackPanel VerticalAlignment="Center"><TextBlock Text="Documents" FontWeight="SemiBold"/><TextBlock Text="Papiers, PDF, fichiers" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+                <Border Width="48" Height="48" CornerRadius="14" Background="#2A34D399" Margin="2,0,14,0"><TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <StackPanel VerticalAlignment="Center"><TextBlock Text="Documents" FontWeight="Bold" FontSize="14.5"/><TextBlock Text="Papiers, PDF, fichiers" Foreground="#8E8E98" FontSize="11.5" TextWrapping="Wrap" Margin="0,2,0,0"/></StackPanel>
               </DockPanel>
             </Button>
-            <Button x:Name="TidyOther" Style="{StaticResource Tile}" Height="78">
+            <Button x:Name="TidyOther" Style="{StaticResource Tile}" Margin="0" Height="96">
               <DockPanel>
-                <Border Width="40" Height="40" CornerRadius="10" Background="#26203A" Margin="0,0,12,0"><TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                <StackPanel VerticalAlignment="Center"><TextBlock Text="Autre dossier..." FontWeight="SemiBold"/><TextBlock Text="Choisis n'importe lequel" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+                <Border Width="48" Height="48" CornerRadius="14" Background="#2AA78BFA" Margin="2,0,14,0"><TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <StackPanel VerticalAlignment="Center"><TextBlock Text="Autre dossier..." FontWeight="Bold" FontSize="14.5"/><TextBlock Text="Choisis n'importe lequel" Foreground="#8E8E98" FontSize="11.5" TextWrapping="Wrap" Margin="0,2,0,0"/></StackPanel>
               </DockPanel>
             </Button>
           </UniformGrid>
-          <TextBlock Text="2 · REGARDE CE QUI SERA RANGÉ" Style="{StaticResource Tag}" Foreground="#34D399" Margin="2,18,0,8"/>
-          <Border Style="{StaticResource Card}" Padding="18,16">
+
+          <Border CornerRadius="16" Padding="22,20" BorderBrush="#205343" BorderThickness="1">
+            <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1B312C" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/></LinearGradientBrush></Border.Background>
             <StackPanel>
-              <Border Background="#141418" CornerRadius="9" Padding="12,8" HorizontalAlignment="Left">
+              <DockPanel Margin="0,0,0,10"><Border DockPanel.Dock="Left" Width="26" Height="26" CornerRadius="13" Background="#34D399" Margin="0,0,10,0"><TextBlock Text="2" FontWeight="Bold" FontSize="12.5" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="Regarde ce qui sera rangé" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"/></DockPanel>
+              <Border Background="#0F1A15" BorderBrush="#1E463A" BorderThickness="1" CornerRadius="11" Padding="14,10" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">
-                  <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#8E8E98" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                  <TextBlock x:Name="TidyPath" Text="Choisis un dossier au-dessus pour voir ce qui sera rangé." Foreground="#CACAD2" TextTrimming="CharacterEllipsis" MaxWidth="800"/>
+                  <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#34D399" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                  <TextBlock x:Name="TidyPath" Text="Choisis un dossier au-dessus pour voir ce qui sera rangé." Foreground="#E8E8EC" TextTrimming="CharacterEllipsis" MaxWidth="800"/>
                 </StackPanel>
               </Border>
               <ItemsControl x:Name="TidyList" Margin="0,14,0,0">
                 <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <Border Width="268" Margin="0,0,10,10" CornerRadius="12" Background="#141418" BorderBrush="#26262C" BorderThickness="1" Padding="14,12">
+                    <Border Width="250" Margin="0,0,10,10" CornerRadius="12" Background="#141418" BorderBrush="#26262C" BorderThickness="1">
                       <DockPanel>
-                        <Border DockPanel.Dock="Left" Width="40" Height="40" CornerRadius="10" Background="{Binding Bg}" Margin="0,0,12,0" VerticalAlignment="Top">
-                          <TextBlock Text="{Binding Glyph}" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="{Binding Col}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <StackPanel>
-                          <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"/>
-                          <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                            <TextBlock Text="{Binding Count}" Foreground="{Binding Col}" FontSize="12"/>
-                            <TextBlock Text="  ·  " Foreground="#4A4A55" FontSize="12"/>
-                            <TextBlock Text="{Binding Size}" Foreground="#8E8E98" FontSize="12"/>
+                        <Border DockPanel.Dock="Left" Width="4" CornerRadius="2" Background="{Binding Col}" Margin="0,10,0,10"/>
+                        <DockPanel Margin="12,12,14,12">
+                          <Border DockPanel.Dock="Left" Width="42" Height="42" CornerRadius="12" Background="{Binding Bg}" Margin="0,0,12,0" VerticalAlignment="Top">
+                            <TextBlock Text="{Binding Glyph}" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{Binding Col}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                          </Border>
+                          <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                              <TextBlock Text="{Binding Count}" Foreground="{Binding Col}" FontSize="12" FontWeight="SemiBold"/>
+                              <TextBlock Text="  ·  " Foreground="#4A4A55" FontSize="12"/>
+                              <TextBlock Text="{Binding Size}" Foreground="#8E8E98" FontSize="12"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding Sample}" Foreground="#6C6C76" FontSize="11" TextTrimming="CharacterEllipsis" Margin="0,5,0,0"/>
                           </StackPanel>
-                          <TextBlock Text="{Binding Sample}" Foreground="#6C6C76" FontSize="11" TextTrimming="CharacterEllipsis" Margin="0,5,0,0"/>
-                        </StackPanel>
+                        </DockPanel>
                       </DockPanel>
                     </Border>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
-              <TextBlock x:Name="TidyInfo" Text=" " Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
-              <TextBlock Text="3 · RANGE" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0,16,0,8"/>
-              <WrapPanel>
-                <Button x:Name="TidyGo" Style="{StaticResource Action}" Content="Ranger ce dossier" IsEnabled="False" Margin="0,0,8,0"/>
-                <Button x:Name="TidyUndo" Style="{StaticResource Ghost}" Content="Annuler le dernier rangement" Margin="0,0,8,0"/>
-                <Button x:Name="TidyOpen" Style="{StaticResource Ghost}" Content="Ouvrir le dossier" IsEnabled="False" Margin="0"/>
-              </WrapPanel>
-              <TextBlock x:Name="TidyMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
+              <TextBlock x:Name="TidyInfo" Text=" " Foreground="#CACAD2" FontSize="12.5" TextWrapping="Wrap" Margin="0,2,0,0"/>
+              <Border BorderBrush="#26332D" BorderThickness="0,1,0,0" Margin="0,16,0,0" Padding="0,16,0,0">
+                <StackPanel>
+                  <DockPanel Margin="0,0,0,10"><Border DockPanel.Dock="Left" Width="26" Height="26" CornerRadius="13" Background="#FB923C" Margin="0,0,10,0"><TextBlock Text="3" FontWeight="Bold" FontSize="12.5" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="Range" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"/></DockPanel>
+                  <WrapPanel>
+                    <Button x:Name="TidyGo" Style="{StaticResource Action}" Content="Ranger ce dossier" IsEnabled="False" Margin="0,0,8,6"/>
+                    <Button x:Name="TidyUndo" Style="{StaticResource Ghost}" Content="↶  Annuler le dernier rangement" Margin="0,0,8,6"/>
+                    <Button x:Name="TidyOpen" Style="{StaticResource Ghost}" Content="Ouvrir le dossier" IsEnabled="False" Margin="0,0,8,6"/>
+                  </WrapPanel>
+                  <TextBlock x:Name="TidyMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+              </Border>
             </StackPanel>
           </Border>
-          <TextBlock Text="SAUVEGARDER UN DOSSIER" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="2,22,0,8"/>
-          <Border Style="{StaticResource Card}" Padding="18,16">
+
+          <Border CornerRadius="16" Padding="22,20" BorderBrush="#5F3E25" BorderThickness="1" Margin="0,18,0,0">
+            <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3B2A20" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/></LinearGradientBrush></Border.Background>
             <StackPanel>
-              <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Margin="0,0,0,12" Text="Copie un dossier important vers une clé USB ou un autre disque. Les fichiers déjà copiés et inchangés sont sautés, et rien n'est jamais supprimé dans la destination."/>
-              <WrapPanel>
-                <Button x:Name="BackSrc" Style="{StaticResource Ghost}" Content="1. Dossier à sauvegarder..." Margin="0,0,8,8"/>
-                <Button x:Name="BackDst" Style="{StaticResource Ghost}" Content="2. Destination..." Margin="0,0,8,8"/>
-                <Button x:Name="BackGo" Style="{StaticResource Action}" Content="3. Sauvegarder maintenant" Margin="0,0,8,8"/>
-              </WrapPanel>
-              <Border Background="#141418" CornerRadius="9" Padding="12,8" Margin="0,4,0,0">
-                <TextBlock x:Name="BackInfo" Text=" " Foreground="#B8B8C0" FontSize="12" TextWrapping="Wrap" LineHeight="18"/>
+              <DockPanel Margin="0,0,0,14">
+                <Border DockPanel.Dock="Left" Width="48" Height="48" CornerRadius="14" Background="#2AFB923C" Margin="0,0,14,0"><TextBlock Text="&#xE88E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="SAUVEGARDER UN DOSSIER" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0,0,0,2"/>
+                  <TextBlock Text="Une copie de tes fichiers importants sur une clé USB" FontSize="16" FontWeight="Bold" TextWrapping="Wrap"/>
+                  <TextBlock Text="Les fichiers déjà copiés et inchangés sont sautés. Rien n'est jamais supprimé dans la destination." Foreground="#CACAD2" FontSize="12.5" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                </StackPanel>
+              </DockPanel>
+              <UniformGrid Columns="3">
+                <Button x:Name="BackSrc" Style="{StaticResource Tile}" Margin="0,0,5,0">
+                  <DockPanel><Border Width="30" Height="30" CornerRadius="15" Background="#FB923C" Margin="0,0,12,0"><TextBlock Text="1" FontWeight="Bold" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="Dossier à sauvegarder" FontWeight="SemiBold"/><TextBlock Text="Ce que tu veux protéger" Foreground="#8E8E98" FontSize="11.5"/></StackPanel></DockPanel>
+                </Button>
+                <Button x:Name="BackDst" Style="{StaticResource Tile}" Margin="5,0,5,0">
+                  <DockPanel><Border Width="30" Height="30" CornerRadius="15" Background="#FB923C" Margin="0,0,12,0"><TextBlock Text="2" FontWeight="Bold" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="Destination" FontWeight="SemiBold"/><TextBlock Text="Ta clé USB ou un autre disque" Foreground="#8E8E98" FontSize="11.5"/></StackPanel></DockPanel>
+                </Button>
+                <Button x:Name="BackGo" Style="{StaticResource Action}" Content="3 ·  Sauvegarder maintenant" Margin="5,0,0,0" FontSize="14"/>
+              </UniformGrid>
+              <Border Background="#1A140C" BorderBrush="#503523" BorderThickness="1" CornerRadius="11" Padding="14,10" Margin="0,14,0,0">
+                <DockPanel>
+                  <TextBlock DockPanel.Dock="Left" Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#FB923C" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                  <TextBlock x:Name="BackInfo" Text=" " Foreground="#E8E8EC" FontSize="12.5" TextWrapping="Wrap" LineHeight="19"/>
+                </DockPanel>
               </Border>
             </StackPanel>
           </Border>
@@ -1977,36 +2326,107 @@ $xaml = @'
 
         <!-- ===== Fond d'écran ===== -->
         <ScrollViewer x:Name="PageWall" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
-          <StackPanel Margin="26,4,22,12" MaxWidth="1250">
-            <TextBlock Text="Fond d'écran" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock Text="Des fonds simples et sombres, créés à la taille exacte de ton écran : fichier léger, pas de diaporama, rien qui tourne en arrière-plan." Style="{StaticResource Dim}" Margin="0,0,0,12" TextWrapping="Wrap"/>
-            <TextBlock x:Name="WallMsg" Text="Clique sur un fond pour l'appliquer." Foreground="#B8B8C0" FontSize="12" Margin="0,0,0,10"/>
-            <Border Style="{StaticResource Card}">
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <Border CornerRadius="18" Padding="28,22" BorderBrush="#3A2240" BorderThickness="1" Margin="0,0,0,18">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#2A0B3D" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/><GradientStop Color="#0B2A3A" Offset="1"/></LinearGradientBrush></Border.Background>
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="FOND D'ÉCRAN" Style="{StaticResource Tag}" Foreground="#F472B6"/>
+                  <TextBlock Text="Des fonds uniques, dessinés pour ton écran" FontSize="25" FontWeight="Bold" TextWrapping="Wrap"/>
+                  <TextBlock Text="Créés par OnePC à la taille exacte de ton écran : fichier léger, pas de diaporama, rien qui tourne en arrière-plan." Foreground="#CACAD2" FontSize="13" Margin="0,8,0,0" TextWrapping="Wrap" LineHeight="21"/>
+                  <WrapPanel Margin="0,14,0,0">
+                    <Button x:Name="WallRandom" Style="{StaticResource Action}" Content="🎲  Surprends-moi" Margin="0,0,12,6"/>
+                    <Border CornerRadius="10" Background="#22FFFFFF" Padding="12,6" Margin="0,0,0,6" VerticalAlignment="Center">
+                      <CheckBox x:Name="WallName" Foreground="#E8E8EC" VerticalAlignment="Center" Content="Ajouter mon pseudo sur le fond" ToolTip="Ton pseudo OnePC s'affiche en grand et discret en bas à droite de ton fond."/>
+                    </Border>
+                  </WrapPanel>
+                  <TextBlock x:Name="WallMsg" Text="Clique sur un fond pour l'appliquer." Foreground="#F9A8D4" FontSize="12.5" FontWeight="SemiBold" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+                <Grid Grid.Column="1" Width="116" Height="116" Margin="24,0,0,0" VerticalAlignment="Center">
+                  <Ellipse Fill="#1AF472B6"/>
+                  <Ellipse Margin="12" Stroke="#F472B6" StrokeThickness="3"/>
+                  <TextBlock Text="&#xE771;" FontFamily="Segoe MDL2 Assets" FontSize="36" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+              </Grid>
+            </Border>
+
+            <Border CornerRadius="16" Padding="20,18" BorderBrush="#2A3A6A" BorderThickness="1" Margin="0,0,0,14">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#141C3A" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="STYLÉS" Style="{StaticResource Tag}" Foreground="#F472B6"/>
+                <DockPanel Margin="0,0,0,12">
+                  <Border DockPanel.Dock="Left" CornerRadius="8" Background="#38BDF8" Padding="8,3" Margin="0,0,10,0" VerticalAlignment="Center"><TextBlock Text="ONEPC" FontSize="10.5" FontWeight="Bold" Foreground="#0F0F12"/></Border>
+                  <TextBlock Text="Mode opti" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                  <TextBlock Text="  ·  processeur, compteur de FPS, images stables" Foreground="#8E8E98" FontSize="12.5" VerticalAlignment="Center"/>
+                </DockPanel>
+                <WrapPanel x:Name="WallHostO"/>
+              </StackPanel>
+            </Border>
+            <Border CornerRadius="16" Padding="20,18" BorderBrush="#4A2A55" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#24122E" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/></LinearGradientBrush></Border.Background>
+              <StackPanel>
+                <DockPanel Margin="0,0,0,12">
+                  <Border DockPanel.Dock="Left" CornerRadius="8" Background="#F472B6" Padding="8,3" Margin="0,0,10,0" VerticalAlignment="Center"><TextBlock Text="GAMING" FontSize="10.5" FontWeight="Bold" Foreground="#0F0F12"/></Border>
+                  <TextBlock Text="Néon et jeu vidéo" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                </DockPanel>
+                <WrapPanel x:Name="WallHostN"/>
+              </StackPanel>
+            </Border>
+            <Border CornerRadius="16" Padding="20,18" BorderBrush="#24384A" BorderThickness="1" Margin="0,14,0,0">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#10222E" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/></LinearGradientBrush></Border.Background>
+              <StackPanel>
+                <DockPanel Margin="0,0,0,12"><Border DockPanel.Dock="Left" CornerRadius="8" Background="#8E8E98" Padding="8,3" Margin="0,0,10,0" VerticalAlignment="Center"><TextBlock Text="SIMPLES" FontSize="10.5" FontWeight="Bold" Foreground="#0F0F12"/></Border><TextBlock Text="Sobres et reposants" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/></DockPanel>
                 <WrapPanel x:Name="WallHostA"/>
               </StackPanel>
             </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+            <Border CornerRadius="16" Padding="20,18" BorderBrush="#1F4D3A" BorderThickness="1" Margin="0,14,0,0">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#112A20" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="UNIS ET DÉGRADÉS" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-                <WrapPanel x:Name="WallHost"/>
+                <DockPanel Margin="0,0,0,14">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2A34D399" Margin="0,0,14,0"><TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="CRÉE LE TIEN" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,2"/>
+                    <TextBlock Text="Choisis 2 couleurs et un motif : l'aperçu change en direct" FontWeight="SemiBold" FontSize="14" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </DockPanel>
+                <Grid>
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="260"/></Grid.ColumnDefinitions>
+                  <StackPanel Grid.Column="0">
+                    <TextBlock Text="① Couleur de fond" Foreground="#CACAD2" FontWeight="SemiBold" Margin="0,0,0,6"/><WrapPanel x:Name="CustA"/>
+                    <TextBlock Text="② Couleur du motif" Foreground="#CACAD2" FontWeight="SemiBold" Margin="0,8,0,6"/><WrapPanel x:Name="CustB"/>
+                    <TextBlock Text="③ Motif" Foreground="#CACAD2" FontWeight="SemiBold" Margin="0,8,0,6"/><ComboBox x:Name="CustType" Width="220" HorizontalAlignment="Left"/>
+                  </StackPanel>
+                  <StackPanel Grid.Column="1">
+                    <Border x:Name="CustPrev" Width="256" Height="144" CornerRadius="10" BorderBrush="#34343C" BorderThickness="1" Background="#000000"/>
+                    <Button x:Name="CustApply" Style="{StaticResource Action}" Content="Appliquer ce fond" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+                  </StackPanel>
+                </Grid>
               </StackPanel>
             </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0"><StackPanel><TextBlock Text="CRÉE LE TIEN" Style="{StaticResource Tag}" Foreground="#34D399"/>
-<Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="200"/></Grid.ColumnDefinitions><StackPanel Grid.Column="0"><TextBlock Text="Couleur de fond" Foreground="#CACAD2" Margin="0,0,0,6"/><WrapPanel x:Name="CustA"/><TextBlock Text="Deuxième couleur" Foreground="#CACAD2" Margin="0,8,0,6"/><WrapPanel x:Name="CustB"/><TextBlock Text="Motif" Foreground="#CACAD2" Margin="0,8,0,6"/><ComboBox x:Name="CustType" Width="200" HorizontalAlignment="Left"/></StackPanel><StackPanel Grid.Column="1"><Border x:Name="CustPrev" Width="176" Height="99" CornerRadius="8" BorderBrush="#34343C" BorderThickness="1" Background="#000000"/><Button x:Name="CustApply" Style="{StaticResource Action}" Content="Appliquer ce fond" Margin="0,10,0,0" HorizontalAlignment="Center"/></StackPanel></Grid></StackPanel></Border>
-<Border Style="{StaticResource Card}" Margin="0,14,0,0"><StackPanel><TextBlock Text="THÈME DE WINDOWS" Style="{StaticResource Tag}" Foreground="#FBBF24"/>
-<StackPanel Orientation="Horizontal"><Button x:Name="ThemeDark" Style="{StaticResource Ghost}" Content="Mode sombre"/><Button x:Name="ThemeLight" Style="{StaticResource Ghost}" Content="Mode clair"/><Button x:Name="ThemeAccent" Style="{StaticResource Ghost}" Content="Couleur d'accent de Windows..."/><Button x:Name="ThemeFix" Style="{StaticResource Ghost}" Content="Un écran n'a pas changé ?"/></StackPanel>
-<TextBlock x:Name="ThemeMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/></StackPanel></Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
-              <StackPanel>
-                <TextBlock Text="RÉGLAGES" Style="{StaticResource Tag}" Foreground="#34D399"/>
-                <StackPanel Orientation="Horizontal">
-                  <Button x:Name="WallRestore" Style="{StaticResource Ghost}" Content="Remettre mon ancien fond"/>
-                  <Button x:Name="WallSettings" Style="{StaticResource Ghost}" Content="Réglages Windows du fond d'écran"/>
+            <Grid Margin="0,14,0,0">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+              <Border Grid.Column="0" Style="{StaticResource Card}">
+                <StackPanel>
+                  <TextBlock Text="THÈME DE WINDOWS" Style="{StaticResource Tag}" Foreground="#FBBF24"/>
+                  <WrapPanel>
+                    <Button x:Name="ThemeDark" Style="{StaticResource Ghost}" Content="Mode sombre" Margin="0,0,8,8"/>
+                    <Button x:Name="ThemeLight" Style="{StaticResource Ghost}" Content="Mode clair" Margin="0,0,8,8"/>
+                    <Button x:Name="ThemeAccent" Style="{StaticResource Ghost}" Content="Couleur d'accent..." Margin="0,0,8,8"/>
+                    <Button x:Name="ThemeFix" Style="{StaticResource Ghost}" Content="Un écran n'a pas changé ?" Margin="0,0,8,8"/>
+                  </WrapPanel>
+                  <TextBlock x:Name="ThemeMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
                 </StackPanel>
-              </StackPanel>
-            </Border>
+              </Border>
+              <Border Grid.Column="2" Style="{StaticResource Card}">
+                <StackPanel>
+                  <TextBlock Text="RÉGLAGES" Style="{StaticResource Tag}" Foreground="#34D399"/>
+                  <WrapPanel>
+                    <Button x:Name="WallRestore" Style="{StaticResource Ghost}" Content="Remettre mon ancien fond" Margin="0,0,8,8"/>
+                    <Button x:Name="WallSettings" Style="{StaticResource Ghost}" Content="Réglages Windows du fond" Margin="0,0,8,8"/>
+                  </WrapPanel>
+                </StackPanel>
+              </Border>
+            </Grid>
           </StackPanel>
         </ScrollViewer>
 
@@ -2227,30 +2647,49 @@ $xaml = @'
                     <Button x:Name="CompApply" Style="{StaticResource Action}" Content="Appliquer" Margin="0,0,8,8" IsEnabled="False"/>
                   </WrapPanel>
                 </StackPanel>
-                <Border Grid.Column="1" Width="150" Height="150" CornerRadius="75" BorderBrush="#A78BFA" BorderThickness="6" Margin="24,0,0,0" VerticalAlignment="Center">
+                <Grid Grid.Column="1" Width="150" Height="150" Margin="24,0,0,0" VerticalAlignment="Center">
+                  <Ellipse Fill="#14A78BFA"/>
+                  <Ellipse Margin="7" Stroke="#2A2A38" StrokeThickness="10"/>
+                  <Path x:Name="CompRing" Stroke="#A78BFA" StrokeThickness="10" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                   <StackPanel VerticalAlignment="Center">
-                    <TextBlock x:Name="CompScore" Text="-" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="CompScore" Text="-" FontSize="34" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <TextBlock Text="réglages au top" Foreground="#B8B8C0" FontSize="12" HorizontalAlignment="Center"/>
                   </StackPanel>
-                </Border>
+                </Grid>
               </Grid>
             </Border>
             <TextBlock x:Name="CompMsg" Text=" " Foreground="#B8B8C0" FontSize="12.5" Margin="4,0,0,10" TextWrapping="Wrap"/>
             <StackPanel x:Name="CompHost"/>
 
-            <TextBlock Text="CARTE GRAPHIQUE" Style="{StaticResource Tag}" Foreground="#34D399" Margin="4,10,0,8"/>
-            <Border Style="{StaticResource Card}" Padding="18,16">
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#1F4D3A" BorderThickness="1" Margin="0,4,0,14">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#112A20" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock x:Name="CompGpuTxt" TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="20"/>
+                <DockPanel Margin="0,0,0,14">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2634D399" Margin="0,0,14,0"><TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="CARTE GRAPHIQUE" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,2"/>
+                    <TextBlock Text="À régler toi-même dans son logiciel" FontWeight="Bold" FontSize="15"/>
+                  </StackPanel>
+                </DockPanel>
+                <Border CornerRadius="12" Background="#0D1A14" BorderBrush="#1F4D3A" BorderThickness="1" Padding="16,12">
+                  <TextBlock x:Name="CompGpuTxt" TextWrapping="Wrap" Foreground="#E8E8EC" LineHeight="22"/>
+                </Border>
                 <WrapPanel Margin="0,12,0,0">
                   <Button x:Name="CompGpuOpen" Style="{StaticResource Ghost}" Content="Ouvrir le panneau de la carte graphique" Margin="0,0,8,0" Visibility="Collapsed"/>
                 </WrapPanel>
               </StackPanel>
             </Border>
 
-            <TextBlock Text="APPLIS INUTILES DE WINDOWS" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="4,22,0,8"/>
-            <Border Style="{StaticResource Card}" Padding="18,16,8,8">
+            <Border CornerRadius="16" Padding="22,20,12,12" BorderBrush="#4D361A" BorderThickness="1" Margin="0,0,0,14">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#2A1D10" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
+                <DockPanel Margin="0,0,10,12">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FB923C" Margin="0,0,14,0"><TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="APPLIS INUTILES DE WINDOWS" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0,0,0,2"/>
+                    <TextBlock Text="Le ménage dans les applis installées d'office" FontWeight="Bold" FontSize="15"/>
+                  </StackPanel>
+                </DockPanel>
                 <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Margin="0,0,10,14" Text="Des applis installées d'office par Microsoft dont presque personne ne se sert. Les enlever libère un peu de place et allège le menu Démarrer, mais ne fait pas gagner de FPS. La plupart se réinstallent depuis le Microsoft Store si tu en as besoin un jour."/>
                 <WrapPanel x:Name="CompApps"/>
                 <WrapPanel Margin="0,4,0,8">
@@ -2260,19 +2699,187 @@ $xaml = @'
               </StackPanel>
             </Border>
 
-            <TextBlock Text="CE QUE ONEPC NE FERA PAS (ET POURQUOI)" Style="{StaticResource Tag}" Foreground="#8E8E98" Margin="4,22,0,8"/>
-            <Border Style="{StaticResource Card}" Padding="18,14">
+            <Border CornerRadius="16" Padding="22,20,12,10" BorderBrush="#2E2E36" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#221418" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock TextWrapping="Wrap" Foreground="#9C9CA6" LineHeight="20" Margin="0,0,0,6"><Run Text="Performances ultimes : " FontWeight="SemiBold" Foreground="#E8E8EC"/><Run Text="sur un PC fixe, presque aucun FPS en plus, juste plus de consommation. Le profil Jeu de OnePC suffit."/></TextBlock>
-                <TextBlock TextWrapping="Wrap" Foreground="#9C9CA6" LineHeight="20" Margin="0,0,0,6"><Run Text="Couper SysMain et l'indexation : " FontWeight="SemiBold" Foreground="#E8E8EC"/><Run Text="presque aucun gain, et la recherche de Windows devient très lente."/></TextBlock>
-                <TextBlock TextWrapping="Wrap" Foreground="#9C9CA6" LineHeight="20" Margin="0,0,0,6"><Run Text="Couper la transparence et les effets : " FontWeight="SemiBold" Foreground="#E8E8EC"/><Run Text="sur Windows 11, ça ne change rien en jeu."/></TextBlock>
-                <TextBlock TextWrapping="Wrap" Foreground="#9C9CA6" LineHeight="20" Margin="0,0,0,6"><Run Text="Les « tweaks » de priorité dans le registre (MMCSS, SystemResponsiveness) : " FontWeight="SemiBold" Foreground="#E8E8EC"/><Run Text="Fortnite ne s'en sert pas : aucun effet, même si beaucoup de vidéos les conseillent."/></TextBlock>
-                <TextBlock TextWrapping="Wrap" Foreground="#9C9CA6" LineHeight="20"><Run Text="Couper l'antivirus ou des services de Windows : " FontWeight="SemiBold" Foreground="#E8E8EC"/><Run Text="c'est ce que font certains scripts « tout-en-un ». Risqué, pour un gain nul."/></TextBlock>
+                <DockPanel Margin="0,0,10,14">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FF6B6B" Margin="0,0,14,0"><TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="CE QUE ONEPC NE FERA PAS" Style="{StaticResource Tag}" Foreground="#FF6B6B" Margin="0,0,0,2"/>
+                    <TextBlock Text="Les « astuces » qui ne servent à rien, ou qui sont risquées" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </DockPanel>
+                <UniformGrid Columns="2">
+                  <Border Margin="0,0,10,10" CornerRadius="12" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" Padding="14,12">
+                    <DockPanel>
+                      <Border DockPanel.Dock="Left" Width="24" Height="24" CornerRadius="12" Background="#2AFF6B6B" Margin="0,0,10,0" VerticalAlignment="Top"><TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <StackPanel>
+                        <TextBlock Text="Performances ultimes" FontWeight="Bold" TextWrapping="Wrap"/>
+                        <TextBlock Text="Sur un PC fixe, presque aucun FPS en plus, juste plus de consommation. Le profil Jeu de OnePC suffit." Foreground="#9C9CA6" FontSize="12.5" TextWrapping="Wrap" LineHeight="19" Margin="0,3,0,0"/>
+                      </StackPanel>
+                    </DockPanel>
+                  </Border>
+                  <Border Margin="0,0,10,10" CornerRadius="12" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" Padding="14,12">
+                    <DockPanel>
+                      <Border DockPanel.Dock="Left" Width="24" Height="24" CornerRadius="12" Background="#2AFF6B6B" Margin="0,0,10,0" VerticalAlignment="Top"><TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <StackPanel>
+                        <TextBlock Text="Couper SysMain et l'indexation" FontWeight="Bold" TextWrapping="Wrap"/>
+                        <TextBlock Text="Presque aucun gain, et la recherche de Windows devient très lente." Foreground="#9C9CA6" FontSize="12.5" TextWrapping="Wrap" LineHeight="19" Margin="0,3,0,0"/>
+                      </StackPanel>
+                    </DockPanel>
+                  </Border>
+                  <Border Margin="0,0,10,10" CornerRadius="12" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" Padding="14,12">
+                    <DockPanel>
+                      <Border DockPanel.Dock="Left" Width="24" Height="24" CornerRadius="12" Background="#2AFF6B6B" Margin="0,0,10,0" VerticalAlignment="Top"><TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <StackPanel>
+                        <TextBlock Text="Couper la transparence et les effets" FontWeight="Bold" TextWrapping="Wrap"/>
+                        <TextBlock Text="Sur Windows 11, ça ne change rien en jeu." Foreground="#9C9CA6" FontSize="12.5" TextWrapping="Wrap" LineHeight="19" Margin="0,3,0,0"/>
+                      </StackPanel>
+                    </DockPanel>
+                  </Border>
+                  <Border Margin="0,0,10,10" CornerRadius="12" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" Padding="14,12">
+                    <DockPanel>
+                      <Border DockPanel.Dock="Left" Width="24" Height="24" CornerRadius="12" Background="#2AFF6B6B" Margin="0,0,10,0" VerticalAlignment="Top"><TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <StackPanel>
+                        <TextBlock Text="Les « tweaks » de priorité dans le registre" FontWeight="Bold" TextWrapping="Wrap"/>
+                        <TextBlock Text="MMCSS, SystemResponsiveness : Fortnite ne s'en sert pas. Aucun effet, même si beaucoup de vidéos les conseillent." Foreground="#9C9CA6" FontSize="12.5" TextWrapping="Wrap" LineHeight="19" Margin="0,3,0,0"/>
+                      </StackPanel>
+                    </DockPanel>
+                  </Border>
+                  <Border Margin="0,0,10,10" CornerRadius="12" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" Padding="14,12">
+                    <DockPanel>
+                      <Border DockPanel.Dock="Left" Width="24" Height="24" CornerRadius="12" Background="#2AFF6B6B" Margin="0,0,10,0" VerticalAlignment="Top"><TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <StackPanel>
+                        <TextBlock Text="Couper l'antivirus ou des services de Windows" FontWeight="Bold" TextWrapping="Wrap"/>
+                        <TextBlock Text="C'est ce que font certains scripts « tout-en-un ». Risqué, pour un gain nul." Foreground="#9C9CA6" FontSize="12.5" TextWrapping="Wrap" LineHeight="19" Margin="0,3,0,0"/>
+                      </StackPanel>
+                    </DockPanel>
+                  </Border>
+                </UniformGrid>
               </StackPanel>
             </Border>
           </StackPanel>
         </ScrollViewer>
 
+        <!-- ===== Micro ===== -->
+        <ScrollViewer x:Name="PageMic" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <Border CornerRadius="18" Padding="28,24" BorderBrush="#1E4A5A" BorderThickness="1" Margin="0,0,0,16">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#0B2C36" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/><GradientStop Color="#1C1440" Offset="1"/></LinearGradientBrush></Border.Background>
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="MICRO" Style="{StaticResource Tag}" Foreground="#22D3EE"/>
+                  <TextBlock Text="Qu'on t'entende bien en vocal" FontSize="25" FontWeight="Bold" TextWrapping="Wrap"/>
+                  <Border HorizontalAlignment="Left" CornerRadius="9" Background="#22FFFFFF" Padding="10,5" Margin="0,12,0,0">
+                    <TextBlock x:Name="MicCur" Text="Recherche de ton micro..." FontWeight="SemiBold" FontSize="12.5" TextTrimming="CharacterEllipsis"/>
+                  </Border>
+                  <Grid Height="16" Margin="0,16,0,0" MaxWidth="560" HorizontalAlignment="Stretch">
+                    <Border CornerRadius="8" Background="#1A2A30"/>
+                    <Border x:Name="MicLvFill" CornerRadius="8" RenderTransformOrigin="0,0.5">
+                      <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#22D3EE" Offset="0"/><GradientStop Color="#3DDC84" Offset="0.55"/><GradientStop Color="#FBBF24" Offset="0.85"/><GradientStop Color="#FB7185" Offset="1"/></LinearGradientBrush></Border.Background>
+                    </Border>
+                  </Grid>
+                  <TextBlock x:Name="MicLvTxt" Text="Clique sur « Teste ton micro » et parle normalement pendant 5 secondes." Foreground="#B8B8C0" FontSize="12.5" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                  <WrapPanel Margin="0,14,0,0">
+                    <Button x:Name="MicTest" Style="{StaticResource Action}" Content="🎙  Teste ton micro (5 s)" Margin="0,0,8,6"/>
+                    <Button x:Name="MicPlay" Style="{StaticResource Ghost}" Content="▶  Réécoute-toi" IsEnabled="False" Margin="0,0,8,6"/>
+                  </WrapPanel>
+                </StackPanel>
+                <Grid Grid.Column="1" Width="120" Height="120" Margin="24,0,0,0" VerticalAlignment="Center">
+                  <Ellipse Fill="#1A22D3EE"/>
+                  <Ellipse Margin="12" Stroke="#22D3EE" StrokeThickness="3"/>
+                  <TextBlock Text="&#xE720;" FontFamily="Segoe MDL2 Assets" FontSize="38" Foreground="#22D3EE" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+              </Grid>
+            </Border>
+
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#5A2430" BorderThickness="1" Margin="0,0,0,14">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#2A1218" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
+              <StackPanel>
+                <DockPanel Margin="0,0,0,14">
+                  <Button x:Name="MicDiag" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Revérifier" VerticalAlignment="Center"/>
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FB7185" Margin="0,0,14,0"><TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FB7185" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="DIAGNOSTIC" Style="{StaticResource Tag}" Foreground="#FB7185" Margin="0,0,0,2"/>
+                    <TextBlock Text="Ton micro ne marche pas ? OnePC vérifie tout" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </DockPanel>
+                <StackPanel x:Name="MicDiagList"/>
+                <TextBlock x:Name="MicDiagMsg" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,6,0,0" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Border>
+
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#1E4A5A" BorderThickness="1" Margin="0,0,0,14">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#0E2830" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
+              <StackPanel>
+                <DockPanel Margin="0,0,0,14">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2622D3EE" Margin="0,0,14,0"><TextBlock Text="&#xE720;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#22D3EE" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="MON MICRO" Style="{StaticResource Tag}" Foreground="#22D3EE" Margin="0,0,0,2"/>
+                    <TextBlock Text="Clique sur ton micro pour le mettre par défaut" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </DockPanel>
+                <WrapPanel x:Name="MicList"/>
+                <Border CornerRadius="12" Background="#101A1E" BorderBrush="#1E3A44" BorderThickness="1" Padding="16,12" Margin="0,8,0,0">
+                  <StackPanel>
+                    <DockPanel>
+                      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                        <Button x:Name="MicVolDn" Style="{StaticResource Mini}" Content="− 10" Margin="0,0,6,0"/>
+                        <Button x:Name="MicVolUp" Style="{StaticResource Mini}" Content="+ 10" Margin="0,0,6,0"/>
+                        <Button x:Name="MicVol80" Style="{StaticResource Mini}" Content="80 % (conseillé)"/>
+                      </StackPanel>
+                      <TextBlock x:Name="MicVolTxt" Text="Volume du micro" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </DockPanel>
+                    <Grid Height="10" Margin="0,12,0,0">
+                      <Grid.ColumnDefinitions><ColumnDefinition x:Name="MicVoC1" Width="0*"/><ColumnDefinition x:Name="MicVoC2" Width="1*"/></Grid.ColumnDefinitions>
+                      <Border Grid.ColumnSpan="2" CornerRadius="5" Background="#1A2A30"/>
+                      <Border Grid.Column="0" CornerRadius="5" Background="#22D3EE"/>
+                    </Grid>
+                    <TextBlock Text="Trop bas : on t'entend mal. Trop haut : ça grésille. Autour de 80 %, c'est bien pour la plupart des micros." Foreground="#8E8E98" FontSize="12" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </Border>
+                <TextBlock x:Name="MicSetMsg" Text=" " Foreground="#3DDC84" FontSize="12.5" Margin="0,8,0,0" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Border>
+
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#4D3F1A" BorderThickness="1" Margin="0,0,0,14">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#2A2410" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
+              <StackPanel>
+                <DockPanel Margin="0,0,0,12">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FBBF24" Margin="0,0,14,0"><TextBlock Text="&#xE767;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="LE SON DU JEU" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,0,0,2"/>
+                    <TextBlock Text="Entends les pas même quand tes potes parlent" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </DockPanel>
+                <Border CornerRadius="12" Background="#141418" BorderBrush="#26262C" BorderThickness="1" Padding="14,2">
+                  <CheckBox x:Name="MicDuck" Style="{StaticResource SwitchRow}">
+                    <StackPanel>
+                      <TextBlock Text="Windows ne baisse plus le son du jeu" FontWeight="SemiBold"/>
+                      <TextBlock Text="Par défaut, quand quelqu'un parle sur Discord, Windows baisse le son de tout le reste, donc du jeu. Coupé, le jeu garde son volume." Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                    </StackPanel>
+                  </CheckBox>
+                </Border>
+              </StackPanel>
+            </Border>
+
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#34386A" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1C2050" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
+              <StackPanel>
+                <DockPanel Margin="0,0,0,14">
+                  <Button x:Name="MicDcOpen" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Ouvrir Discord" VerticalAlignment="Center"/>
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#265865F2" Margin="0,0,14,0"><Image x:Name="DcLogoMic" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/></Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="DANS DISCORD" Style="{StaticResource Tag}" Foreground="#8B95FF" Margin="0,0,0,2"/>
+                    <TextBlock Text="Les réglages à faire dans Discord (OnePC ne peut pas les changer à ta place)" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </DockPanel>
+                <StackPanel x:Name="MicDcSteps"/>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
         <!-- ===== Mon PC rame ===== -->
         <ScrollViewer x:Name="PageSlow" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
           <StackPanel Margin="26,4,22,12" MaxWidth="1100">
@@ -2318,6 +2925,69 @@ $xaml = @'
         </ScrollViewer>
 
         <!-- ===== Mon matériel ===== -->
+        <!-- ===== Bilan santé ===== -->
+        <ScrollViewer x:Name="PageCheck" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <Border CornerRadius="18" Padding="28,24" BorderBrush="#1F4D3A" BorderThickness="1" Margin="0,0,0,16">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#0E2A1E" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/><GradientStop Color="#1B1838" Offset="1"/></LinearGradientBrush></Border.Background>
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="BILAN SANTÉ" Style="{StaticResource Tag}" Foreground="#34D399"/>
+                  <TextBlock Text="Ton Windows est-il sain et bien réglé ?" FontSize="25" FontWeight="Bold" TextWrapping="Wrap"/>
+                  <TextBlock x:Name="CheckHead" Text="OnePC vérifie la sécurité de Windows, les réglages qui coûtent des FPS et ton matériel. Rien n'est modifié sans ton accord." Foreground="#CACAD2" FontSize="13" Margin="0,8,0,0" TextWrapping="Wrap" LineHeight="21"/>
+                  <WrapPanel Margin="0,16,0,0">
+                    <Button x:Name="CheckGo" Style="{StaticResource Action}" Content="Lancer le bilan" Margin="0,0,8,6"/>
+                    <Button x:Name="CheckFixAll" Style="{StaticResource Ghost}" Content="Réparer la sécurité" IsEnabled="False" Margin="0,0,8,6" ToolTip="Remet l'antivirus, les mises à jour, le pare-feu et les services essentiels comme Windows les a prévus"/>
+                    <Button x:Name="CheckCopy" Style="{StaticResource Ghost}" Content="Copier le rapport" IsEnabled="False" Margin="0,0,8,6" ToolTip="Pour demander de l'aide sur le Discord : colle le rapport dans ton message"/>
+                  </WrapPanel>
+                  <TextBlock x:Name="CheckMsg" Text=" " Foreground="#B8B8C0" FontSize="12.5" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+                <Grid Grid.Column="1" Width="130" Height="130" Margin="24,0,0,0" VerticalAlignment="Center">
+                  <Ellipse Fill="#1A34D399"/>
+                  <Ellipse x:Name="CheckRing" Margin="10" Stroke="#34D399" StrokeThickness="4"/>
+                  <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock x:Name="CheckScore" Text="?" FontSize="38" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock Text="sur 100" Foreground="#8E8E98" FontSize="11.5" HorizontalAlignment="Center"/>
+                  </StackPanel>
+                </Grid>
+              </Grid>
+            </Border>
+
+            <StackPanel x:Name="CheckList"/>
+
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#34386A" BorderThickness="1" Margin="0,0,0,14">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1C2050" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
+              <StackPanel>
+                <DockPanel Margin="0,0,0,14">
+                  <Button x:Name="CheckGpuOpen" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Ouvrir le panneau" VerticalAlignment="Center"/>
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#268B95FF" Margin="0,0,14,0"><TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#8B95FF" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Name="CheckGpuTag" Text="PANNEAU DE TA CARTE GRAPHIQUE" Style="{StaticResource Tag}" Foreground="#8B95FF" Margin="0,0,0,2"/>
+                    <TextBlock x:Name="CheckGpuTitle" Text="Les bons réglages, ligne par ligne" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </DockPanel>
+                <StackPanel x:Name="CheckGpuSteps"/>
+              </StackPanel>
+            </Border>
+
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#4D3F1A" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#2A2410" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
+              <StackPanel>
+                <DockPanel Margin="0,0,0,14">
+                  <Button x:Name="CheckBiosXmp" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Guide XMP / EXPO" VerticalAlignment="Center"/>
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FBBF24" Margin="0,0,14,0"><TextBlock Text="&#xE950;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="OPTI BIOS" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,0,0,2"/>
+                    <TextBlock x:Name="CheckBiosTitle" Text="Les réglages du BIOS qui donnent des FPS, sans risque" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </DockPanel>
+                <StackPanel x:Name="CheckBiosSteps"/>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+
         <ScrollViewer x:Name="PageHw" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
           <StackPanel Margin="26,4,22,12" MaxWidth="1250">
             <TextBlock Text="Mon matériel" Style="{StaticResource H}" Margin="0,0,0,2"/>
@@ -2464,17 +3134,103 @@ $xaml = @'
         <!-- ===== Remettre mon PC à neuf ===== -->
         <ScrollViewer x:Name="PageFresh" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
           <StackPanel Margin="26,4,22,12" MaxWidth="1100">
-            <TextBlock Text="Reset PC" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock Text="Ton PC redevient comme neuf, sans perdre tes affaires. 1 : OnePC copie tes affaires sur une clé USB ou un disque externe. 2 : Windows remet le PC à zéro. 3 : OnePC remet tes affaires. Il te guide à chaque étape." Style="{StaticResource Dim}" TextWrapping="Wrap"/>
-            <Border Background="#2A0F14" BorderBrush="#E5484D" BorderThickness="1.5" CornerRadius="12" Padding="18,14" Margin="0,14,0,14">
+            <Border CornerRadius="18" Padding="28,22" BorderBrush="#2E2E36" BorderThickness="1" Margin="0,0,0,16">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3A1A12" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/><GradientStop Color="#2A1030" Offset="1"/></LinearGradientBrush></Border.Background>
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="RESET PC" Style="{StaticResource Tag}" Foreground="#FB923C"/>
+                  <TextBlock Text="Ton PC comme neuf, sans perdre tes affaires" FontSize="25" FontWeight="Bold" TextWrapping="Wrap"/>
+                  <TextBlock Text="Choisis ce que tu veux faire. OnePC t'explique chaque écran, copie tes affaires avant, et les remet après." Foreground="#CACAD2" FontSize="13" Margin="0,8,0,0" TextWrapping="Wrap" LineHeight="21"/>
+                  <WrapPanel Margin="0,14,0,0">
+                    <Button x:Name="FreshReboot" Style="{StaticResource Ghost}" Content="🔄  Juste redémarrer le PC" Margin="0,0,12,6"/>
+                    <TextBlock Text="À essayer en premier : un simple redémarrage règle souvent les bugs." Foreground="#8E8E98" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                  </WrapPanel>
+                </StackPanel>
+                <Grid Grid.Column="1" Width="116" Height="116" Margin="24,0,0,0" VerticalAlignment="Center">
+                  <Ellipse Fill="#1AFB923C"/>
+                  <Ellipse Margin="12" Stroke="#FB923C" StrokeThickness="3"/>
+                  <TextBlock Text="&#xE777;" FontFamily="Segoe MDL2 Assets" FontSize="36" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+              </Grid>
+            </Border>
+
+            <TextBlock Text="QUE VEUX-TU FAIRE ?" Style="{StaticResource Tag}" Foreground="#8E8E98" Margin="0,0,0,8"/>
+            <Grid Margin="0,0,0,16">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+              <Button x:Name="FreshM1" Grid.Column="0" Style="{StaticResource Tile}">
+                <DockPanel>
+                  <DockPanel DockPanel.Dock="Top">
+                    <Border x:Name="FreshMk1" DockPanel.Dock="Right" Width="22" Height="22" CornerRadius="11" Background="#34D399" Visibility="Hidden" VerticalAlignment="Top"><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <Border DockPanel.Dock="Left" Width="40" Height="40" CornerRadius="12" Background="#2634D399" HorizontalAlignment="Left"><TextBlock Text="&#xE90F;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  </DockPanel>
+                  <StackPanel Margin="0,10,0,2">
+                    <TextBlock Text="Réparer Windows" FontWeight="Bold" FontSize="15"/>
+                    <TextBlock Text="Rien n'est effacé : fichiers, jeux et logiciels restent. Windows se réinstalle par-dessus." Foreground="#9C9CA6" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0" LineHeight="17"/>
+                    <Border HorizontalAlignment="Left" CornerRadius="7" Background="#2234D399" Padding="8,3" Margin="0,10,0,0"><TextBlock Text="Si ton PC bugge" Foreground="#34D399" FontSize="11" FontWeight="SemiBold"/></Border>
+                  </StackPanel>
+                </DockPanel>
+              </Button>
+              <Button x:Name="FreshM2" Grid.Column="2" Style="{StaticResource Tile}">
+                <DockPanel>
+                  <DockPanel DockPanel.Dock="Top">
+                    <Border x:Name="FreshMk2" DockPanel.Dock="Right" Width="22" Height="22" CornerRadius="11" Background="#FB923C" Visibility="Hidden" VerticalAlignment="Top"><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <Border DockPanel.Dock="Left" Width="40" Height="40" CornerRadius="12" Background="#26FB923C" HorizontalAlignment="Left"><TextBlock Text="&#xE777;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  </DockPanel>
+                  <StackPanel Margin="0,10,0,2">
+                    <TextBlock Text="Remettre le PC à neuf" FontWeight="Bold" FontSize="15"/>
+                    <TextBlock Text="Windows tout propre. OnePC copie tes affaires avant et les remet après." Foreground="#9C9CA6" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0" LineHeight="17"/>
+                    <Border HorizontalAlignment="Left" CornerRadius="7" Background="#22FB923C" Padding="8,3" Margin="0,10,0,0"><TextBlock Text="Le plus courant" Foreground="#FB923C" FontSize="11" FontWeight="SemiBold"/></Border>
+                  </StackPanel>
+                </DockPanel>
+              </Button>
+              <Button x:Name="FreshM3" Grid.Column="4" Style="{StaticResource Tile}">
+                <DockPanel>
+                  <DockPanel DockPanel.Dock="Top">
+                    <Border x:Name="FreshMk3" DockPanel.Dock="Right" Width="22" Height="22" CornerRadius="11" Background="#FF6B6B" Visibility="Hidden" VerticalAlignment="Top"><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <Border DockPanel.Dock="Left" Width="40" Height="40" CornerRadius="12" Background="#26FF6B6B" HorizontalAlignment="Left"><TextBlock Text="&#xE88E;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                  </DockPanel>
+                  <StackPanel Margin="0,10,0,2">
+                    <TextBlock Text="Réinstallation complète" FontWeight="Bold" FontSize="15"/>
+                    <TextBlock Text="Avec une clé USB Windows. Pour un PC vraiment cassé ou plein de virus." Foreground="#9C9CA6" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0" LineHeight="17"/>
+                    <Border HorizontalAlignment="Left" CornerRadius="7" Background="#22FF6B6B" Padding="8,3" Margin="0,10,0,0"><TextBlock Text="Avancé" Foreground="#FF6B6B" FontSize="11" FontWeight="SemiBold"/></Border>
+                  </StackPanel>
+                </DockPanel>
+              </Button>
+            </Grid>
+
+            <!-- ===== méthode 1 : réparer ===== -->
+            <Border x:Name="FreshMeth1" CornerRadius="16" Padding="22,20" BorderBrush="#1F4D3A" BorderThickness="1" Visibility="Collapsed">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#112A20" Offset="0"/><GradientStop Color="#17171B" Offset="0.7"/></LinearGradientBrush></Border.Background>
+              <StackPanel>
+                <TextBlock Text="RÉPARER WINDOWS SANS RIEN PERDRE" Style="{StaticResource Tag}" Foreground="#34D399"/>
+                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="21" Text="Windows télécharge une copie neuve de lui-même et la réinstalle par-dessus. Tes fichiers, tes jeux, tes logiciels et tes réglages restent. C'est la solution à essayer en premier quand le PC bugge, avant de tout remettre à zéro."/>
+                <Grid Margin="0,14,0,0">
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                  <Border Grid.Column="0" CornerRadius="12" Background="#0D1A14" BorderBrush="#1F4D3A" BorderThickness="1" Padding="14,12"><StackPanel><TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#34D399"/><TextBlock Text="Internet obligatoire" FontWeight="SemiBold" Margin="0,8,0,0"/><TextBlock Text="Environ 5 Go à télécharger" Foreground="#9C9CA6" FontSize="12" TextWrapping="Wrap"/></StackPanel></Border>
+                  <Border Grid.Column="2" CornerRadius="12" Background="#0D1A14" BorderBrush="#1F4D3A" BorderThickness="1" Padding="14,12"><StackPanel><TextBlock Text="&#xE916;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#34D399"/><TextBlock Text="Compte 1 h environ" FontWeight="SemiBold" Margin="0,8,0,0"/><TextBlock Text="Le PC redémarre tout seul à la fin" Foreground="#9C9CA6" FontSize="12" TextWrapping="Wrap"/></StackPanel></Border>
+                  <Border Grid.Column="4" CornerRadius="12" Background="#0D1A14" BorderBrush="#1F4D3A" BorderThickness="1" Padding="14,12"><StackPanel><TextBlock Text="&#xE83F;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#34D399"/><TextBlock Text="PC branché" FontWeight="SemiBold" Margin="0,8,0,0"/><TextBlock Text="Sur secteur si c'est un portable" Foreground="#9C9CA6" FontSize="12" TextWrapping="Wrap"/></StackPanel></Border>
+                </Grid>
+                <TextBlock Text="COMMENT FAIRE" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,18,0,8"/>
+                <StackPanel x:Name="FreshRepNote"/>
+                <WrapPanel Margin="0,14,0,0">
+                  <Button x:Name="FreshRepWin" Style="{StaticResource Action}" Content="Ouvrir la réparation de Windows" Margin="0,0,8,8"/>
+                  <Button x:Name="FreshRepFix" Style="{StaticResource Ghost}" Content="Vérifier et réparer Windows (plus rapide)" Margin="0,0,8,8" ToolTip="Les vérifications DISM et SFC de Windows : 15 à 30 minutes, sans rien réinstaller."/>
+                </WrapPanel>
+                <TextBlock x:Name="FreshMsg0" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Border>
+
+            <!-- ===== méthodes 2 et 3 ===== -->
+            <StackPanel x:Name="FreshMeth23" Visibility="Collapsed">
+            <Border Background="#2A0F14" BorderBrush="#E5484D" BorderThickness="1.5" CornerRadius="14" Padding="18,14" Margin="0,0,0,14">
               <DockPanel>
                 <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="#FF6B6B" Margin="0,2,16,0" VerticalAlignment="Top"/>
                 <StackPanel>
-                  <TextBlock Text="ATTENTION : REMETTRE LE PC À ZÉRO PEUT TOUT EFFACER" FontWeight="Bold" Foreground="#FF6B6B" FontSize="14.5"/>
+                  <TextBlock x:Name="FreshWarnTitle" Text="ATTENTION : REMETTRE LE PC À ZÉRO PEUT TOUT EFFACER" FontWeight="Bold" Foreground="#FF6B6B" FontSize="14.5" TextWrapping="Wrap"/>
                   <TextBlock TextWrapping="Wrap" Foreground="#F5C2C2" Margin="0,6,0,0" LineHeight="19">
-                    <Run Text="Si tu choisis « Supprimer tout », tes fichiers, tes jeux et tes logiciels sont effacés."/>
-                    <Run Text="Ce que tu n'as pas copié avant est perdu pour toujours :" FontWeight="Bold" Foreground="#FFFFFF"/>
-                    <Run Text="personne ne pourra le récupérer, même pas OnePC. Finis l'étape 1 avant de passer à l'étape 2."/>
+                    <Run Text="Ce qui n'est pas copié est perdu pour toujours." FontWeight="Bold" Foreground="#FFFFFF"/>
+                    <Run Text="Fais les 3 étapes dans l'ordre : OnePC bloque l'étape 2 tant que ta copie n'est pas vérifiée."/>
                   </TextBlock>
                 </StackPanel>
               </DockPanel>
@@ -2482,44 +3238,93 @@ $xaml = @'
             <Grid Margin="0,0,0,14">
               <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
               <Button x:Name="FreshTab1" Grid.Column="0" Style="{StaticResource Tile}">
+                <StackPanel>
                 <DockPanel>
                   <Border x:Name="FreshNum1" Width="30" Height="30" CornerRadius="15" Background="#FF5A3C" Margin="0,0,12,0"><TextBlock Text="1" Foreground="#FFFFFF" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
                   <StackPanel VerticalAlignment="Center"><TextBlock Text="Copier mes affaires" FontWeight="SemiBold"/><TextBlock x:Name="FreshSt1" Text="À faire" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
                 </DockPanel>
+                <Border x:Name="FreshBar1" Height="4" CornerRadius="2" Background="#2A2A31" Margin="0,10,0,0"/>
+                </StackPanel>
               </Button>
               <Button x:Name="FreshTab2" Grid.Column="2" Style="{StaticResource Tile}">
+                <StackPanel>
                 <DockPanel>
                   <Border x:Name="FreshNum2" Width="30" Height="30" CornerRadius="15" Background="#2A2A31" Margin="0,0,12,0"><TextBlock Text="2" Foreground="#FFFFFF" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                  <StackPanel VerticalAlignment="Center"><TextBlock Text="Remettre le PC à zéro" FontWeight="SemiBold"/><TextBlock x:Name="FreshSt2" Text="Bloqué tant que la copie n'est pas vérifiée" Foreground="#8E8E98" FontSize="11.5" TextTrimming="CharacterEllipsis"/></StackPanel>
+                  <StackPanel VerticalAlignment="Center"><TextBlock x:Name="FreshTab2T" Text="Remettre le PC à zéro" FontWeight="SemiBold"/><TextBlock x:Name="FreshSt2" Text="Bloqué tant que la copie n'est pas vérifiée" Foreground="#8E8E98" FontSize="11.5" TextTrimming="CharacterEllipsis"/></StackPanel>
                 </DockPanel>
+                <Border x:Name="FreshBar2" Height="4" CornerRadius="2" Background="#2A2A31" Margin="0,10,0,0"/>
+                </StackPanel>
               </Button>
               <Button x:Name="FreshTab3" Grid.Column="4" Style="{StaticResource Tile}">
+                <StackPanel>
                 <DockPanel>
                   <Border x:Name="FreshNum3" Width="30" Height="30" CornerRadius="15" Background="#2A2A31" Margin="0,0,12,0"><TextBlock Text="3" Foreground="#FFFFFF" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                  <StackPanel VerticalAlignment="Center"><TextBlock Text="Récupérer mes affaires" FontWeight="SemiBold"/><TextBlock Text="Quand le PC est remis à zéro" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
+                  <StackPanel VerticalAlignment="Center"><TextBlock Text="Récupérer mes affaires" FontWeight="SemiBold"/><TextBlock x:Name="FreshSt3" Text="Quand le PC est remis à zéro" Foreground="#8E8E98" FontSize="11.5"/></StackPanel>
                 </DockPanel>
+                <Border x:Name="FreshBar3" Height="4" CornerRadius="2" Background="#2A2A31" Margin="0,10,0,0"/>
+                </StackPanel>
               </Button>
             </Grid>
 
-            <Border x:Name="FreshP1" Style="{StaticResource Card}" Padding="20,18">
+            <Border x:Name="FreshP1" CornerRadius="16" Padding="22,20" BorderBrush="#1E4A63" BorderThickness="1.5">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#0F2433" Offset="0"/><GradientStop Color="#17171B" Offset="0.55"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="ÉTAPE 1 : COPIER MES AFFAIRES" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19">
-                  <Run Text="Branche une clé USB ou un disque externe avec assez de place, puis choisis-le ici."/>
-                  <Run Text="Jamais sur le disque C: :" FontWeight="Bold" Foreground="#FFFFFF"/>
-                  <Run Text="c'est lui qui va être effacé, ta copie avec."/>
-                </TextBlock>
-                <DockPanel Margin="0,14,0,0">
-                  <Button x:Name="FreshPick" DockPanel.Dock="Left" Style="{StaticResource Ghost}" Content="Choisir ma clé USB ou mon disque"/>
-                  <TextBlock x:Name="FreshDest" Text="Aucun disque choisi" Foreground="#8E8E98" VerticalAlignment="Center" TextWrapping="Wrap" Margin="6,0,0,0"/>
+                <DockPanel Margin="0,0,0,16">
+                  <Border DockPanel.Dock="Left" Width="52" Height="52" CornerRadius="15" Background="#38BDF8" Margin="0,0,16,0">
+                    <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="ÉTAPE 1 · COPIER" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,0,0,2"/>
+                    <TextBlock Text="Mets tes affaires à l'abri" FontSize="20" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <TextBlock Text="Choisis où, coche ce que tu veux garder, puis « Copier mes affaires »." Foreground="#CACAD2" FontSize="12.5" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                  </StackPanel>
                 </DockPanel>
-                <TextBlock Text="CE QUE ONEPC VA COPIER" Style="{StaticResource Tag}" Foreground="#8E8E98" Margin="0,18,0,8"/>
+                <TextBlock Text="① OÙ METTRE TA COPIE ?" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,0,0,8"/>
+                <UniformGrid x:Name="FreshKinds" Columns="3">
+                  <Button x:Name="FreshD1" Style="{StaticResource Tile}" Margin="0,0,5,0">
+                    <DockPanel>
+                      <Border x:Name="FreshDk1" DockPanel.Dock="Right" Width="20" Height="20" CornerRadius="10" Background="#38BDF8" Visibility="Hidden" VerticalAlignment="Top"><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="10" Background="#2638BDF8" Margin="0,0,12,0"><TextBlock Text="&#xE88E;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <StackPanel VerticalAlignment="Center"><TextBlock x:Name="FreshD1T" Text="Clé USB ou disque externe" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="Le plus sûr" Foreground="#8E8E98" FontSize="11.5"/><Border HorizontalAlignment="Left" CornerRadius="7" Background="#223DDC84" Padding="7,2" Margin="0,6,0,0"><TextBlock Text="●●●  Le plus sûr" Foreground="#3DDC84" FontSize="10.5" FontWeight="Bold"/></Border></StackPanel>
+                    </DockPanel>
+                  </Button>
+                  <Button x:Name="FreshD2" Style="{StaticResource Tile}" Margin="5,0,5,0">
+                    <DockPanel>
+                      <Border x:Name="FreshDk2" DockPanel.Dock="Right" Width="20" Height="20" CornerRadius="10" Background="#38BDF8" Visibility="Hidden" VerticalAlignment="Top"><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="10" Background="#26A78BFA" Margin="0,0,12,0"><TextBlock Text="&#xEDA2;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <StackPanel VerticalAlignment="Center"><TextBlock x:Name="FreshD2T" Text="Autre disque du PC (D:...)" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock x:Name="FreshD2S" Text="Détecté tout seul" Foreground="#8E8E98" FontSize="11.5"/><Border HorizontalAlignment="Left" CornerRadius="7" Background="#22FBBF24" Padding="7,2" Margin="0,6,0,0"><TextBlock Text="●●○  Sûr" Foreground="#FBBF24" FontSize="10.5" FontWeight="Bold"/></Border></StackPanel>
+                    </DockPanel>
+                  </Button>
+                  <Button x:Name="FreshD3" Style="{StaticResource Tile}" Margin="5,0,0,0">
+                    <DockPanel>
+                      <Border x:Name="FreshDk3" DockPanel.Dock="Right" Width="20" Height="20" CornerRadius="10" Background="#38BDF8" Visibility="Hidden" VerticalAlignment="Top"><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <Border DockPanel.Dock="Left" Width="36" Height="36" CornerRadius="10" Background="#26FBBF24" Margin="0,0,12,0"><TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                      <StackPanel VerticalAlignment="Center"><TextBlock x:Name="FreshD3T" Text="Sans rien (garder mes fichiers)" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock x:Name="FreshD3S" Text="Seulement « Conserver mes fichiers »" Foreground="#8E8E98" FontSize="11.5" TextWrapping="Wrap"/><Border HorizontalAlignment="Left" CornerRadius="7" Background="#22FB923C" Padding="7,2" Margin="0,6,0,0"><TextBlock Text="●○○  Attention au choix" Foreground="#FB923C" FontSize="10.5" FontWeight="Bold"/></Border></StackPanel>
+                    </DockPanel>
+                  </Button>
+                </UniformGrid>
+
+                <Border x:Name="FreshKindBox" CornerRadius="12" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" Padding="14,12" Margin="0,12,0,0">
+                  <StackPanel>
+                    <TextBlock x:Name="FreshKindInfo" TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="20"/>
+                    <WrapPanel x:Name="FreshParts" Margin="0,10,0,0"/>
+                    <DockPanel x:Name="FreshDestRow" Margin="0,10,0,0">
+                      <Button x:Name="FreshPick" DockPanel.Dock="Left" Style="{StaticResource Ghost}" Content="Choisir ma clé USB ou mon disque"/>
+                      <TextBlock x:Name="FreshDest" Text="Aucun disque choisi" Foreground="#8E8E98" VerticalAlignment="Center" TextWrapping="Wrap" Margin="6,0,0,0"/>
+                    </DockPanel>
+                  </StackPanel>
+                </Border>
+
+                <TextBlock Text="② CE QUE ONEPC VA COPIER" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,18,0,8"/>
                 <WrapPanel x:Name="FreshWhat"/>
-                <TextBlock Text="À FAIRE TOI-MÊME (ONEPC NE PEUT PAS LE FAIRE)" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,14,0,8"/>
+                <TextBlock x:Name="FreshWhatNote" Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0" LineHeight="18"/>
+                <TextBlock Text="③ À FAIRE TOI-MÊME (ONEPC NE PEUT PAS LE FAIRE)" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,16,0,8"/>
                 <StackPanel x:Name="FreshTodo"/>
-                <WrapPanel Margin="0,14,0,0">
+                <TextBlock Text="④ C'EST PARTI" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,16,0,0"/>
+                <WrapPanel Margin="0,8,0,0">
                   <Button x:Name="FreshSave" Style="{StaticResource Action}" Content="Copier mes affaires"/>
                   <Button x:Name="FreshCheck" Style="{StaticResource Ghost}" Content="Vérifier ma copie"/>
+                  <Button x:Name="FreshSkip" Style="{StaticResource Ghost}" Content="Je n'ai rien à garder, passer" Margin="8,0,0,0" ToolTip="Pour repartir de zéro sans rien copier : tout ce qui est sur le PC sera perdu"/>
                 </WrapPanel>
                 <Border x:Name="FreshSaveBox" Visibility="Collapsed" CornerRadius="10" Padding="14,12" Margin="0,14,0,0" BorderThickness="1">
                   <TextBlock x:Name="FreshSaveRes" TextWrapping="Wrap" LineHeight="19"/>
@@ -2528,49 +3333,79 @@ $xaml = @'
               </StackPanel>
             </Border>
 
-            <Border x:Name="FreshP2" Style="{StaticResource Card}" Padding="20,18" Visibility="Collapsed">
+            <Border x:Name="FreshP2" CornerRadius="16" Padding="22,20" BorderBrush="#5A2430" BorderThickness="1.5" Visibility="Collapsed">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#2E1218" Offset="0"/><GradientStop Color="#17171B" Offset="0.55"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="ÉTAPE 2 : REMETTRE LE PC À ZÉRO" Style="{StaticResource Tag}" Foreground="#FF6B6B"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="OnePC ouvre l'outil de Windows prévu pour ça (il s'appelle « Réinitialiser ce PC »). Windows te posera une question, avec deux choix :"/>
-                <Grid Margin="0,12,0,0">
-                  <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                  <Border Grid.Column="0" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" CornerRadius="10" Padding="14,12">
-                    <StackPanel>
-                      <TextBlock Text="Conserver mes fichiers" FontWeight="SemiBold" Foreground="#3DDC84"/>
-                      <TextBlock Text="Tes documents restent. Les jeux, les logiciels et les réglages sont effacés." Foreground="#9C9CA6" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                    </StackPanel>
+                <DockPanel Margin="0,0,0,16">
+                  <Border DockPanel.Dock="Left" Width="52" Height="52" CornerRadius="15" Background="#FB7185" Margin="0,0,16,0">
+                    <TextBlock Text="&#xE777;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                   </Border>
-                  <Border Grid.Column="2" Background="#1F1013" BorderBrush="#6B2A30" BorderThickness="1" CornerRadius="10" Padding="14,12">
-                    <StackPanel>
-                      <TextBlock Text="Supprimer tout" FontWeight="SemiBold" Foreground="#FF6B6B"/>
-                      <TextBlock Text="Tout est effacé sur le disque C:. Le PC redevient comme le jour où tu l'as acheté." Foreground="#9C9CA6" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                    </StackPanel>
-                  </Border>
-                </Grid>
-                <TextBlock Text="AVANT DE CONTINUER, COCHE TOUT" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,18,0,8"/>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Name="FreshP2Tag" Text="ÉTAPE 2 · REMETTRE À ZÉRO" Style="{StaticResource Tag}" Foreground="#FB7185" Margin="0,0,0,2"/>
+                    <TextBlock Text="Windows repart à zéro" FontSize="20" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <TextBlock Text="Lis bien, coche tout, tape le mot : le bouton se débloque." Foreground="#CACAD2" FontSize="12.5" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                  </StackPanel>
+                </DockPanel>
+                <StackPanel x:Name="FreshResetInfo">
+                  <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="OnePC ouvre l'outil de Windows prévu pour ça (il s'appelle « Réinitialiser ce PC »). Windows te posera une question, avec deux choix :"/>
+                  <Grid Margin="0,12,0,0">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <Border x:Name="FreshKeepBox" Grid.Column="0" Background="#0F2419" BorderBrush="#2F7A4E" BorderThickness="1" CornerRadius="12" Padding="16,14">
+                      <StackPanel>
+                        <Border Width="34" Height="34" CornerRadius="17" Background="#3DDC84" HorizontalAlignment="Left" Margin="0,0,0,10"><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                        <TextBlock x:Name="FreshKeepTitle" FontSize="14.5" Text="Conserver mes fichiers" FontWeight="SemiBold" Foreground="#3DDC84"/>
+                        <TextBlock Text="Tes documents restent. Les jeux, les logiciels et les réglages sont effacés." Foreground="#9C9CA6" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                      </StackPanel>
+                    </Border>
+                    <Border x:Name="FreshDelBox" Grid.Column="2" Background="#2A0F14" BorderBrush="#8A2A33" BorderThickness="1" CornerRadius="12" Padding="16,14">
+                      <StackPanel>
+                        <Border Width="34" Height="34" CornerRadius="17" Background="#FF6B6B" HorizontalAlignment="Left" Margin="0,0,0,10"><TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                        <TextBlock x:Name="FreshDelTitle" FontSize="14.5" Text="Supprimer tout" FontWeight="SemiBold" Foreground="#FF6B6B"/>
+                        <TextBlock x:Name="FreshDelTxt" Text="Tout est effacé sur le disque C:. Le PC redevient comme le jour où tu l'as acheté." Foreground="#9C9CA6" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                      </StackPanel>
+                    </Border>
+                  </Grid>
+                  <TextBlock x:Name="FreshCloudTip" TextWrapping="Wrap" Foreground="#9C9CA6" FontSize="12" Margin="0,10,0,0" LineHeight="18" Text="Ensuite Windows demande comment réinstaller : « Téléchargement dans le cloud » (le plus propre, environ 4 Go) ou « Réinstallation locale » (plus rapide). Les deux marchent."/>
+                </StackPanel>
+                <Border x:Name="FreshUsbGuide" Visibility="Collapsed" CornerRadius="12" Background="#1A1014" BorderBrush="#4A2A30" BorderThickness="1" Padding="16,14">
+                  <StackPanel x:Name="FreshUsbSteps"/>
+                </Border>
+                <Border CornerRadius="12" Background="#221C0C" BorderBrush="#5A4A1A" BorderThickness="1" Padding="16,14" Margin="0,18,0,0">
                 <StackPanel>
+                <TextBlock Text="AVANT DE CONTINUER, COCHE TOUT" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,0,0,10"/>
                   <CheckBox x:Name="FreshC0" Foreground="#E8E8EC" IsEnabled="False" Margin="0,0,0,8" Content="OnePC a vérifié ma copie (étape 1)"/>
                   <CheckBox x:Name="FreshC1" Foreground="#E8E8EC" Margin="0,0,0,8" Content="J'ai fait toute la liste « À faire toi-même » de l'étape 1"/>
-                  <CheckBox x:Name="FreshC2" Foreground="#E8E8EC" Margin="0,0,0,8" Content="J'ai débranché ma clé USB ou mon disque (sinon Windows pourrait l'effacer aussi)"/>
+                  <CheckBox x:Name="FreshC2" Foreground="#E8E8EC" Margin="0,0,0,8"><TextBlock x:Name="FreshC2T" TextWrapping="Wrap" Text="J'ai débranché ma clé USB ou mon disque (sinon Windows pourrait l'effacer aussi)"/></CheckBox>
                   <CheckBox x:Name="FreshC3" Foreground="#E8E8EC" Margin="0,0,0,8" Content="Mon PC est bien branché (sur secteur si c'est un portable)"/>
-                  <CheckBox x:Name="FreshC4" Foreground="#E8E8EC" Margin="0,0,0,8" Content="J'ai compris que ce qui n'est pas copié sera perdu pour toujours"/>
+                  <CheckBox x:Name="FreshC4" Foreground="#E8E8EC" Margin="0,0,0,8"><TextBlock x:Name="FreshC4T" TextWrapping="Wrap" Text="J'ai compris que ce qui n'est pas copié sera perdu pour toujours"/></CheckBox>
                 </StackPanel>
-                <TextBlock Margin="0,10,0,6" Foreground="#CACAD2"><Run Text="Pour confirmer, tape "/><Run Text="FORMATER" FontWeight="Bold" Foreground="#FF6B6B"/><Run Text=" en majuscules :"/></TextBlock>
+                </Border>
+                <TextBlock Margin="0,10,0,6" Foreground="#CACAD2"><Run Text="Pour confirmer, tape "/><Run x:Name="FreshWord" Text="FORMATER" FontWeight="Bold" Foreground="#FF6B6B"/><Run Text=" en majuscules :"/></TextBlock>
                 <TextBox x:Name="FreshType" Width="260" HorizontalAlignment="Left" Background="#0E0E11" Foreground="#FFFFFF" BorderBrush="#34343C" CaretBrush="#FFFFFF" Padding="10,7" FontFamily="Consolas" FontSize="15" FontWeight="Bold"/>
                 <WrapPanel Margin="0,16,0,0">
                   <Button x:Name="FreshGo" Style="{StaticResource Action}" Background="#E5484D" Content="Remettre le PC à zéro" IsEnabled="False"/>
-                  <Button x:Name="FreshUsb" Style="{StaticResource Ghost}" Content="Avec une clé USB Windows (avancé)"/>
+                  <Button x:Name="FreshUsb" Style="{StaticResource Action}" Background="#E5484D" Content="Redémarrer sur ma clé USB" IsEnabled="False" Visibility="Collapsed"/>
                 </WrapPanel>
                 <TextBlock x:Name="FreshMsg2" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
               </StackPanel>
             </Border>
 
-            <Border x:Name="FreshP3" Style="{StaticResource Card}" Padding="20,18" Visibility="Collapsed">
+            <Border x:Name="FreshP3" CornerRadius="16" Padding="22,20" BorderBrush="#1F4D3A" BorderThickness="1.5" Visibility="Collapsed">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#102A1F" Offset="0"/><GradientStop Color="#17171B" Offset="0.55"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="ÉTAPE 3 : RÉCUPÉRER MES AFFAIRES" Style="{StaticResource Tag}" Foreground="#34D399"/>
-                <TextBlock TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Text="Quand le PC est remis à zéro, rebranche ta clé USB ou ton disque et ouvre le fichier OnePC.cmd qui est dessus (OnePC l'a copié pour toi). Choisis ta copie, puis ce que tu veux récupérer."/>
+                <DockPanel Margin="0,0,0,16">
+                  <Border DockPanel.Dock="Left" Width="52" Height="52" CornerRadius="15" Background="#34D399" Margin="0,0,16,0">
+                    <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#0F0F12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="ÉTAPE 3 · RÉCUPÉRER" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,2"/>
+                    <TextBlock Text="Tout revient comme avant" FontSize="20" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <TextBlock Text="Ouvre OnePC depuis ta copie, puis « Tout remettre d'un coup »." Foreground="#CACAD2" FontSize="12.5" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                  </StackPanel>
+                </DockPanel>
+                <TextBlock x:Name="FreshStep3Txt" TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="20" Text="Quand le PC est remis à zéro, rebranche ta clé USB ou ton disque et ouvre le fichier OnePC.cmd qui est dans ta copie (OnePC l'a copié pour toi). Choisis ta copie, puis ce que tu veux récupérer."/>
                 <Border Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" CornerRadius="10" Padding="14,10" Margin="0,12,0,0">
-                  <TextBlock TextWrapping="Wrap" Foreground="#9C9CA6" FontSize="12.5" Text="Bon à savoir : un PC remis à zéro a un nouveau code, donc OnePC repart sans ta clé Pro. Envoie le nouveau code du PC sur le Discord : tu reçois ta nouvelle clé gratuitement, puis tu récupères tes affaires ici."/>
+                  <TextBlock TextWrapping="Wrap" Foreground="#9C9CA6" FontSize="12.5" LineHeight="19" Text="Bon à savoir : un PC remis à zéro a un nouveau code, donc OnePC repart en version gratuite. Tu peux quand même récupérer tes affaires ici. Pour retrouver Pro, envoie le nouveau code du PC sur le Discord : ta nouvelle clé est gratuite. Fortnite : retélécharge-le avec Epic Games ; tes touches et ta sensi sont enregistrées sur ton compte Epic."/>
                 </Border>
                 <DockPanel Margin="0,14,0,0">
                   <Button x:Name="FreshPickBack" DockPanel.Dock="Left" Style="{StaticResource Ghost}" Content="Choisir ma copie"/>
@@ -2583,63 +3418,75 @@ $xaml = @'
                 <TextBlock x:Name="FreshMsg3" Text=" " Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
               </StackPanel>
             </Border>
+            </StackPanel>
           </StackPanel>
         </ScrollViewer>
 
         <!-- ===== Entretien ===== -->
         <ScrollViewer x:Name="PageCare" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
-          <StackPanel Margin="26,4,22,12" MaxWidth="1250">
-            <TextBlock Text="Entretien" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock Text="Ce qu'il faut refaire de temps en temps, et les outils de ménage" Style="{StaticResource Dim}" Margin="0,0,0,12" TextWrapping="Wrap"/>
-<Border Style="{StaticResource Card}"><StackPanel>
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+<Border CornerRadius="18" Padding="24,20" BorderBrush="#205343" BorderThickness="1">
+  <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#102A1F" Offset="0"/><GradientStop Color="#17171B" Offset="0.55"/><GradientStop Color="#10283A" Offset="1"/></LinearGradientBrush></Border.Background>
+<StackPanel>
 <DockPanel>
   <Button x:Name="CalAll" DockPanel.Dock="Right" Style="{StaticResource Action}" Content="Tout faire maintenant" Margin="14,0,0,0" VerticalAlignment="Center"/>
-  <StackPanel>
-    <TextBlock Text="À FAIRE RÉGULIÈREMENT" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,4"/>
-    <TextBlock x:Name="CalInfo" Foreground="#CACAD2" TextWrapping="Wrap"/>
+  <Grid DockPanel.Dock="Left" Width="56" Height="56" Margin="0,0,16,0" VerticalAlignment="Center">
+    <Ellipse Fill="#1A34D399"/><Ellipse Margin="6" Stroke="#34D399" StrokeThickness="2.5"/>
+    <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  </Grid>
+  <StackPanel VerticalAlignment="Center">
+    <TextBlock Text="ENTRETIEN" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,2"/>
+    <TextBlock Text="À faire régulièrement" FontSize="21" FontWeight="Bold"/>
+    <TextBlock x:Name="CalInfo" Foreground="#CACAD2" TextWrapping="Wrap" Margin="0,4,0,0"/>
   </StackPanel>
 </DockPanel>
-<WrapPanel x:Name="CalHost" Margin="0,14,0,0"/>
+<WrapPanel x:Name="CalHost" Margin="0,18,0,0"/>
 <TextBlock x:Name="CalOpt" Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0"/>
-<Border BorderBrush="#222227" BorderThickness="0,1,0,0" Margin="0,12,0,0" Padding="0,12,0,0">
+<Border BorderBrush="#2A3A33" BorderThickness="0,1,0,0" Margin="0,12,0,0" Padding="0,12,0,0">
   <DockPanel>
     <TextBlock x:Name="CareAutoMsg" DockPanel.Dock="Right" Text=" " Foreground="#8E8E98" FontSize="12" VerticalAlignment="Center" Margin="14,0,0,0"/>
     <CheckBox x:Name="CareAuto" Foreground="#E8E8EC" Content="Nettoyage automatique chaque dimanche à midi" VerticalAlignment="Center" ToolTip="Windows supprime tout seul les fichiers temporaires de plus de 24 h de ton compte. Rien d'autre n'est touché : ni la corbeille, ni tes fichiers."/>
   </DockPanel>
 </Border>
 </StackPanel></Border>
-<TextBlock Text="Outils de ménage" Style="{StaticResource H}" Margin="0,18,0,10"/>
+<DockPanel Margin="0,22,0,12">
+  <Border DockPanel.Dock="Left" Width="4" CornerRadius="2" Background="#FBBF24" Margin="0,2,10,2"/>
+  <TextBlock Text="Outils de ménage" Style="{StaticResource H}" Margin="0"/>
+</DockPanel>
 <Grid>
 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-<Border Grid.Column="0" Background="#1D1D22" BorderBrush="#2E2E35" BorderThickness="1" CornerRadius="12" Padding="16,14" Margin="0,0,6,0">
-  <DockPanel>
-    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-      <Border Width="34" Height="34" CornerRadius="9" Background="#26262C" Margin="0,0,10,0"><TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-      <TextBlock Text="Cache des navigateurs" FontWeight="SemiBold" VerticalAlignment="Center"/>
-    </StackPanel>
-    <WrapPanel DockPanel.Dock="Bottom" Margin="0,10,0,0"><Button x:Name="CacheScan" Style="{StaticResource Mini}" Content="Analyser" Margin="0,0,6,6"/><Button x:Name="CacheClean" Style="{StaticResource Mini}" Content="Vider le cache" Margin="0,0,6,6"/></WrapPanel>
-    <TextBlock x:Name="CacheMsg" Text="Chrome, Edge, Brave, Opera GX, Firefox. Mots de passe, favoris et historique ne sont pas touchés." Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap" MinHeight="48" ToolTip="Ferme tes navigateurs avant, sinon les fichiers en cours d'utilisation sont ignorés."/>
-  </DockPanel>
+<Border Grid.Column="0" CornerRadius="16" Padding="18,16" BorderBrush="#205343" BorderThickness="1" Margin="0,0,7,0">
+<Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1B3630" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+<DockPanel>
+  <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+    <Border Width="40" Height="40" CornerRadius="12" Background="#2634D399" Margin="0,0,12,0"><TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+    <TextBlock Text="Cache des navigateurs" FontWeight="SemiBold" FontSize="14.5" VerticalAlignment="Center"/>
+  </StackPanel>
+  <WrapPanel DockPanel.Dock="Bottom" Margin="0,10,0,0"><Button x:Name="CacheScan" Style="{StaticResource Mini}" Content="Analyser" Margin="0,0,6,6"/><Button x:Name="CacheClean" Style="{StaticResource Mini}" Content="Vider le cache" Margin="0,0,6,6"/></WrapPanel>
+  <TextBlock x:Name="CacheMsg" Text="Chrome, Edge, Brave, Opera GX, Firefox. Mots de passe, favoris et historique ne sont pas touchés." Foreground="#B8B8C0" FontSize="12" Margin="0,12,0,0" TextWrapping="Wrap" MinHeight="48" LineHeight="18" ToolTip="Ferme tes navigateurs avant, sinon les fichiers en cours d'utilisation sont ignorés."/>
+</DockPanel>
 </Border>
-<Border Grid.Column="1" Background="#1D1D22" BorderBrush="#2E2E35" BorderThickness="1" CornerRadius="12" Padding="16,14" Margin="6,0,6,0">
-  <DockPanel>
-    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-      <Border Width="34" Height="34" CornerRadius="9" Background="#26262C" Margin="0,0,10,0"><TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-      <TextBlock Text="Dossiers vides" FontWeight="SemiBold" VerticalAlignment="Center"/>
-    </StackPanel>
-    <WrapPanel DockPanel.Dock="Bottom" Margin="0,10,0,0"><Button x:Name="EmptyScan" Style="{StaticResource Mini}" Content="Chercher" Margin="0,0,6,6"/><Button x:Name="EmptyOther" Style="{StaticResource Mini}" Content="Autre dossier..." Margin="0,0,6,6"/><Button x:Name="EmptyDel" Style="{StaticResource Mini}" Content="Supprimer" IsEnabled="False" Margin="0,0,6,6"/></WrapPanel>
-    <TextBlock x:Name="EmptyMsg" Text="Dossiers qui ne contiennent plus rien dans Documents, Bureau, Téléchargements, Images, Vidéos et Musique." Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap" MinHeight="48" ToolTip="« Chercher » regarde dans tes dossiers personnels ; « Autre dossier » te laisse choisir."/>
-  </DockPanel>
+<Border Grid.Column="1" CornerRadius="16" Padding="18,16" BorderBrush="#5F4C1D" BorderThickness="1" Margin="7,0,7,0">
+<Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3D331C" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+<DockPanel>
+  <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+    <Border Width="40" Height="40" CornerRadius="12" Background="#26FBBF24" Margin="0,0,12,0"><TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+    <TextBlock Text="Dossiers vides" FontWeight="SemiBold" FontSize="14.5" VerticalAlignment="Center"/>
+  </StackPanel>
+  <WrapPanel DockPanel.Dock="Bottom" Margin="0,10,0,0"><Button x:Name="EmptyScan" Style="{StaticResource Mini}" Content="Chercher" Margin="0,0,6,6"/><Button x:Name="EmptyOther" Style="{StaticResource Mini}" Content="Autre dossier..." Margin="0,0,6,6"/><Button x:Name="EmptyDel" Style="{StaticResource Mini}" Content="Supprimer" Margin="0,0,6,6" IsEnabled="False"/></WrapPanel>
+  <TextBlock x:Name="EmptyMsg" Text="Dossiers qui ne contiennent plus rien dans Documents, Bureau, Téléchargements, Images, Vidéos et Musique." Foreground="#B8B8C0" FontSize="12" Margin="0,12,0,0" TextWrapping="Wrap" MinHeight="48" LineHeight="18" ToolTip="« Chercher » regarde dans tes dossiers personnels ; « Autre dossier » te laisse choisir."/>
+</DockPanel>
 </Border>
-<Border Grid.Column="2" Background="#1D1D22" BorderBrush="#2E2E35" BorderThickness="1" CornerRadius="12" Padding="16,14" Margin="6,0,0,0">
-  <DockPanel>
-    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-      <Border Width="34" Height="34" CornerRadius="9" Background="#26262C" Margin="0,0,10,0"><TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-      <TextBlock Text="Restes d'applications" FontWeight="SemiBold" VerticalAlignment="Center"/>
-    </StackPanel>
-    <WrapPanel DockPanel.Dock="Bottom" Margin="0,10,0,0"><Button x:Name="LeftScan" Style="{StaticResource Mini}" Content="Chercher les restes" Margin="0,0,6,6"/></WrapPanel>
-    <TextBlock x:Name="LeftMsg" Text="Dossiers laissés par des applis désinstallées. C'est une estimation : vérifie avant de supprimer." Foreground="#B8B8C0" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap" MinHeight="48" ToolTip="Dossiers de Program Files et AppData sans application installée correspondante et inchangés depuis 2 mois."/>
-  </DockPanel>
+<Border Grid.Column="2" CornerRadius="16" Padding="18,16" BorderBrush="#5D344C" BorderThickness="1" Margin="7,0,0,0">
+<Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3C2635" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+<DockPanel>
+  <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+    <Border Width="40" Height="40" CornerRadius="12" Background="#26F472B6" Margin="0,0,12,0"><TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+    <TextBlock Text="Restes d'applications" FontWeight="SemiBold" FontSize="14.5" VerticalAlignment="Center"/>
+  </StackPanel>
+  <WrapPanel DockPanel.Dock="Bottom" Margin="0,10,0,0"><Button x:Name="LeftScan" Style="{StaticResource Mini}" Content="Chercher les restes" Margin="0,0,6,6"/></WrapPanel>
+  <TextBlock x:Name="LeftMsg" Text="Dossiers laissés par des applis désinstallées. C'est une estimation : vérifie avant de supprimer." Foreground="#B8B8C0" FontSize="12" Margin="0,12,0,0" TextWrapping="Wrap" MinHeight="48" LineHeight="18" ToolTip="Dossiers de Program Files et AppData sans application installée correspondante et inchangés depuis 2 mois."/>
+</DockPanel>
 </Border>
 </Grid>
 <ItemsControl x:Name="CacheList" ItemTemplate="{StaticResource Row3}" Margin="0,12,0,0"/>
@@ -2650,52 +3497,100 @@ $xaml = @'
 
         <!-- ===== Mon profil ===== -->
         <ScrollViewer x:Name="PageMe" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
-          <StackPanel Margin="26,4,22,12" MaxWidth="1250">
-            <Border Style="{StaticResource Card}" Padding="0">
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <Border CornerRadius="18" BorderBrush="#2E2E36" BorderThickness="1" Background="#15151B" ClipToBounds="True">
               <StackPanel>
-                <Border x:Name="MeBanner" Height="150" CornerRadius="13,13,0,0" Background="#1D1D22"/>
-                <Grid Margin="24,-48,24,0">
-                  <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                  <Border Grid.Column="0" Width="104" Height="104" CornerRadius="52" Background="#16161A">
-                    <Border x:Name="MeAvatar" Width="94" Height="94" CornerRadius="47" Background="#FF5A3C">
-                      <TextBlock x:Name="MeLetter" Text="?" FontSize="40" FontWeight="Bold" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
+                <Grid Height="190">
+                  <Border x:Name="MeBanner" CornerRadius="17,17,0,0" Background="#1D1D22"/>
+                  <Border CornerRadius="17,17,0,0">
+                    <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#00000000" Offset="0.35"/><GradientStop Color="#F015151B" Offset="1"/></LinearGradientBrush></Border.Background>
                   </Border>
-                  <StackPanel Grid.Column="1" Margin="16,56,0,0">
-                    <TextBlock x:Name="MeName" FontSize="24" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
-                    <TextBlock x:Name="MeLine" Style="{StaticResource Dim}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
-                  </StackPanel>
-                  <Border x:Name="MeStateBox" Grid.Column="2" VerticalAlignment="Top" Margin="12,60,0,0" CornerRadius="14" Padding="14,6" Background="#1D1D22" BorderThickness="1" BorderBrush="#2E2E35">
+                  <Border x:Name="MeStateBox" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,16,16,0" CornerRadius="14" Padding="14,6" Background="#C0101014" BorderThickness="1" BorderBrush="#3A3A44">
                     <StackPanel Orientation="Horizontal">
                       <Ellipse x:Name="MeStateDot" Width="9" Height="9" Fill="#3DDC84" VerticalAlignment="Center" Margin="0,0,8,0"/>
                       <TextBlock x:Name="MeState" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
                   </Border>
                 </Grid>
-                <TextBlock x:Name="MeStateWhy" Foreground="#8E8E98" FontSize="12" Margin="24,12,24,0" TextWrapping="Wrap"/>
-                <WrapPanel Margin="24,12,24,18">
-                  <Button x:Name="MeEditName" Style="{StaticResource Ghost}" Content="Changer le pseudo"/>
-                  <Button x:Name="MePickAvatar" Style="{StaticResource Ghost}" Content="Changer l'avatar"/>
-                  <Button x:Name="MeDelAvatar" Style="{StaticResource Ghost}" Content="Retirer l'avatar"/>
-                  <Button x:Name="MeNextBanner" Style="{StaticResource Ghost}" Content="Changer la bannière"/>
+                <Grid Margin="28,-70,28,0">
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                  <Border Grid.Column="0" Width="132" Height="132" CornerRadius="66" BorderThickness="4" Background="#15151B">
+                    <Border.BorderBrush><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#A78BFA" Offset="0"/><GradientStop Color="#38BDF8" Offset="1"/></LinearGradientBrush></Border.BorderBrush>
+                    <Border x:Name="MeAvatar" Width="116" Height="116" CornerRadius="58" Background="#FF5A3C">
+                      <TextBlock x:Name="MeLetter" Text="?" FontSize="46" FontWeight="Bold" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                  </Border>
+                  <StackPanel Grid.Column="1" Margin="20,74,0,0">
+                    <WrapPanel>
+                      <TextBlock x:Name="MeName" FontSize="30" FontWeight="Black" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                      <Border CornerRadius="9" Padding="10,4" VerticalAlignment="Center">
+                        <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#7C3AED" Offset="0"/><GradientStop Color="#2563EB" Offset="1"/></LinearGradientBrush></Border.Background>
+                        <TextBlock x:Name="MeLevel" Text="NIVEAU 1" FontSize="11.5" FontWeight="Black" Foreground="#FFFFFF"/>
+                      </Border>
+                      <TextBlock x:Name="MeLevelTitle" Text=" " Foreground="#C4B5FD" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    </WrapPanel>
+                    <TextBlock x:Name="MeLine" Foreground="#B8B8C0" FontSize="13" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
+                  </StackPanel>
+                </Grid>
+                <Border Margin="28,18,28,0" CornerRadius="12" Background="#101015" BorderBrush="#26262E" BorderThickness="1" Padding="16,12">
+                  <StackPanel>
+                    <DockPanel>
+                      <TextBlock x:Name="MeXpTxt" DockPanel.Dock="Right" Foreground="#8E8E98" FontSize="12" VerticalAlignment="Center"/>
+                      <TextBlock Text="Progression" FontWeight="Bold" FontSize="13"/>
+                    </DockPanel>
+                    <Grid Height="10" Margin="0,10,0,0">
+                      <Grid.ColumnDefinitions><ColumnDefinition x:Name="MeXpC1" Width="0*"/><ColumnDefinition x:Name="MeXpC2" Width="1*"/></Grid.ColumnDefinitions>
+                      <Border Grid.ColumnSpan="2" CornerRadius="5" Background="#24242C"/>
+                      <Border Grid.Column="0" CornerRadius="5">
+                        <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#A78BFA" Offset="0"/><GradientStop Color="#38BDF8" Offset="1"/></LinearGradientBrush></Border.Background>
+                      </Border>
+                    </Grid>
+                    <TextBlock Text="Tu gagnes de l'XP en jouant avec OnePC ouvert, en entretenant ton PC et en débloquant des badges." Foreground="#6C6C76" FontSize="11.5" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </Border>
+                <TextBlock x:Name="MeStateWhy" Foreground="#8E8E98" FontSize="12" Margin="28,12,28,0" TextWrapping="Wrap"/>
+                <WrapPanel Margin="28,14,28,22">
+                  <Button x:Name="MeShare" Style="{StaticResource Action}" Content="📸  Partager ma carte" Margin="0,0,8,6" ToolTip="Crée une image de ta carte OnePC (pseudo, PC, niveau, temps de jeu) et la copie : colle-la sur Discord avec Ctrl+V."/>
+                  <Button x:Name="MeEditName" Style="{StaticResource Ghost}" Content="Changer le pseudo" Margin="0,0,8,6"/>
+                  <Button x:Name="MePickAvatar" Style="{StaticResource Ghost}" Content="Changer l'avatar" Margin="0,0,8,6"/>
+                  <Button x:Name="MeDelAvatar" Style="{StaticResource Ghost}" Content="Retirer l'avatar" Margin="0,0,8,6"/>
+                  <Button x:Name="MeNextBanner" Style="{StaticResource Ghost}" Content="Changer la bannière" Margin="0,0,8,6"/>
                 </WrapPanel>
+                <TextBlock x:Name="MeShareMsg" Text=" " Foreground="#3DDC84" FontSize="12.5" FontWeight="SemiBold" Margin="28,-14,28,18" TextWrapping="Wrap"/>
               </StackPanel>
             </Border>
-            <TextBlock Text="Mes chiffres" Style="{StaticResource H}" Margin="0,18,0,10"/>
+
+            <DockPanel Margin="0,22,0,12">
+              <Border DockPanel.Dock="Left" Width="4" CornerRadius="2" Background="#38BDF8" Margin="0,2,10,2"/>
+              <TextBlock Text="Mes chiffres" FontWeight="Bold" FontSize="17"/>
+            </DockPanel>
             <WrapPanel x:Name="MeStats"/>
-            <StackPanel Orientation="Horizontal" Margin="0,8,0,10">
-              <TextBlock Text="Mes badges" Style="{StaticResource H}"/>
-              <TextBlock x:Name="MeBadgesCount" Text=" " Foreground="#8E8E98" FontSize="14" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
-            </StackPanel>
+
+            <DockPanel Margin="0,12,0,12">
+              <Border DockPanel.Dock="Left" Width="4" CornerRadius="2" Background="#FBBF24" Margin="0,2,10,2"/>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Mes badges" FontWeight="Bold" FontSize="17"/>
+                <TextBlock x:Name="MeBadgesCount" Text=" " Foreground="#8E8E98" FontSize="14" VerticalAlignment="Bottom" Margin="0,0,0,1"/>
+              </StackPanel>
+            </DockPanel>
             <WrapPanel x:Name="MeBadges"/>
-            <TextBlock Text="Mes jeux" Style="{StaticResource H}" Margin="0,8,0,10"/>
-            <Border Style="{StaticResource Card}">
+
+            <DockPanel Margin="0,12,0,12">
+              <Border DockPanel.Dock="Left" Width="4" CornerRadius="2" Background="#F472B6" Margin="0,2,10,2"/>
+              <TextBlock Text="Mes jeux" FontWeight="Bold" FontSize="17"/>
+            </DockPanel>
+            <Border CornerRadius="16" Padding="20,14" BorderBrush="#4A2A3E" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#24131E" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/></LinearGradientBrush></Border.Background>
               <StackPanel>
                 <StackPanel x:Name="MeGames"/>
                 <TextBlock x:Name="MeMsg" Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,8,0,0" Text="Le temps de jeu est compté quand tu lances le jeu depuis OnePC et que l'appli reste ouverte ou près de l'horloge."/>
               </StackPanel>
             </Border>
-            <TextBlock Text="Mes préférences" Style="{StaticResource H}" Margin="0,18,0,10"/>
+
+            <DockPanel Margin="0,22,0,12">
+              <Border DockPanel.Dock="Left" Width="4" CornerRadius="2" Background="#A78BFA" Margin="0,2,10,2"/>
+              <TextBlock Text="Mes préférences" FontWeight="Bold" FontSize="17"/>
+            </DockPanel>
             <Border Style="{StaticResource Card}">
               <StackPanel>
                 <TextBlock Text="Couleur d'accent (l'appli redémarre toute seule pour l'appliquer)" Foreground="#CACAD2" Margin="0,0,0,8"/>
@@ -2801,24 +3696,27 @@ $xaml = @'
 
         <!-- ===== OBS ===== -->
         <ScrollViewer x:Name="PageObs" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
-          <StackPanel Margin="26,4,22,12" MaxWidth="1250">
-            <TextBlock Text="OBS Studio" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock Text="Ton setup stream réglé pour ton PC, ton micro propre, et l'analyse de tes lives" Style="{StaticResource Dim}" Margin="0,0,0,12"/>
-            <Border Style="{StaticResource Card}" Padding="22">
-              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1E1B2E" Offset="0"/><GradientStop Color="#17171B" Offset="1"/></LinearGradientBrush></Border.Background>
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <Border CornerRadius="18" Padding="28,24" BorderBrush="#3A2448" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#2A1238" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/><GradientStop Color="#2A1216" Offset="1"/></LinearGradientBrush></Border.Background>
               <Grid>
-                <Grid.ColumnDefinitions><ColumnDefinition Width="150"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                  <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock x:Name="ObsScore" Text="--" FontSize="52" FontWeight="Bold"/>
-                    <TextBlock Text="/100" Foreground="#8E8E98" FontSize="16" VerticalAlignment="Bottom" Margin="4,0,0,12"/>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <Grid Grid.Column="1" Width="150" Height="150" Margin="24,0,0,0" VerticalAlignment="Center">
+                  <Ellipse Fill="#14A78BFA"/>
+                  <Ellipse Margin="7" Stroke="#2A2A38" StrokeThickness="10"/>
+                  <Path x:Name="ObsRing" Stroke="#A78BFA" StrokeThickness="10" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                  <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                      <TextBlock x:Name="ObsScore" Text="--" FontSize="38" FontWeight="Bold"/>
+                      <TextBlock Text="/100" Foreground="#8E8E98" FontSize="13" VerticalAlignment="Bottom" Margin="3,0,0,8"/>
+                    </StackPanel>
+                    <TextBlock x:Name="ObsScoreTxt" Text="Ton setup stream" Foreground="#B8B8C0" HorizontalAlignment="Center" FontSize="11.5"/>
                   </StackPanel>
-                  <TextBlock x:Name="ObsScoreTxt" Text="Ton setup stream" Foreground="#B8B8C0" HorizontalAlignment="Center" FontSize="12"/>
-                </StackPanel>
-                <StackPanel Grid.Column="1" Margin="18,0,0,0">
-                  <TextBlock Text="TON SETUP STREAM" Style="{StaticResource Tag}" Foreground="#A78BFA"/>
+                </Grid>
+                <StackPanel Grid.Column="0">
+                  <TextBlock Text="OBS STUDIO · TON SETUP STREAM" Style="{StaticResource Tag}" Foreground="#C4B5FD"/>
                   <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="ObsState" Text="..." FontSize="22" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="ObsState" Text="..." FontSize="25" FontWeight="Bold"/>
                     <Border x:Name="ObsLiveTag" Visibility="Collapsed" Background="#EF4444" CornerRadius="5" Padding="8,2" Margin="12,0,0,0" VerticalAlignment="Center"><TextBlock Text="● EN DIRECT" FontSize="11" FontWeight="Bold"/></Border>
                     <Border x:Name="ObsRecTag" Visibility="Collapsed" Background="#B91C1C" CornerRadius="5" Padding="8,2" Margin="8,0,0,0" VerticalAlignment="Center"><TextBlock Text="● REC" FontSize="11" FontWeight="Bold"/></Border>
                   </StackPanel>
@@ -2833,6 +3731,7 @@ $xaml = @'
                     <Button x:Name="ObsStream" Style="{StaticResource Ghost}" Content="Lancer et streamer" Margin="0,0,10,8"/>
                     <Button x:Name="ObsReplay" Style="{StaticResource Ghost}" Content="Lancer avec le replay" Margin="0,0,10,8"/>
                     <Button x:Name="ObsClose" Style="{StaticResource Ghost}" Content="Fermer OBS" Margin="0,0,10,8"/>
+                    <Button x:Name="ObsStreamMode" Style="{StaticResource Ghost}" Content="🔒  Mode stream" Margin="0,0,10,8" ToolTip="Cache ton nom de PC, ton nom d'utilisateur, tes IP et tes dossiers dans OnePC"/>
                   </WrapPanel>
                   <TextBlock x:Name="ObsMsg" Text=" " Foreground="#34D399" FontSize="12.5" Margin="0,4,0,0" TextWrapping="Wrap"/>
                 </StackPanel>
@@ -2866,20 +3765,22 @@ $xaml = @'
             </Border>
             <Grid Margin="0,14,0,0">
               <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-              <Border x:Name="TileEncBox" Grid.Column="0" Cursor="Hand" CornerRadius="12" Padding="16,14" Background="#17171B" BorderBrush="#2E2E35" BorderThickness="1.5"><StackPanel>
-                <TextBlock Text="ENCODEUR" Style="{StaticResource Tag}" Foreground="#8E8E98"/><TextBlock x:Name="TileEncVal" Text="..." FontSize="18" FontWeight="SemiBold" Foreground="#FFFFFF" TextTrimming="CharacterEllipsis"/><TextBlock x:Name="TileEncTxt" Text=" " FontSize="12" Foreground="#B8B8C0" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel></Border>
-              <Border x:Name="TileQualBox" Grid.Column="2" Cursor="Hand" CornerRadius="12" Padding="16,14" Background="#17171B" BorderBrush="#2E2E35" BorderThickness="1.5"><StackPanel>
-                <TextBlock Text="QUALITÉ VIDÉO" Style="{StaticResource Tag}" Foreground="#8E8E98"/><TextBlock x:Name="TileQualVal" Text="..." FontSize="18" FontWeight="SemiBold" Foreground="#FFFFFF" TextTrimming="CharacterEllipsis"/><TextBlock x:Name="TileQualTxt" Text=" " FontSize="12" Foreground="#B8B8C0" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel></Border>
-              <Border x:Name="TileNetBox" Grid.Column="4" Cursor="Hand" CornerRadius="12" Padding="16,14" Background="#17171B" BorderBrush="#2E2E35" BorderThickness="1.5"><StackPanel>
-                <TextBlock Text="CONNEXION" Style="{StaticResource Tag}" Foreground="#8E8E98"/><TextBlock x:Name="TileNetVal" Text="..." FontSize="18" FontWeight="SemiBold" Foreground="#FFFFFF" TextTrimming="CharacterEllipsis"/><TextBlock x:Name="TileNetTxt" Text=" " FontSize="12" Foreground="#B8B8C0" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel></Border>
+              <Border x:Name="TileEncBox" Grid.Column="0" Cursor="Hand" CornerRadius="16" Padding="18,16" Background="#1A1A21" BorderBrush="#2E2E35" BorderThickness="1.5"><StackPanel>
+                <Border Width="36" Height="36" CornerRadius="11" Background="#2638BDF8" HorizontalAlignment="Left" Margin="0,0,0,10"><TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="ENCODEUR" Style="{StaticResource Tag}" Foreground="#38BDF8"/><TextBlock x:Name="TileEncVal" Text="..." FontSize="18" FontWeight="SemiBold" Foreground="#FFFFFF" TextTrimming="CharacterEllipsis"/><TextBlock x:Name="TileEncTxt" Text=" " FontSize="12" Foreground="#B8B8C0" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel></Border>
+              <Border x:Name="TileQualBox" Grid.Column="2" Cursor="Hand" CornerRadius="16" Padding="18,16" Background="#1A1A21" BorderBrush="#2E2E35" BorderThickness="1.5"><StackPanel>
+                <Border Width="36" Height="36" CornerRadius="11" Background="#26F472B6" HorizontalAlignment="Left" Margin="0,0,0,10"><TextBlock Text="&#xE714;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="QUALITÉ VIDÉO" Style="{StaticResource Tag}" Foreground="#F472B6"/><TextBlock x:Name="TileQualVal" Text="..." FontSize="18" FontWeight="SemiBold" Foreground="#FFFFFF" TextTrimming="CharacterEllipsis"/><TextBlock x:Name="TileQualTxt" Text=" " FontSize="12" Foreground="#B8B8C0" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel></Border>
+              <Border x:Name="TileNetBox" Grid.Column="4" Cursor="Hand" CornerRadius="16" Padding="18,16" Background="#1A1A21" BorderBrush="#2E2E35" BorderThickness="1.5"><StackPanel>
+                <Border Width="36" Height="36" CornerRadius="11" Background="#2634D399" HorizontalAlignment="Left" Margin="0,0,0,10"><TextBlock Text="&#xE968;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="CONNEXION" Style="{StaticResource Tag}" Foreground="#34D399"/><TextBlock x:Name="TileNetVal" Text="..." FontSize="18" FontWeight="SemiBold" Foreground="#FFFFFF" TextTrimming="CharacterEllipsis"/><TextBlock x:Name="TileNetTxt" Text=" " FontSize="12" Foreground="#B8B8C0" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel></Border>
             </Grid>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0" BorderBrush="#FBBF24" BorderThickness="1.5" Padding="22">
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#5F4C1D" BorderThickness="1" Margin="0,14,0,0">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#39301C" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
                 <DockPanel>
                   <Button x:Name="ObsLogGo" DockPanel.Dock="Right" Style="{StaticResource Action}" Content="Analyser mon dernier live" VerticalAlignment="Center"/>
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FBBF24" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
                   <StackPanel>
                     <TextBlock Text="ANALYSE DU DERNIER LIVE" Style="{StaticResource Tag}" Foreground="#FBBF24"/>
-                    <TextBlock Text="Pourquoi ton live a saccadé ?" FontSize="20" FontWeight="Bold" Margin="0,2,0,2"/>
+                    <TextBlock Text="Pourquoi ton live a saccadé ?" FontSize="18" FontWeight="Bold" Margin="0,2,0,2"/>
                     <TextBlock Text="OnePC lit le journal d&apos;OBS et t&apos;explique en clair ce qui a coincé : ta connexion, ton encodeur ou ton jeu." Foreground="#CACAD2" TextWrapping="Wrap"/>
                   </StackPanel>
                 </DockPanel>
@@ -2903,9 +3804,13 @@ $xaml = @'
                 <StackPanel x:Name="ObsWizBody"/>
               </StackPanel>
             </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#5C2528" BorderThickness="1" Margin="0,14,0,0">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#371D21" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="EN DIRECT" Style="{StaticResource Tag}" Foreground="#EF4444"/>
+                  <DockPanel Margin="0,0,0,12">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26EF4444" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE7C8;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#EF4444" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <StackPanel VerticalAlignment="Center"><TextBlock Text="EN DIRECT" Style="{StaticResource Tag}" Foreground="#EF4444" Margin="0,0,0,2"/><TextBlock Text="Ton live, en temps réel" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                  </DockPanel>
                 <TextBlock x:Name="LiveInfo" Text="Connecte OnePC à OBS pour voir ton live ici : débit, images perdues, charge du PC." TextWrapping="Wrap" Foreground="#CACAD2" Margin="0,2,0,10"/>
                 <WrapPanel x:Name="LiveStats"/>
                 <WrapPanel Margin="0,6,0,0">
@@ -2916,17 +3821,25 @@ $xaml = @'
             </Border>
             <Grid Margin="0,14,0,0">
               <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-              <Border Grid.Column="0" Style="{StaticResource Card}" VerticalAlignment="Stretch">
+              <Border Grid.Column="0" CornerRadius="16" Padding="22,20" BorderBrush="#205343" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1B332D" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
                 <StackPanel>
-                  <TextBlock Text="MICRO PROPRE" Style="{StaticResource Tag}" Foreground="#34D399"/>
+                  <DockPanel Margin="0,0,0,12">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2634D399" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE720;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <StackPanel VerticalAlignment="Center"><TextBlock Text="MICRO PROPRE" Style="{StaticResource Tag}" Foreground="#34D399" Margin="0,0,0,2"/><TextBlock Text="Plus de bruit de clavier ni de ventilo" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                  </DockPanel>
                   <TextBlock Text="Supprime le bruit (clavier, ventilo), coupe le micro quand tu ne parles pas et égalise ta voix. OnePC ajoute les filtres d'OBS sur ton micro, tu peux les retirer quand tu veux." TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Margin="0,2,0,12"/>
                   <StackPanel Orientation="Horizontal"><Button x:Name="MicFix" Style="{StaticResource Action}" Content="Rendre mon micro propre"/><Button x:Name="MicUndo" Style="{StaticResource Ghost}" Content="Retirer les filtres"/></StackPanel>
                   <TextBlock x:Name="MicMsg" Text=" " Foreground="#34D399" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
                 </StackPanel>
               </Border>
-              <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Stretch">
+              <Border Grid.Column="2" CornerRadius="16" Padding="22,20" BorderBrush="#214C61" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1B2F3C" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
                 <StackPanel>
-                  <TextBlock Text="SCÈNES ET PROFILS TOUT PRÊTS" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
+                  <DockPanel Margin="0,0,0,12">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2638BDF8" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <StackPanel VerticalAlignment="Center"><TextBlock Text="SCÈNES ET PROFILS" Style="{StaticResource Tag}" Foreground="#38BDF8" Margin="0,0,0,2"/><TextBlock Text="Tout prêts, en un clic" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                  </DockPanel>
                   <TextBlock Text="Scènes : Jeu, Jeu + webcam, Pause, Ça commence bientôt. Profils : Stream 1080p60, TikTok vertical, Clips avec replay. Rien d'existant n'est supprimé." TextWrapping="Wrap" Foreground="#CACAD2" LineHeight="19" Margin="0,2,0,12"/>
                   <StackPanel Orientation="Horizontal"><Button x:Name="ObsScenes" Style="{StaticResource Ghost}" Content="Créer les scènes"/><Button x:Name="ObsProfiles" Style="{StaticResource Ghost}" Content="Créer les profils"/></StackPanel>
                   <TextBlock x:Name="ScenesMsg" Text=" " Foreground="#34D399" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
@@ -2935,37 +3848,65 @@ $xaml = @'
             </Grid>
             <Grid Margin="0,14,0,0">
               <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-              <Border Grid.Column="0" Style="{StaticResource Card}">
+              <Border Grid.Column="0" CornerRadius="16" Padding="22,20" BorderBrush="#5D344C" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#382432" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
                 <StackPanel>
-                  <TextBlock Text="AVANT DE LANCER LE LIVE" Style="{StaticResource Tag}" Foreground="#F472B6"/>
+                  <DockPanel Margin="0,0,0,12">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26F472B6" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <StackPanel VerticalAlignment="Center"><TextBlock Text="AVANT DE LANCER LE LIVE" Style="{StaticResource Tag}" Foreground="#F472B6" Margin="0,0,0,2"/><TextBlock Text="La check-list" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                  </DockPanel>
                   <StackPanel x:Name="ObsCheck" Margin="0,6,0,0"/>
                 </StackPanel>
               </Border>
-              <Border Grid.Column="2" Style="{StaticResource Card}">
+              <Border Grid.Column="2" CornerRadius="16" Padding="22,20" BorderBrush="#5F3E25" BorderThickness="1">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#39291F" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
                 <StackPanel>
-                  <TextBlock Text="MES ENREGISTREMENTS" Style="{StaticResource Tag}" Foreground="#FB923C"/>
+                  <DockPanel Margin="0,0,0,12">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26FB923C" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE714;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FB923C" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <StackPanel VerticalAlignment="Center"><TextBlock Text="MES ENREGISTREMENTS" Style="{StaticResource Tag}" Foreground="#FB923C" Margin="0,0,0,2"/><TextBlock Text="Tes clips et tes vidéos" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                  </DockPanel>
                   <TextBlock x:Name="ClipsSpace" Text=" " Foreground="#CACAD2" Margin="0,2,0,8" TextWrapping="Wrap"/>
                   <StackPanel x:Name="ObsClips"/>
                   <StackPanel Orientation="Horizontal" Margin="0,8,0,0"><Button x:Name="ObsVideos" Style="{StaticResource Ghost}" Content="Ouvrir le dossier"/></StackPanel>
                 </StackPanel>
               </Border>
             </Grid>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#453C62" BorderThickness="1" Margin="0,14,0,0">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#2C283C" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="CONSEILS SELON TON JEU" Style="{StaticResource Tag}" Foreground="#A78BFA"/>
+                <DockPanel Margin="0,0,0,12">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26A78BFA" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE7FC;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#A78BFA" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <StackPanel VerticalAlignment="Center"><TextBlock Text="CONSEILS SELON TON JEU" Style="{StaticResource Tag}" Foreground="#A78BFA" Margin="0,0,0,2"/><TextBlock Text="Ce qui marche le mieux pour ton jeu" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                  </DockPanel>
                 <StackPanel x:Name="ObsTips" Margin="0,6,0,0"/>
               </StackPanel>
             </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#3D3D43" BorderThickness="1" Margin="0,14,0,0">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#28282D" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="RÉGLAGES ACTUELS D'OBS" Style="{StaticResource Tag}" Foreground="#8E8E98"/>
-                <ItemsControl x:Name="ObsList" ItemTemplate="{StaticResource Row3}"/>
-                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                <DockPanel Margin="0,0,0,12">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#26C4C4D0" Margin="0,0,14,0" VerticalAlignment="Top"><TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#C4C4D0" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                    <StackPanel VerticalAlignment="Center"><TextBlock Text="RÉGLAGES ACTUELS D'OBS" Style="{StaticResource Tag}" Foreground="#C4C4D0" Margin="0,0,0,2"/><TextBlock Text="Ce qu'OBS utilise en ce moment" FontWeight="Bold" FontSize="15" TextWrapping="Wrap"/></StackPanel>
+                  </DockPanel>
+                <ItemsControl x:Name="ObsList">
+                  <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="3"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border Margin="0,0,10,10" CornerRadius="12" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" Padding="14,10">
+                        <StackPanel>
+                          <TextBlock Text="{Binding A}" Foreground="#8E8E98" FontSize="11.5" TextTrimming="CharacterEllipsis"/>
+                          <TextBlock Text="{Binding B}" FontWeight="Bold" FontSize="14" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <WrapPanel Margin="0,6,0,0">
                   <Button x:Name="ObsRefresh" Style="{StaticResource Ghost}" Content="Actualiser"/>
                   <Button x:Name="ObsUndo" Style="{StaticResource Ghost}" Content="Remettre mes anciens réglages OBS" Visibility="Collapsed"/>
                   <Button x:Name="ObsConfig" Style="{StaticResource Ghost}" Content="Dossier de configuration d'OBS"/>
                   <Button x:Name="ObsGet" Style="{StaticResource Ghost}" Content="Site d'OBS"/>
-                </StackPanel>
+                </WrapPanel>
               </StackPanel>
             </Border>
           </StackPanel>
@@ -2973,71 +3914,144 @@ $xaml = @'
 
         <!-- ===== Discord ===== -->
         <ScrollViewer x:Name="PageDc" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,4,8" Visibility="Collapsed">
-          <StackPanel Margin="26,4,22,12" MaxWidth="1250">
-            <TextBlock Text="Discord" Style="{StaticResource H}" Margin="0,0,0,2"/>
-            <TextBlock Text="Voir ce que Discord consomme et l'alléger, surtout pendant que tu joues" Style="{StaticResource Dim}" Margin="0,0,0,12"/>
-            <Border Style="{StaticResource Card}" Padding="20">
-              <StackPanel>
-                <TextBlock Text="ÉTAT" Style="{StaticResource Tag}" Foreground="#38BDF8"/>
-                <TextBlock x:Name="DcState" Text="..." FontSize="20" FontWeight="SemiBold"/>
-                <TextBlock x:Name="DcSub" Style="{StaticResource Dim}" Margin="0,3,0,14"/>
-                <StackPanel Orientation="Horizontal">
-                  <Button x:Name="DcRun" Style="{StaticResource Action}" Content="Lancer Discord"/>
-                  <Button x:Name="DcRestart" Style="{StaticResource Ghost}" Content="Redémarrer Discord"/>
-                  <Button x:Name="DcQuit" Style="{StaticResource Ghost}" Content="Quitter complètement"/>
+          <StackPanel Margin="26,4,22,12" MaxWidth="1100">
+            <Border CornerRadius="18" Padding="28,24" BorderBrush="#34386A" BorderThickness="1" Margin="0,0,0,18">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#232858" Offset="0"/><GradientStop Color="#17171B" Offset="0.65"/><GradientStop Color="#1C1440" Offset="1"/></LinearGradientBrush></Border.Background>
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="DISCORD" Style="{StaticResource Tag}" Foreground="#8B95FF"/>
+                  <TextBlock x:Name="DcState" Text="..." FontSize="25" FontWeight="Bold" TextWrapping="Wrap"/>
+                  <Border HorizontalAlignment="Left" CornerRadius="9" Background="#22FFFFFF" Padding="10,5" Margin="0,10,0,0">
+                    <TextBlock x:Name="DcSub" FontWeight="SemiBold" FontSize="12.5" Foreground="#E8E8EC" TextWrapping="Wrap"/>
+                  </Border>
+                  <WrapPanel Margin="0,16,0,0">
+                    <Button x:Name="DcRun" Style="{StaticResource Action}" Content="Lancer Discord" Margin="0,0,8,6"/>
+                    <Button x:Name="DcRestart" Style="{StaticResource Ghost}" Content="Redémarrer Discord" Margin="0,0,8,6"/>
+                    <Button x:Name="DcQuit" Style="{StaticResource Ghost}" Content="Quitter complètement" Margin="0,0,8,6"/>
+                  </WrapPanel>
+                  <TextBlock x:Name="DcMsg" Text="Redémarrer Discord libère la mémoire qu'il a accumulée : utile quand il dépasse 1 Go." Foreground="#B8B8C0" FontSize="12" Margin="0,6,0,0" TextWrapping="Wrap"/>
                 </StackPanel>
-                <TextBlock x:Name="DcMsg" Text="Redémarrer Discord libère la mémoire qu'il a accumulée : utile quand il dépasse 1 Go." Foreground="#B8B8C0" FontSize="12" Margin="0,12,0,0" TextWrapping="Wrap"/>
-              </StackPanel>
+                <Grid Grid.Column="1" Width="120" Height="120" Margin="24,0,0,0" VerticalAlignment="Center">
+                  <Ellipse Fill="#265865F2"/>
+                  <Ellipse Margin="12" Stroke="#8B95FF" StrokeThickness="3"/>
+                  <Image x:Name="DcLogoHero" Width="58" Height="58" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Grid>
+              </Grid>
             </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+
+            <DockPanel Margin="0,0,0,12">
+              <Border DockPanel.Dock="Left" Width="4" CornerRadius="2" Background="#34D399" Margin="0,2,10,2"/>
               <StackPanel>
-                <TextBlock Text="ALLÉGER DISCORD" Style="{StaticResource Tag}" Foreground="#34D399"/>
-                <Border BorderBrush="#222227" BorderThickness="0,1,0,0" Padding="0,12">
-                  <DockPanel>
-                    <Button x:Name="DcCache" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Vider le cache" Margin="14,0,0,0" VerticalAlignment="Center"/>
-                    <StackPanel>
-                      <TextBlock Text="Vider le cache" FontWeight="SemiBold"/>
-                      <TextBlock Text="Images, GIF et vidéos déjà vus que Discord garde sur le disque. Tes messages, serveurs et réglages ne sont pas touchés. Discord est fermé puis relancé." Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0"/>
-                      <TextBlock x:Name="DcCacheInfo" Text=" " Foreground="#FBBF24" FontSize="12" Margin="0,3,0,0"/>
-                    </StackPanel>
-                  </DockPanel>
-                </Border>
-                <Border BorderBrush="#222227" BorderThickness="0,1,0,0" Padding="0,12">
-                  <DockPanel>
-                    <Button x:Name="DcHw" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Désactiver" Margin="14,0,0,0" VerticalAlignment="Center"/>
-                    <StackPanel>
-                      <TextBlock Text="Accélération matérielle" FontWeight="SemiBold"/>
-                      <TextBlock Text="Désactivée, Discord n'utilise plus la carte graphique : un peu plus de FPS en jeu, mais les vidéos et partages d'écran sont moins fluides. Discord est fermé puis relancé." Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0"/>
-                      <TextBlock x:Name="DcHwInfo" Text=" " Foreground="#FBBF24" FontSize="12" Margin="0,3,0,0"/>
-                    </StackPanel>
-                  </DockPanel>
-                </Border>
-                <Border BorderBrush="#222227" BorderThickness="0,1,0,0" Padding="0,12">
-                  <DockPanel>
-                    <Button x:Name="DcBoot" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Désactiver" Margin="14,0,0,0" VerticalAlignment="Center"/>
-                    <StackPanel>
-                      <TextBlock Text="Lancement avec Windows" FontWeight="SemiBold"/>
-                      <TextBlock Text="Empêche Discord de s'ouvrir tout seul à chaque démarrage du PC." Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0"/>
-                      <TextBlock x:Name="DcBootInfo" Text=" " Foreground="#FBBF24" FontSize="12" Margin="0,3,0,0"/>
-                    </StackPanel>
-                  </DockPanel>
-                </Border>
-                <Border BorderBrush="#222227" BorderThickness="0,1,0,0" Padding="0,12">
-                  <DockPanel>
-                    <Button x:Name="DcPrio" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Priorité basse" Margin="14,0,0,0" VerticalAlignment="Center"/>
-                    <StackPanel>
-                      <TextBlock Text="Priorité pendant le jeu" FontWeight="SemiBold"/>
-                      <TextBlock Text="Passe Discord en priorité basse : le jeu passe avant lui quand le processeur est chargé. Si les voix grésillent, remets en normal. Revient en normal au prochain lancement de Discord." Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0"/>
-                      <TextBlock x:Name="DcPrioInfo" Text=" " Foreground="#FBBF24" FontSize="12" Margin="0,3,0,0"/>
-                    </StackPanel>
-                  </DockPanel>
-                </Border>
+                <TextBlock Text="Alléger Discord" FontWeight="Bold" FontSize="17"/>
+                <TextBlock Text="Pour qu'il prenne moins de place pendant tes games. Tout est réversible." Foreground="#8E8E98" FontSize="12"/>
               </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+            </DockPanel>
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+              <Border Grid.Row="0" Grid.Column="0" CornerRadius="16" Padding="20,18" BorderBrush="#5F4C1D" BorderThickness="1" Margin="0,0,7,14">
+                <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3B311C" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+                <DockPanel>
+                  <DockPanel DockPanel.Dock="Top">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2AFBBF24" Margin="0,0,14,0" VerticalAlignment="Top">
+                      <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                      <TextBlock Text="Vider le cache" FontWeight="Bold" FontSize="15"/>
+                      <Border HorizontalAlignment="Left" CornerRadius="8" Background="#22FBBF24" Padding="8,3" Margin="0,5,0,0">
+                        <TextBlock x:Name="DcCacheInfo" Text=" " Foreground="#FBBF24" FontSize="11.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                      </Border>
+                    </StackPanel>
+                  </DockPanel>
+                  <Button x:Name="DcCache" DockPanel.Dock="Bottom" Style="{StaticResource Ghost}" Content="Vider le cache" HorizontalAlignment="Left" Margin="0,14,0,0"/>
+                  <TextBlock Text="Images, GIF et vidéos déjà vus que Discord garde sur le disque. Tes messages, serveurs et réglages ne sont pas touchés. Discord est fermé puis relancé." Foreground="#B8B8C0" FontSize="12.5" TextWrapping="Wrap" LineHeight="19" Margin="0,12,0,0"/>
+                </DockPanel>
+              </Border>
+              <Border Grid.Row="0" Grid.Column="1" CornerRadius="16" Padding="20,18" BorderBrush="#214C61" BorderThickness="1" Margin="7,0,0,14">
+                <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1C313E" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+                <DockPanel>
+                  <DockPanel DockPanel.Dock="Top">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2A38BDF8" Margin="0,0,14,0" VerticalAlignment="Top">
+                      <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#38BDF8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                      <TextBlock Text="Accélération matérielle" FontWeight="Bold" FontSize="15"/>
+                      <Border HorizontalAlignment="Left" CornerRadius="8" Background="#2238BDF8" Padding="8,3" Margin="0,5,0,0">
+                        <TextBlock x:Name="DcHwInfo" Text=" " Foreground="#38BDF8" FontSize="11.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                      </Border>
+                    </StackPanel>
+                  </DockPanel>
+                  <Button x:Name="DcHw" DockPanel.Dock="Bottom" Style="{StaticResource Ghost}" Content="Désactiver" HorizontalAlignment="Left" Margin="0,14,0,0"/>
+                  <TextBlock Text="Désactivée, Discord n'utilise plus la carte graphique : un peu plus de FPS en jeu, mais les vidéos et partages d'écran sont moins fluides. Discord est fermé puis relancé." Foreground="#B8B8C0" FontSize="12.5" TextWrapping="Wrap" LineHeight="19" Margin="0,12,0,0"/>
+                </DockPanel>
+              </Border>
+              <Border Grid.Row="1" Grid.Column="0" CornerRadius="16" Padding="20,18" BorderBrush="#205343" BorderThickness="1" Margin="0,0,7,14">
+                <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#1B352F" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+                <DockPanel>
+                  <DockPanel DockPanel.Dock="Top">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2A34D399" Margin="0,0,14,0" VerticalAlignment="Top">
+                      <TextBlock Text="&#xE7E8;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#34D399" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                      <TextBlock Text="Lancement avec Windows" FontWeight="Bold" FontSize="15"/>
+                      <Border HorizontalAlignment="Left" CornerRadius="8" Background="#2234D399" Padding="8,3" Margin="0,5,0,0">
+                        <TextBlock x:Name="DcBootInfo" Text=" " Foreground="#34D399" FontSize="11.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                      </Border>
+                    </StackPanel>
+                  </DockPanel>
+                  <Button x:Name="DcBoot" DockPanel.Dock="Bottom" Style="{StaticResource Ghost}" Content="Désactiver" HorizontalAlignment="Left" Margin="0,14,0,0"/>
+                  <TextBlock Text="Empêche Discord de s'ouvrir tout seul à chaque démarrage du PC. Il s'ouvre toujours quand tu cliques dessus." Foreground="#B8B8C0" FontSize="12.5" TextWrapping="Wrap" LineHeight="19" Margin="0,12,0,0"/>
+                </DockPanel>
+              </Border>
+              <Border Grid.Row="1" Grid.Column="1" CornerRadius="16" Padding="20,18" BorderBrush="#5D344C" BorderThickness="1" Margin="7,0,0,14">
+                <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#3A2533" Offset="0"/><GradientStop Color="#17171B" Offset="0.72"/></LinearGradientBrush></Border.Background>
+                <DockPanel>
+                  <DockPanel DockPanel.Dock="Top">
+                    <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2AF472B6" Margin="0,0,14,0" VerticalAlignment="Top">
+                      <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#F472B6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                      <TextBlock Text="Priorité pendant le jeu" FontWeight="Bold" FontSize="15"/>
+                      <Border HorizontalAlignment="Left" CornerRadius="8" Background="#22F472B6" Padding="8,3" Margin="0,5,0,0">
+                        <TextBlock x:Name="DcPrioInfo" Text=" " Foreground="#F472B6" FontSize="11.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                      </Border>
+                    </StackPanel>
+                  </DockPanel>
+                  <Button x:Name="DcPrio" DockPanel.Dock="Bottom" Style="{StaticResource Ghost}" Content="Priorité basse" HorizontalAlignment="Left" Margin="0,14,0,0"/>
+                  <TextBlock Text="Le jeu passe avant Discord quand le processeur est chargé. Si les voix grésillent, remets en normal. Revient en normal au prochain lancement de Discord." Foreground="#B8B8C0" FontSize="12.5" TextWrapping="Wrap" LineHeight="19" Margin="0,12,0,0"/>
+                </DockPanel>
+              </Border>
+            </Grid>
+
+            <Border CornerRadius="16" Padding="22,20" BorderBrush="#5B491D" BorderThickness="1" Margin="0,4,0,0">
+              <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#322B1C" Offset="0"/><GradientStop Color="#17171B" Offset="0.6"/></LinearGradientBrush></Border.Background>
               <StackPanel>
-                <TextBlock Text="À RÉGLER DANS DISCORD (PARAMÈTRES UTILISATEUR)" Style="{StaticResource Tag}" Foreground="#FBBF24"/>
-                <ItemsControl x:Name="DcTips" ItemTemplate="{StaticResource Row3}"/>
+                <DockPanel Margin="0,0,0,14">
+                  <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="13" Background="#2AFBBF24" Margin="0,0,14,0">
+                    <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="#FBBF24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="À RÉGLER DANS DISCORD" Style="{StaticResource Tag}" Foreground="#FBBF24" Margin="0,0,0,2"/>
+                    <TextBlock Text="Dans Discord : roue crantée en bas à gauche (Paramètres utilisateur)" FontWeight="SemiBold" FontSize="14" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </DockPanel>
+                <ItemsControl x:Name="DcTips">
+                  <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="2"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border Margin="0,0,10,10" CornerRadius="12" Background="#141418" BorderBrush="#2A2A31" BorderThickness="1" Padding="14,12">
+                        <DockPanel>
+                          <TextBlock DockPanel.Dock="Left" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#FBBF24" Margin="0,2,10,0" VerticalAlignment="Top"/>
+                          <StackPanel>
+                            <TextBlock Text="{Binding A}" FontWeight="Bold" Foreground="#FBBF24"/>
+                            <TextBlock Text="{Binding B}" Foreground="#CACAD2" FontSize="12.5" TextWrapping="Wrap" LineHeight="19" Margin="0,3,0,0"/>
+                          </StackPanel>
+                        </DockPanel>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
               </StackPanel>
             </Border>
           </StackPanel>
@@ -3143,6 +4157,12 @@ $xaml = @'
               </StackPanel>
             </Border>
 
+            <TextBlock Text="MODE STREAM" Style="{StaticResource Tag}" Foreground="#F472B6" Margin="2,22,0,8"/>
+            <Border Style="{StaticResource Card}" Padding="14,2" BorderBrush="#5A2A4A">
+              <CheckBox x:Name="SetStream" Style="{StaticResource SwitchRow}">
+                <StackPanel><TextBlock Text="Cacher mes infos perso dans OnePC (pour streamer ou faire des captures)" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="Ton nom de PC, ton nom d'utilisateur Windows, tes adresses IP et tes dossiers sont remplacés par des ••• partout dans l'appli. Pense aussi à cacher la fenêtre OnePC dans OBS si tu montres ton bureau." Foreground="#8E8E98" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel>
+              </CheckBox>
+            </Border>
             <Border x:Name="SetDemoCard" Visibility="Collapsed" Style="{StaticResource Card}" Padding="14,2" Margin="0,22,0,0" BorderBrush="#5B4B9A">
               <StackPanel>
               <CheckBox x:Name="SetDemoFree" Style="{StaticResource SwitchRow}">
@@ -3217,7 +4237,7 @@ foreach ($oldName in @(('Sal' + 'Info'), ('Kon' + 'trol'), ('Tweak' + 'Milass'))
     try { if (Get-ScheduledTask -TaskName ($oldName + ' Entretien') -ErrorAction Stop) { $script:migCare = $true } } catch {}
     try { if (Get-ScheduledTask -TaskName ($oldName + ' Pilotes') -ErrorAction Stop) { $script:migDrv = $true } } catch {}
 }
-$cfg = @{ Accent = 'Rouge'; StartPage = 'Home'; Tray = $false; DrvCheck = $true; Alerts = $true; GpuMax = 85; RamMax = 92; DiskMin = 10; GameApps = @(); BackSrc = ''; BackDst = ''; Games = @(); DnsAlias = ''; StartOff = @(); PlanOrig = ''; AccentHex = ''; NamesClean = $false; Welcome = $false; CalTold = ''; Pseudo = ''; Banner = 0; Since = ''; UpdAsked = ''; ThemeOrig = -1; FastOrig = -1; PadDone = $false; MouseOrig = ''; NewsSeen = ''; ObsUse = ''; ObsUp = 0; ObsPass = ''; ObsLinked = $false; TourVer = ''; DemoFree = $false; CompOrig = @(); BarOrig = @(); FreshDest = ''; FreshOk = '' }
+$cfg = @{ Accent = 'Rouge'; StartPage = 'Home'; Tray = $false; DrvCheck = $true; Alerts = $true; GpuMax = 85; RamMax = 92; DiskMin = 10; GameApps = @(); BackSrc = ''; BackDst = ''; Games = @(); DnsAlias = ''; StartOff = @(); PlanOrig = ''; AccentHex = ''; NamesClean = $false; Welcome = $false; CalTold = ''; Pseudo = ''; Banner = 0; Since = ''; UpdAsked = ''; ThemeOrig = -1; FastOrig = -1; PadDone = $false; MouseOrig = ''; NewsSeen = ''; ObsUse = ''; ObsUp = 0; ObsPass = ''; ObsLinked = $false; TourVer = ''; DemoFree = $false; CompOrig = @(); BarOrig = @(); FreshDest = ''; FreshOk = ''; FreshKind = 'usb'; FreshMeth = ''; FreshOkKind = ''; WallName = $false; StreamMode = $false }
 try {
     $saved = Get-Content -LiteralPath $cfgFile -Raw -Encoding UTF8 -ErrorAction Stop | ConvertFrom-Json
     foreach ($p in $saved.PSObject.Properties) { if ($cfg.ContainsKey($p.Name)) { $cfg[$p.Name] = $p.Value } }
@@ -3616,12 +4636,22 @@ static class Launcher {
 function Get-LaunchCmd { if ($appExe -and (Test-Path -LiteralPath $appExe)) { '"' + $appExe + '"' } else { 'wscript.exe "' + $vbs + '"' } }
 function Start-Self { if ($appExe -and (Test-Path -LiteralPath $appExe)) { Start-Process -FilePath $appExe } else { Start-Process wscript.exe -ArgumentList ('"' + $vbs + '"') } }
 function UI($n) { $win.FindName($n) }
+$script:lastOpen = @{ K = ''; T = [DateTime]::MinValue }
+function Test-OpenTwice($k) {
+    # un double-clic (ou deux clics rapprochés) sur le même raccourci ne l'ouvre qu'une fois
+    $now = [DateTime]::UtcNow
+    if ($script:lastOpen.K -eq $k -and ($now - $script:lastOpen.T).TotalMilliseconds -lt 2500) { return $true }
+    $script:lastOpen = @{ K = $k; T = $now }; $false
+}
 function Open-Settings($uri) {
-    # Windows 11 ouvre parfois l'accueil des Paramètres au premier appel : on redemande la page une seconde plus tard
+    if (Test-OpenTwice ('set:' + $uri)) { return }
+    $wasOpen = $false; try { $wasOpen = [bool](Get-Process -Name SystemSettings -ErrorAction SilentlyContinue) } catch {}
     try { Start-Process $uri } catch { return }
+    # Windows 11 ouvre parfois l'accueil au lieu de la page Récupération quand Paramètres démarre : une seule relance, seulement dans ce cas
+    if ($wasOpen -or $uri -ne 'ms-settings:recovery') { return }
     $script:setUri = $uri
     $t = New-Object System.Windows.Threading.DispatcherTimer
-    $t.Interval = [TimeSpan]::FromMilliseconds(1300)
+    $t.Interval = [TimeSpan]::FromMilliseconds(1800)
     $t.Add_Tick({ param($sender, $e) $sender.Stop(); try { Start-Process $script:setUri } catch {} })
     $t.Start()
 }
@@ -3753,7 +4783,7 @@ public static class PcmGpu {
         try {
             $d = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'"
             if ($d -and $d.Size) {
-                $sync.DiskFree = [int](100 * $d.FreeSpace / $d.Size)
+                $sync.DiskFree = [int](100 * $d.FreeSpace / $d.Size); $sync.DiskGb = [math]::Round($d.FreeSpace / 1GB, 1)
                 $sync.DiskC = "C: " + [math]::Round($d.FreeSpace / 1GB) + " Go libres sur " + [math]::Round($d.Size / 1GB) + " Go"
             }
             if ($loop % 3 -eq 0) {
@@ -3917,9 +4947,9 @@ $hRam = New-Object 'System.Collections.Generic.List[double]'
 
 # ---------- Navigation ----------
 $brush = New-Object System.Windows.Media.BrushConverter
-$pages = @{ Help = @('NavHelp', 'PageHelp', 'Aide & support'); Pad = @('NavPad', 'PagePad', 'Manette'); Mouse = @('NavMouse', 'PageMouse', 'Souris'); Me = @('NavMe', 'PageMe', 'Mon profil'); Home = @('NavHome', 'PageHome', 'Accueil'); Drv = @('NavDrv', 'PageDrv', 'Pilotes'); Proc = @('NavProc', 'PageProc', 'Programmes'); Start = @('NavStart', 'PageStart', 'Démarrage'); Opti = @('NavOpti', 'PageOpti', 'Optimisation'); Net = @('NavNet', 'PageNet', 'Réseau'); Disk = @('NavDisk', 'PageDisk', 'Disques'); Light = @('NavLight', 'PageLight', 'Alléger'); Apps = @('NavApps', 'PageApps', 'Applications'); Tools = @('NavTools', 'PageTools', 'Raccourcis'); Games = @('NavGames', 'PageGames', 'Jeux'); Tidy = @('NavTidy', 'PageTidy', 'Rangement'); Wall = @('NavWall', 'PageWall', "Fond d'écran"); Set = @('NavSet', 'PageSet', 'Réglages'); Hist = @('NavHist', 'PageHist', 'Historique'); Obs = @('NavObs', 'PageObs', 'OBS'); Dc = @('NavDc', 'PageDc', 'Discord'); Care = @('NavCare', 'PageCare', 'Entretien'); Crash = @('NavCrash', 'PageCrash', 'Plantages'); Slow = @('NavSlow', 'PageSlow', 'Mon PC rame'); Comp = @('NavComp', 'PageComp', 'Mode compétitif'); Hw = @('NavHw', 'PageHw', 'Mon matériel'); Bar = @('NavBar', 'PageBar', 'Barre des tâches'); Fresh = @('NavFresh', 'PageFresh', 'Reset PC') }
+$pages = @{ Help = @('NavHelp', 'PageHelp', 'Aide & support'); Pad = @('NavPad', 'PagePad', 'Manette'); Mouse = @('NavMouse', 'PageMouse', 'Souris'); Mic = @('NavMic', 'PageMic', 'Micro'); Me = @('NavMe', 'PageMe', 'Mon profil'); Home = @('NavHome', 'PageHome', 'Accueil'); Drv = @('NavDrv', 'PageDrv', 'Pilotes'); Proc = @('NavProc', 'PageProc', 'Programmes'); Start = @('NavStart', 'PageStart', 'Démarrage'); Opti = @('NavOpti', 'PageOpti', 'Optimisation'); Check = @('NavCheck', 'PageCheck', 'Bilan santé'); Net = @('NavNet', 'PageNet', 'Réseau'); Disk = @('NavDisk', 'PageDisk', 'Disques'); Light = @('NavLight', 'PageLight', 'Alléger'); Apps = @('NavApps', 'PageApps', 'Applications'); Tools = @('NavTools', 'PageTools', 'Raccourcis'); Games = @('NavGames', 'PageGames', 'Jeux'); Tidy = @('NavTidy', 'PageTidy', 'Rangement'); Wall = @('NavWall', 'PageWall', "Fond d'écran"); Set = @('NavSet', 'PageSet', 'Réglages'); Hist = @('NavHist', 'PageHist', 'Historique'); Obs = @('NavObs', 'PageObs', 'OBS'); Dc = @('NavDc', 'PageDc', 'Discord'); Care = @('NavCare', 'PageCare', 'Entretien'); Crash = @('NavCrash', 'PageCrash', 'Plantages'); Slow = @('NavSlow', 'PageSlow', 'Mon PC rame'); Comp = @('NavComp', 'PageComp', 'Mode compétitif'); Hw = @('NavHw', 'PageHw', 'Mon matériel'); Bar = @('NavBar', 'PageBar', 'Barre des tâches'); Fresh = @('NavFresh', 'PageFresh', 'Reset PC') }
 # ---------- Menu latéral : groupes dépliables ----------
-$navGroups = [ordered]@{ Opti = @('Opti', 'Hw', 'Drv', 'Care', 'Start', 'Light'); Game = @('Games', 'Comp', 'Pad', 'Mouse', 'Dc', 'Obs'); Mon = @('Proc', 'Net', 'Crash', 'Disk'); Tools = @('Apps', 'Tools', 'Bar', 'Tidy', 'Wall'); App = @('Set', 'Hist') }
+$navGroups = [ordered]@{ Opti = @('Opti', 'Check', 'Hw', 'Drv', 'Care', 'Start', 'Light'); Game = @('Games', 'Comp', 'Pad', 'Mouse', 'Mic', 'Dc', 'Obs'); Mon = @('Proc', 'Net', 'Crash', 'Disk'); Tools = @('Apps', 'Tools', 'Tidy'); Perso = @('Wall', 'Bar'); App = @('Set', 'Hist') }
 $script:openGrp = ''
 function Open-Group($g) {
     foreach ($k in $navGroups.Keys) {
@@ -3950,6 +4980,7 @@ function Mark-Group($key) {
 }
 function Show-Page($key) {
     try { Mark-Group $key } catch {}; $script:curPage = $key
+    if ($cfg.StreamMode -and $script:streamRx) { try { $win.Dispatcher.BeginInvoke([action] { try { Scan-Stream $win } catch {} }, [System.Windows.Threading.DispatcherPriority]::Loaded) | Out-Null } catch {} }
     foreach ($k in $pages.Keys) {
         $nav = UI $pages[$k][0]; $page = UI $pages[$k][1]
         if ($k -eq $key) {
@@ -3974,7 +5005,7 @@ function Show-Page($key) {
             $nav.Background = $brush.ConvertFromString('Transparent'); $nav.Foreground = $brush.ConvertFromString('#9C9CA6')
         }
     }
-    if (-not $script:isPro -and $proPages -contains $key) { Show-ProGate $key; return } else { try { (UI 'ProGate').Visibility = 'Collapsed' } catch {} }
+    if (-not $script:isPro -and $proPages -contains $key -and -not ($key -eq 'Fresh' -and $script:freshRescue)) { Show-ProGate $key; return } else { try { (UI 'ProGate').Visibility = 'Collapsed' } catch {} }
     $toastWas = $script:toastOn; $script:toastOn = $false
     try {
         if ($key -eq 'Start') { Load-Startup }
@@ -3982,6 +5013,7 @@ function Show-Page($key) {
         if ($key -eq 'Opti')  { Update-Power; Show-Fast }
         if ($key -eq 'Pad')   { Update-Pad; Detect-Pad $false }
         if ($key -eq 'Mouse') { Update-Mouse }
+        if ($key -eq 'Mic')   { Load-Mic }
         if ($key -eq 'Light') { Load-Light }
         if ($key -eq 'Wall')  { Load-Walls; Load-Cust }
         if ($key -eq 'Crash') { Load-Crashes }
@@ -3995,6 +5027,7 @@ function Show-Page($key) {
         if ($key -eq 'Dc')    { Show-Dc; Show-DcOptions }
         if ($key -eq 'Tools') { Update-HzBtn }
         if ($key -eq 'Hw')    { Load-Hw }
+        if ($key -eq 'Check') { if (-not $script:checkGuided) { $script:checkGuided = $true; Show-CheckGuides }; if (-not @($script:checkRows).Count -and -not $script:checkBusy) { Run-Check } }
         if ($key -eq 'Comp')  { Load-Comp }
         if ($key -eq 'Bar')   { Load-Bar }
         if ($key -eq 'Fresh') { Show-Fresh }
@@ -4009,11 +5042,13 @@ function Show-Page($key) {
 (UI 'GrpOpti').Add_Click({ Toggle-Group 'Opti' })
 (UI 'GrpGame').Add_Click({ Toggle-Group 'Game' })
 (UI 'GrpTools').Add_Click({ Toggle-Group 'Tools' })
+(UI 'GrpPerso').Add_Click({ Toggle-Group 'Perso' })
 (UI 'GrpApp').Add_Click({ Toggle-Group 'App' })
 (UI 'NavDrv').Add_Click({ Show-Page 'Drv' })
 (UI 'NavProc').Add_Click({ Show-Page 'Proc' })
 (UI 'NavStart').Add_Click({ Show-Page 'Start' })
 (UI 'NavOpti').Add_Click({ Show-Page 'Opti' })
+(UI 'NavCheck').Add_Click({ Show-Page 'Check' })
 (UI 'NavNet').Add_Click({ Show-Page 'Net' })
 (UI 'NavDisk').Add_Click({ Show-Page 'Disk' })
 (UI 'NavLight').Add_Click({ Show-Page 'Light' })
@@ -4028,6 +5063,7 @@ function Show-Page($key) {
 (UI 'NavObs').Add_Click({ Show-Page 'Obs' })
 (UI 'NavDc').Add_Click({ Show-Page 'Dc' })
 (UI 'NavPad').Add_Click({ Show-Page 'Pad' })
+(UI 'NavMic').Add_Click({ Show-Page 'Mic' })
 (UI 'NavMouse').Add_Click({ Show-Page 'Mouse' })
 (UI 'NavCare').Add_Click({ Show-Page 'Care' })
 (UI 'NavCrash').Add_Click({ Show-Page 'Crash' })
@@ -4067,6 +5103,7 @@ function Load-Drivers {
             }
         })
     (UI 'DrvList').ItemsSource = $rows
+    try { $ng = @($rows | Where-Object { $_.Type -eq 'Graphique' }).Count; (UI 'DrvCount').Text = "" + $rows.Count + " pilotes importants installés : carte graphique, processeur, réseau, audio, Bluetooth, stockage" } catch {}
 }
 $log = UI 'Log'
 $log.Text = "Clique sur « Rechercher des mises à jour » pour voir les pilotes proposés par Windows Update.`r`nPour la carte graphique, le pilote le plus récent se trouve sur le site du fabricant."
@@ -5166,6 +6203,8 @@ $win.Add_ContentRendered({
         })
     } catch {}
 })
+# disque presque plein : peu de place en Go (en % seulement, un gros disque avec 50 Go libres serait « plein »)
+function Test-DiskLow($pct) { $gb = 999.0; try { if ($null -ne $sync.DiskGb) { $gb = [double]$sync.DiskGb } } catch {}; (([int]$sync.DiskFree -le $pct -and $gb -lt 30) -or $gb -lt 10) }
 # ---------- Aide : diagnostic, ticket, annonces, problèmes fréquents ----------
 $discordGuild = '1558996661039013900'; $discordTickets = '1558997171481743521'
 function Get-Diag($a) {
@@ -5335,6 +6374,8 @@ function Show-Badges {
     $bh = UI 'MeBadges'; $bh.Children.Clear(); $n = 0
     foreach ($b in @($list | Sort-Object { -[int][bool]$_[0] })) { if ($b[0]) { $n++ }; [void]$bh.Children.Add((New-Badge ([bool]$b[0]) $b[1] $b[2] $b[3] $b[4])) }
     (UI 'MeBadgesCount').Text = '  ' + $n + ' / ' + $list.Count
+    $script:meBadgeN = $n; $script:meBadgeTxt = '' + $n + ' / ' + $list.Count
+    Update-MeLevel
 }
 # ---------- Manette : anti-lag ----------
 $padDetectCode = {
@@ -5434,6 +6475,13 @@ function Show-Fast {
         } else { (UI 'FastMsg').Text = "Windows n'a pas accepté le changement (veille prolongée désactivée sur ce PC ?)." }
     } else { (UI 'FastMsg').Text = 'Annulé (droits administrateur refusés).' }
 })
+function Start-Reboot {
+    if (-not (Ask "Redémarrer le PC maintenant ?`r`nEnregistre ton travail avant : le redémarrage démarre dans 5 secondes.")) { return }
+    Log 'Redémarrage du PC lancé depuis OnePC'
+    try { Start-Process -FilePath (Join-Path $env:windir 'System32\shutdown.exe') -ArgumentList '/r', '/t', '5' -WindowStyle Hidden -ErrorAction Stop } catch { [void](Show-Box "Windows a refusé de redémarrer. Utilise le menu Démarrer > Marche/Arrêt > Redémarrer." $false) }
+}
+(UI 'BtnReboot').Add_Click({ Start-Reboot })
+(UI 'FreshReboot').Add_Click({ Start-Reboot })
 (UI 'FullOff').Add_Click({
     if (-not (Ask "Éteindre complètement le PC maintenant ?`r`nEnregistre ton travail avant : l'arrêt démarre dans 5 secondes.")) { return }
     Start-Process shutdown -ArgumentList '/s /t 5' -WindowStyle Hidden
@@ -7062,6 +8110,33 @@ function Show-Tidy($dir) {
 
 # ---------- Fonds d'écran ----------
 $walls = @(
+    @{ N = 'Logo OnePC';         T = 'ologo';   C = '#08061A', '#120A2A', '#8B5CF6'; Opti = $true },
+    @{ N = 'Logo OnePC bleu';    T = 'ologo';   C = '#050A14', '#0A1428', '#38BDF8'; Opti = $true },
+    @{ N = 'Processeur';         T = 'ocpu';    C = '#05070C', '#0B1220', '#38BDF8'; Opti = $true },
+    @{ N = 'Processeur rouge';   T = 'ocpu';    C = '#0C0505', '#1A0A0A', '#FF4D2E'; Opti = $true },
+    @{ N = 'Compteur FPS';       T = 'ogauge';  C = '#06060C', '#0E0E1C', '#3DDC84', '#38BDF8'; Opti = $true },
+    @{ N = 'Compteur FPS rouge'; T = 'ogauge';  C = '#0C0606', '#160A0A', '#FF4D2E', '#FBBF24'; Opti = $true },
+    @{ N = 'Images stables';     T = 'ograph';  C = '#05070C', '#0B1220', '#3DDC84', '#FF4D2E'; Opti = $true },
+    @{ N = 'Barres perf';        T = 'obars';   C = '#06060C', '#0E0E1C', '#F472B6', '#38BDF8'; Opti = $true },
+    @{ N = 'Rétro néon';      T = 'synth';   C = '#0B0420', '#2A0B3D', '#FF2E88', '#FFD166', '#22D3EE'; New = $true },
+    @{ N = 'Rétro coucher';   T = 'synth';   C = '#140A1E', '#3A1030', '#FF5A3C', '#FFE08A', '#FF5A3C'; New = $true },
+    @{ N = 'Zone violette';   T = 'storm';   C = '#0A0614', '#120A24', '#8B5CF6', '#C4B5FD'; New = $true },
+    @{ N = 'Viseur';          T = 'reticle'; C = '#06080C', '#0C1018', '#3DDC84', '#FFFFFF'; New = $true },
+    @{ N = 'Viseur rouge';    T = 'reticle'; C = '#0C0606', '#140909', '#FF4D2E', '#FFFFFF'; New = $true },
+    @{ N = 'Néon liquide';    T = 'mesh';    C = '#06060C', '#7C3AED', '#06B6D4', '#EC4899'; New = $true },
+    @{ N = 'Néon feu';        T = 'mesh';    C = '#0A0505', '#F97316', '#DC2626', '#FACC15'; New = $true },
+    @{ N = 'Cristal';         T = 'lowpoly'; C = '#0B1026', '#1E1B4B', '#06B6D4'; New = $true },
+    @{ N = 'Cristal rose';    T = 'lowpoly'; C = '#170A1E', '#3B0A2A', '#F472B6'; New = $true },
+    @{ N = 'Circuit';         T = 'circuit'; C = '#05080A', '#0A1418', '#22D3EE'; New = $true },
+    @{ N = 'Circuit vert';    T = 'circuit'; C = '#050A06', '#0A160D', '#3DDC84'; New = $true },
+    @{ N = "Nid d'abeille";   T = 'hex';     C = '#07090F', '#0C1424', '#38BDF8'; New = $true },
+    @{ N = 'Nid rouge';       T = 'hex';     C = '#0C0606', '#170A0A', '#FF4D2E'; New = $true },
+    @{ N = 'Vitesse';         T = 'speed';   C = '#05060C', '#0E1226', '#38BDF8', '#F472B6'; New = $true },
+    @{ N = 'Éclat';           T = 'rays';    C = '#0A0A14', '#101028', '#8B5CF6', '#22D3EE'; New = $true },
+    @{ N = 'Relief';          T = 'topo';    C = '#081018', '#0E1A28', '#38BDF8'; New = $true },
+    @{ N = 'Relief or';       T = 'topo';    C = '#100C06', '#1C1408', '#F59E0B'; New = $true },
+    @{ N = 'Trame';           T = 'dots';    C = '#07070B', '#0E0E16', '#A78BFA'; New = $true },
+    @{ N = 'Glitch';          T = 'glitch';  C = '#06060A', '#0C0C14', '#22D3EE', '#FF2E88'; New = $true },
     @{ N = 'Halo bleu';       T = 'glow';    C = '#070A12', '#0B1220', '#2F6BFF' },
     @{ N = 'Halo rouge';      T = 'glow';    C = '#0C0707', '#150A09', '#FF4D2E' },
     @{ N = 'Halo vert';       T = 'glow';    C = '#060B09', '#0A1410', '#22C55E' },
@@ -7088,6 +8163,9 @@ $walls = @(
     @{ N = 'Acier';           T = 'grad';    C = '#1B1E25', '#3A4252' },
     @{ N = 'Gris clair';      T = 'grad';    C = '#D5D8DF', '#F1F2F6' }
 )
+# on garde une sélection courte : trop de choix tue le choix
+$wallKeep = @('Logo OnePC', 'Processeur', 'Compteur FPS', 'Images stables', 'Rétro néon', 'Zone violette', 'Viseur', 'Néon liquide', 'Cristal', 'Circuit', 'Halo bleu', 'Aurore', 'Nuit étoilée', 'Noir pur')
+$walls = @(foreach ($k in $wallKeep) { $walls | Where-Object { $_.N -eq $k } | Select-Object -First 1 })
 $wallPrev = Join-Path $appDir 'fond-avant.txt'
 function Set-Wall($path) {
     if (-not ('PCM.Wall' -as [type])) {
@@ -7116,6 +8194,61 @@ function WGlow($g, $cx, $cy, $r, $hex, $a) {
 function WPoly($g, $pts, $hex, $a) {
     $b = New-Object System.Drawing.SolidBrush (WCol $hex $a)
     $g.FillPolygon($b, [System.Drawing.PointF[]]$pts.ToArray()); $b.Dispose()
+}
+function WLine($g, $x1, $y1, $x2, $y2, $hex, $a, $wd) {
+    $pen = New-Object System.Drawing.Pen((WCol $hex ([math]::Max(0, [math]::Min(255, [int]$a)))), [single][math]::Max(1, $wd))
+    $g.DrawLine($pen, [single]$x1, [single]$y1, [single]$x2, [single]$y2); $pen.Dispose()
+}
+function WEll($g, $cx, $cy, $r, $hex, $a, $fill, $wd) {
+    $col = WCol $hex ([math]::Max(0, [math]::Min(255, [int]$a)))
+    if ($fill) { $b = New-Object System.Drawing.SolidBrush $col; $g.FillEllipse($b, [single]($cx - $r), [single]($cy - $r), [single](2 * $r), [single](2 * $r)); $b.Dispose() }
+    else { $pen = New-Object System.Drawing.Pen($col, [single][math]::Max(1, $wd)); $g.DrawEllipse($pen, [single]($cx - $r), [single]($cy - $r), [single](2 * $r), [single](2 * $r)); $pen.Dispose() }
+}
+function WRect($g, $x, $y, $rw, $rh, $hex, $a) {
+    $b = New-Object System.Drawing.SolidBrush (WCol $hex ([math]::Max(0, [math]::Min(255, [int]$a))))
+    $g.FillRectangle($b, [single]$x, [single]$y, [single]$rw, [single]$rh); $b.Dispose()
+}
+function WOutline($g, $pts, $hex, $a, $wd) {
+    $pen = New-Object System.Drawing.Pen((WCol $hex ([math]::Max(0, [math]::Min(255, [int]$a)))), [single][math]::Max(1, $wd))
+    $g.DrawPolygon($pen, [System.Drawing.PointF[]]$pts.ToArray()); $pen.Dispose()
+}
+function WMix($h1, $h2, $t) {
+    $a = [System.Drawing.ColorTranslator]::FromHtml($h1); $b = [System.Drawing.ColorTranslator]::FromHtml($h2)
+    $t = [math]::Max(0.0, [math]::Min(1.0, [double]$t))
+    '#{0:X2}{1:X2}{2:X2}' -f [int]($a.R + ($b.R - $a.R) * $t), [int]($a.G + ($b.G - $a.G) * $t), [int]($a.B + ($b.B - $a.B) * $t)
+}
+function WShade($hex, $f) {
+    $a = [System.Drawing.ColorTranslator]::FromHtml($hex)
+    '#{0:X2}{1:X2}{2:X2}' -f [int][math]::Min(255, $a.R * $f), [int][math]::Min(255, $a.G * $f), [int][math]::Min(255, $a.B * $f)
+}
+function WNewList { , (New-Object 'System.Collections.Generic.List[System.Drawing.PointF]') }
+function WText($g, $s, $x, $y, $size, $hex, $a, $align, $spaced, $black) {
+    $txt = [string]$s; if ($spaced) { $txt = ($txt.ToCharArray() -join ' ') }
+    $fam = 'Segoe UI'; $st = [System.Drawing.FontStyle]::Bold; if ($black) { $fam = 'Segoe UI Black'; $st = [System.Drawing.FontStyle]::Regular }
+    $fnt = New-Object System.Drawing.Font($fam, [single][math]::Max(6, $size), $st, [System.Drawing.GraphicsUnit]::Pixel)
+    $sf = New-Object System.Drawing.StringFormat
+    $sf.LineAlignment = [System.Drawing.StringAlignment]::Center
+    switch ($align) { 'l' { $sf.Alignment = [System.Drawing.StringAlignment]::Near } 'r' { $sf.Alignment = [System.Drawing.StringAlignment]::Far } default { $sf.Alignment = [System.Drawing.StringAlignment]::Center } }
+    $b = New-Object System.Drawing.SolidBrush (WCol $hex ([math]::Max(0, [math]::Min(255, [int]$a))))
+    $g.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
+    $g.DrawString($txt, $fnt, $b, [single]$x, [single]$y, $sf)
+    $b.Dispose(); $sf.Dispose(); $fnt.Dispose()
+}
+function WRound($g, $x, $y, $rw, $rh, $r, $fill, $fa, $line, $la, $wd) {
+    $p = New-Object System.Drawing.Drawing2D.GraphicsPath; $d = [single](2 * $r)
+    $p.AddArc([single]$x, [single]$y, $d, $d, 180, 90); $p.AddArc([single]($x + $rw - $d), [single]$y, $d, $d, 270, 90)
+    $p.AddArc([single]($x + $rw - $d), [single]($y + $rh - $d), $d, $d, 0, 90); $p.AddArc([single]$x, [single]($y + $rh - $d), $d, $d, 90, 90); $p.CloseFigure()
+    if ($fill) { $b = New-Object System.Drawing.SolidBrush (WCol $fill $fa); $g.FillPath($b, $p); $b.Dispose() }
+    if ($line) { $pen = New-Object System.Drawing.Pen((WCol $line $la), [single][math]::Max(1, $wd)); $g.DrawPath($pen, $p); $pen.Dispose() }
+    $p.Dispose()
+}
+function WLogo($g, $cx, $cy, $s) {
+    try {
+        if (-not $png -or -not (Test-Path -LiteralPath $png)) { return }
+        $img = [System.Drawing.Image]::FromStream((New-Object System.IO.MemoryStream (, [System.IO.File]::ReadAllBytes($png))))
+        $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+        $g.DrawImage($img, [single]($cx - $s / 2), [single]($cy - $s / 2), [single]$s, [single]$s); $img.Dispose()
+    } catch {}
 }
 function Draw-Wall($g, $w, $h, $d) {
     $g.SmoothingMode = 'AntiAlias'
@@ -7203,6 +8336,267 @@ function Draw-Wall($g, $w, $h, $d) {
                 $g.DrawEllipse($pen, [single]($w * 0.85 - $r), [single]($h * 0.92 - $r), [single](2 * $r), [single](2 * $r)); $pen.Dispose()
             }
         }
+        'synth' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            $hy = $h * 0.62
+            WGlow $g ($w * 0.5) ($h * 0.50) ($h * 0.55) $c[2] 120
+            $sr = $h * 0.24; $cx = $w * 0.5; $cy = $h * 0.47
+            $sun = New-Object System.Drawing.Drawing2D.LinearGradientBrush((WPt 0 ($cy - $sr - 1)), (WPt 0 ($cy + $sr + 1)), (WCol $c[3] 255), (WCol $c[2] 255))
+            $g.FillEllipse($sun, [single]($cx - $sr), [single]($cy - $sr), [single](2 * $sr), [single](2 * $sr)); $sun.Dispose()
+            for ($k = 0; $k -lt 6; $k++) { WRect $g ($cx - $sr - 2) ($cy + $sr * (0.12 + 0.15 * $k)) (2 * $sr + 4) ($sr * (0.02 + 0.018 * $k)) $c[1] 255 }
+            WRect $g 0 $hy $w ($h - $hy + 1) $c[0] 255
+            WGlow $g ($w * 0.5) $hy ($h * 0.35) $c[4] 60
+            for ($k = 1; $k -le 11; $k++) { $y = $hy + ($h - $hy) * [math]::Pow($k / 11.0, 2); WLine $g 0 $y $w $y $c[4] 150 (2 * $u) }
+            WLine $g 0 $hy $w $hy $c[2] 230 (3 * $u)
+            for ($i = -14; $i -le 14; $i++) { WLine $g ($w * 0.5) $hy ($w * 0.5 + $i * $w * 0.11) $h $c[4] 140 (2 * $u) }
+        }
+        'hex' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            WGlow $g ($w * 0.75) ($h * 0.35) ($h * 0.8) $c[2] 90
+            $r = $h / 14.0; $dx = $r * [math]::Sqrt(3); $dy = $r * 1.5; $rnd = New-Object System.Random 7
+            for ($row = -1; $row -le [int]($h / $dy) + 1; $row++) {
+                for ($col = -1; $col -le [int]($w / $dx) + 1; $col++) {
+                    $x = $col * $dx; if ($row % 2) { $x += $dx / 2 }; $y = $row * $dy
+                    $pts = WNewList
+                    for ($k = 0; $k -lt 6; $k++) { $an = [math]::PI / 6 + $k * [math]::PI / 3; $pts.Add((WPt ($x + $r * 0.92 * [math]::Cos($an)) ($y + $r * 0.92 * [math]::Sin($an)))) }
+                    $dist = [math]::Sqrt([math]::Pow($x - $w * 0.75, 2) + [math]::Pow($y - $h * 0.35, 2)) / ($h * 0.9)
+                    if ($rnd.NextDouble() -lt 0.10 -and $dist -lt 1) { WPoly $g $pts $c[2] ([int](90 * (1 - $dist)) + 15) }
+                    WOutline $g $pts $c[2] ([int](18 + 60 * [math]::Max(0, 1 - $dist))) 1
+                }
+            }
+        }
+        'circuit' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            WGlow $g ($w * 0.15) ($h * 0.85) ($h * 0.8) $c[2] 70
+            $rnd = New-Object System.Random 5; $st = $h / 27.0; $wd = [math]::Max(1, 2 * $u)
+            $dirs = @(@(1, 0), @(0, 1), @(1, 1), @(1, -1), @(-1, 0), @(0, -1))
+            for ($k = 0; $k -lt 70; $k++) {
+                $x = [math]::Round($rnd.NextDouble() * $w / $st) * $st; $y = [math]::Round($rnd.NextDouble() * $h / $st) * $st
+                $a = $rnd.Next(40, 151)
+                $segs = $rnd.Next(3, 8)
+                for ($s = 0; $s -lt $segs; $s++) {
+                    $dd = $dirs[$rnd.Next(0, 6)]; $n = $rnd.Next(2, 7)
+                    $nx = $x + $dd[0] * $st * $n; $ny = $y + $dd[1] * $st * $n
+                    WLine $g $x $y $nx $ny $c[2] $a $wd; $x = $nx; $y = $ny
+                }
+                WEll $g $x $y (4 * $u + 2) $c[2] ([math]::Min(255, $a + 60)) $true 1
+                WEll $g $x $y (9 * $u + 3) $c[2] ([int]($a / 3)) $false $wd
+            }
+        }
+        'mesh' {
+            $g.Clear((WCol $c[0] 255))
+            $rnd = New-Object System.Random 3
+            for ($k = 0; $k -lt 7; $k++) { WGlow $g ($rnd.NextDouble() * $w) ($rnd.NextDouble() * $h) ($h * (0.45 + $rnd.NextDouble() * 0.45)) $c[1 + ($k % 3)] (110 + $rnd.Next(0, 61)) }
+        }
+        'topo' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            foreach ($ctr in @(@(0.28, 0.62, 0.0), @(0.80, 0.25, 1.7))) {
+                $cx = $w * $ctr[0]; $cy = $h * $ctr[1]; $ph = $ctr[2]
+                for ($k = 1; $k -le 15; $k++) {
+                    $R = $k * $h * 0.055; $pts = WNewList
+                    for ($j = 0; $j -lt 120; $j++) {
+                        $t = $j / 120.0 * 2 * [math]::PI
+                        $rr = $R * (1 + 0.10 * [math]::Sin(3 * $t + $ph + $k * 0.25) + 0.06 * [math]::Sin(5 * $t + 1.3 * $k + $ph))
+                        $pts.Add((WPt ($cx + $rr * [math]::Cos($t)) ($cy + $rr * 0.8 * [math]::Sin($t))))
+                    }
+                    WOutline $g $pts $c[2] ([math]::Max(20, 140 - 7 * $k)) ([math]::Max(1, 1.5 * $u))
+                }
+            }
+        }
+        'lowpoly' {
+            $rnd = New-Object System.Random 9; $cols = 10; $rows = 6
+            $vtx = @{}
+            for ($j = 0; $j -le $rows; $j++) {
+                for ($i = 0; $i -le $cols; $i++) {
+                    $jx = 0; $jy = 0
+                    if ($i -gt 0 -and $i -lt $cols) { $jx = ($rnd.NextDouble() - 0.5) * 0.8 }
+                    if ($j -gt 0 -and $j -lt $rows) { $jy = ($rnd.NextDouble() - 0.5) * 0.8 }
+                    $vtx["$i,$j"] = WPt (($i + $jx) * $w / $cols) (($j + $jy) * $h / $rows)
+                }
+            }
+            for ($j = 0; $j -lt $rows; $j++) {
+                for ($i = 0; $i -lt $cols; $i++) {
+                    foreach ($tri in @(@("$i,$j", "$($i+1),$j", "$i,$($j+1)"), @("$($i+1),$j", "$($i+1),$($j+1)", "$i,$($j+1)"))) {
+                        $pts = WNewList; $mx = 0.0; $my = 0.0
+                        foreach ($key in $tri) { $pv = $vtx[$key]; $pts.Add($pv); $mx += $pv.X / 3.0; $my += $pv.Y / 3.0 }
+                        $mx = $mx / $w; $my = $my / $h
+                        $base = WMix $c[0] $c[1] (0.55 * $mx + 0.45 * (1 - $my))
+                        $gl = [math]::Max(0, 1 - [math]::Sqrt([math]::Pow($mx - 0.78, 2) + [math]::Pow($my - 0.3, 2)) / 0.5)
+                        $col = WShade (WMix $base $c[2] ($gl * 0.7)) (0.85 + $rnd.NextDouble() * 0.3)
+                        WPoly $g $pts $col 255
+                        WOutline $g $pts $col 255 1
+                    }
+                }
+            }
+        }
+        'rays' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            $cx = $w * 0.5; $cy = -$h * 0.15; $n = 28; $R = $h * 2.2
+            for ($k = 0; $k -lt $n; $k++) {
+                $a0 = [math]::PI * (0.08 + 0.84 * $k / $n); $a1 = $a0 + [math]::PI * 0.84 / $n * 0.5
+                $pts = WNewList; $pts.Add((WPt $cx $cy)); $pts.Add((WPt ($cx + $R * [math]::Cos($a0)) ($cy + $R * [math]::Sin($a0)))); $pts.Add((WPt ($cx + $R * [math]::Cos($a1)) ($cy + $R * [math]::Sin($a1))))
+                WPoly $g $pts $c[2] (14 + ($k % 3) * 8)
+            }
+            WGlow $g $cx ($h * 0.05) ($h * 0.9) $c[2] 120
+            WGlow $g ($w * 0.5) ($h * 1.05) ($h * 0.5) $c[3] 60
+        }
+        'reticle' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            $cx = $w * 0.5; $cy = $h * 0.5
+            WGlow $g $cx $cy ($h * 0.55) $c[2] 70
+            foreach ($ra in @(@(0.08, 200), @(0.17, 120), @(0.30, 60), @(0.46, 30))) { WEll $g $cx $cy ($h * $ra[0]) $c[2] $ra[1] $false (2 * $u) }
+            $gap = $h * 0.035; $L = $h * 0.12
+            foreach ($dv in @(@(1, 0), @(-1, 0), @(0, 1), @(0, -1))) { WLine $g ($cx + $dv[0] * $gap) ($cy + $dv[1] * $gap) ($cx + $dv[0] * ($gap + $L)) ($cy + $dv[1] * ($gap + $L)) $c[2] 230 (4 * $u) }
+            for ($k = 0; $k -lt 72; $k++) {
+                $t = $k / 72.0 * 2 * [math]::PI; $r0 = $h * 0.30; $r1 = $r0 + $h * 0.01; if ($k % 6 -eq 0) { $r1 = $r0 + $h * 0.025 }
+                WLine $g ($cx + $r0 * [math]::Cos($t)) ($cy + $r0 * [math]::Sin($t)) ($cx + $r1 * [math]::Cos($t)) ($cy + $r1 * [math]::Sin($t)) $c[2] 110 (2 * $u)
+            }
+            WEll $g $cx $cy (3 * $u + 2) $c[3] 255 $true 1
+        }
+        'speed' {
+            WGrad $g $w $h $c[0] $c[1] $false
+            WGlow $g ($w * 0.7) ($h * 0.5) ($h * 0.7) $c[2] 80
+            $rnd = New-Object System.Random 4
+            for ($k = 0; $k -lt 160; $k++) {
+                $y = $rnd.NextDouble() * $h * 1.4 - $h * 0.2; $x = $rnd.NextDouble() * $w * 1.3 - $w * 0.15; $L = $w * (0.05 + $rnd.NextDouble() * 0.35)
+                $th = [math]::Max(1, (1 + $rnd.NextDouble() * 4) * $u)
+                $col = $c[2]; if ($rnd.NextDouble() -ge 0.75) { $col = $c[3] }
+                WLine $g $x $y ($x + $L) ($y - $L * 0.18) $col ($rnd.Next(25, 171)) $th
+            }
+        }
+        'storm' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            $cx = $w * 0.05; $cy = $h * 0.5; $R = $h * 0.95
+            # dehors de la zone : voile violet ; dedans : plus sombre
+            WRect $g 0 0 $w $h $c[2] 55
+            WEll $g $cx $cy $R $c[0] 170 $true 1
+            WGlow $g $cx $cy ($R * 0.95) $c[3] 35
+            for ($k = 0; $k -lt 40; $k++) {
+                $a = [int](200 * [math]::Exp(-[math]::Pow(($k - 20) / 7.0, 2)))
+                WEll $g $cx $cy ($R + ($k - 20) * $h * 0.006) $c[2] $a $false (3 * $u)
+            }
+            WEll $g $cx $cy $R $c[3] 255 $false (3 * $u)
+            $rnd = New-Object System.Random 2
+            for ($k = 0; $k -lt 110; $k++) {
+                $t = $rnd.NextDouble() * 2 * [math]::PI; $rr = $R + ($rnd.NextDouble() - 0.3) * $h * 0.25
+                $x = $cx + $rr * [math]::Cos($t); $y = $cy + $rr * [math]::Sin($t)
+                if ($x -gt 0 -and $x -lt $w -and $y -gt 0 -and $y -lt $h) { WEll $g $x $y ((1 + $rnd.NextDouble() * 2) * $u + 1) $c[3] ($rnd.Next(60, 201)) $true 1 }
+            }
+        }
+        'dots' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            $st = $h / 34.0
+            for ($j = 0; $j -le [int]($h / $st) + 1; $j++) {
+                for ($i = 0; $i -le [int]($w / $st) + 1; $i++) {
+                    $x = $i * $st; if ($j % 2) { $x += $st / 2 }; $y = $j * $st
+                    $f = [math]::Max(0, 1 - [math]::Sqrt([math]::Pow($x / $w - 0.85, 2) + [math]::Pow($y / $h - 0.85, 2)))
+                    $r = $st * 0.42 * $f
+                    if ($r -gt 0.6) { WEll $g $x $y $r $c[2] ([int](60 + 150 * $f)) $true 1 }
+                }
+            }
+            WGlow $g ($w * 0.9) ($h * 0.9) ($h * 0.7) $c[2] 60
+        }
+        'glitch' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            WGlow $g ($w * 0.5) ($h * 0.5) ($h * 0.8) $c[2] 50
+            $rnd = New-Object System.Random 8
+            for ($k = 0; $k -lt 26; $k++) {
+                $y = $rnd.NextDouble() * $h; $bh = (2 + $rnd.NextDouble() * 18) * $u + 1; $x = $rnd.NextDouble() * $w * 0.8; $bw = $w * (0.05 + $rnd.NextDouble() * 0.5)
+                WRect $g $x $y $bw $bh $c[2] ($rnd.Next(30, 141)); WRect $g ($x + 8 * $u) ($y + 3 * $u) $bw $bh $c[3] ($rnd.Next(20, 91))
+            }
+        }
+        'ologo' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            WGlow $g ($w * 0.5) ($h * 0.42) ($h * 0.6) $c[2] 110
+            for ($k = 1; $k -le 5; $k++) { WEll $g ($w * 0.5) ($h * 0.42) ($h * (0.17 + 0.07 * $k)) $c[2] ([math]::Max(10, 70 - 12 * $k)) $false (2 * $u) }
+            WLogo $g ($w * 0.5) ($h * 0.42) ($h * 0.26)
+            WText $g 'ONEPC' ($w * 0.5) ($h * 0.66) ($h * 0.075) '#FFFFFF' 235 'c' $true $true
+            WText $g 'TON PC, AU MAX' ($w * 0.5) ($h * 0.735) ($h * 0.026) $c[2] 210 'c' $true $false
+        }
+        'ocpu' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            $cx = $w * 0.5; $cy = $h * 0.45; $s = $h * 0.30; $st = $h / 40.0
+            $rnd = New-Object System.Random 12
+            for ($k = 0; $k -lt 48; $k++) {
+                $side = $k % 4; $t = ([math]::Floor($k / 4) + 0.5) / 12.0
+                switch ($side) {
+                    0 { $x = $cx - $s / 2 + $s * $t; $y = $cy - $s / 2; $dx = 0; $dy = -1 }
+                    1 { $x = $cx - $s / 2 + $s * $t; $y = $cy + $s / 2; $dx = 0; $dy = 1 }
+                    2 { $x = $cx - $s / 2; $y = $cy - $s / 2 + $s * $t; $dx = -1; $dy = 0 }
+                    default { $x = $cx + $s / 2; $y = $cy - $s / 2 + $s * $t; $dx = 1; $dy = 0 }
+                }
+                $a = $rnd.Next(50, 161)
+                $L1 = $st * $rnd.Next(2, 7); $x2 = $x + $dx * $L1; $y2 = $y + $dy * $L1; WLine $g $x $y $x2 $y2 $c[2] $a (2 * $u)
+                $sg = 1; if ($rnd.Next(0, 2) -eq 0) { $sg = -1 }
+                if ($dx -eq 0) { $ex = $sg; $ey = 0 } else { $ex = 0; $ey = $sg }
+                $L2 = $st * $rnd.Next(1, 6); $x3 = $x2 + $ex * $L2; $y3 = $y2 + $ey * $L2; WLine $g $x2 $y2 $x3 $y3 $c[2] $a (2 * $u)
+                $L3 = $st * $rnd.Next(3, 15); $x4 = $x3 + $dx * $L3; $y4 = $y3 + $dy * $L3; WLine $g $x3 $y3 $x4 $y4 $c[2] $a (2 * $u)
+                WEll $g $x4 $y4 (3 * $u + 2) $c[2] ([math]::Min(255, $a + 70)) $true 1
+            }
+            WGlow $g $cx $cy ($h * 0.45) $c[2] 90
+            WRound $g ($cx - $s / 2) ($cy - $s / 2) $s $s ($s * 0.08) '#0E0E14' 255 $c[2] 230 (3 * $u + 1)
+            $i = $s * 0.56
+            WGlow $g $cx $cy ($i * 0.9) $c[2] 120
+            WRound $g ($cx - $i / 2) ($cy - $i / 2) $i $i ($i * 0.08) $c[1] 255 $c[2] 180 (2 * $u + 1)
+            WText $g 'ONEPC' $cx ($cy - $h * 0.02) ($h * 0.04) '#FFFFFF' 230 'c' $false $true
+            WText $g 'OPTIMISÉ' $cx ($cy + $h * 0.035) ($h * 0.017) $c[2] 220 'c' $true $false
+        }
+        'ogauge' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            $cx = $w * 0.5; $cy = $h * 0.55; $R = $h * 0.33; $a0 = 150.0; $a1 = 390.0
+            WGlow $g $cx $cy ($h * 0.6) $c[2] 70
+            for ($k = 0; $k -le 60; $k++) {
+                $an = ($a0 + ($a1 - $a0) * $k / 60.0) * [math]::PI / 180; $big = ($k % 5 -eq 0)
+                $r0 = $R * 0.91; $al = 60; $wd = 2 * $u; if ($big) { $r0 = $R * 0.86; $al = 150; $wd = 3 * $u }
+                WLine $g ($cx + $r0 * [math]::Cos($an)) ($cy + $r0 * [math]::Sin($an)) ($cx + $R * 0.97 * [math]::Cos($an)) ($cy + $R * 0.97 * [math]::Sin($an)) '#FFFFFF' $al $wd
+            }
+            $n = 90; $ra = $R * 1.06
+            for ($k = 0; $k -lt $n; $k++) {
+                $t = $k / $n * 0.92; $an = ($a0 + ($a1 - $a0) * $t) * [math]::PI / 180; $an2 = ($a0 + ($a1 - $a0) * ($t + 0.92 / $n + 0.002)) * [math]::PI / 180
+                WLine $g ($cx + $ra * [math]::Cos($an)) ($cy + $ra * [math]::Sin($an)) ($cx + $ra * [math]::Cos($an2)) ($cy + $ra * [math]::Sin($an2)) (WMix $c[3] $c[2] ($t / 0.92)) 255 (10 * $u)
+            }
+            $an = ($a0 + ($a1 - $a0) * 0.92) * [math]::PI / 180
+            WLine $g $cx $cy ($cx + $R * 0.8 * [math]::Cos($an)) ($cy + $R * 0.8 * [math]::Sin($an)) $c[2] 255 (6 * $u)
+            WEll $g $cx $cy ($R * 0.07) $c[2] 255 $true 1
+            WEll $g $cx $cy ($R * 0.035) $c[0] 255 $true 1
+            WText $g '240' $cx ($cy + $R * 0.30) ($h * 0.11) '#FFFFFF' 240 'c' $false $true
+            WText $g 'FPS' $cx ($cy + $R * 0.54) ($h * 0.03) $c[2] 230 'c' $true $false
+            WText $g 'ONEPC' $cx ($h * 0.93) ($h * 0.022) '#FFFFFF' 90 'c' $true $false
+        }
+        'ograph' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            WGlow $g ($w * 0.5) ($h * 0.5) ($h * 0.8) $c[2] 50
+            $x0 = $w * 0.08; $x1 = $w * 0.92; $y0 = $h * 0.25; $y1 = $h * 0.75
+            for ($k = 0; $k -le 5; $k++) { $y = $y0 + ($y1 - $y0) * $k / 5; WLine $g $x0 $y $x1 $y '#FFFFFF' 22 $u }
+            for ($k = 0; $k -le 12; $k++) { $x = $x0 + ($x1 - $x0) * $k / 12; WLine $g $x $y0 $x $y1 '#FFFFFF' 14 $u }
+            $rnd = New-Object System.Random 6; $n = 140
+            $pa = New-Object 'System.Collections.Generic.List[System.Drawing.PointF]'; $pb = New-Object 'System.Collections.Generic.List[System.Drawing.PointF]'
+            for ($k = 0; $k -le $n; $k++) {
+                $x = $x0 + ($x1 - $x0) * $k / $n
+                $sp = 0; if ($rnd.NextDouble() -lt 0.12) { $sp = 0.25 }
+                $pa.Add((WPt $x ($y0 + ($y1 - $y0) * (0.45 + $rnd.NextDouble() * 0.25 + $sp))))
+                $pb.Add((WPt $x ($y0 + ($y1 - $y0) * (0.22 + $rnd.NextDouble() * 0.025))))
+            }
+            for ($i = 0; $i -lt $n; $i++) { WLine $g $pa[$i].X $pa[$i].Y $pa[$i + 1].X $pa[$i + 1].Y $c[3] 110 (2 * $u) }
+            $fillPts = New-Object 'System.Collections.Generic.List[System.Drawing.PointF]'; foreach ($q in $pb) { $fillPts.Add($q) }; $fillPts.Add((WPt $x1 $y1)); $fillPts.Add((WPt $x0 $y1))
+            WPoly $g $fillPts $c[2] 30
+            for ($i = 0; $i -lt $n; $i++) { WLine $g $pb[$i].X $pb[$i].Y $pb[$i + 1].X $pb[$i + 1].Y $c[2] 255 (4 * $u) }
+            WText $g 'AVEC ONEPC' $x0 ($y0 - $h * 0.045) ($h * 0.026) $c[2] 240 'l' $true $false
+            WText $g 'AVANT' $x0 ($y1 + $h * 0.045) ($h * 0.022) $c[3] 170 'l' $true $false
+            WText $g 'IMAGES STABLES' $x1 ($y0 - $h * 0.045) ($h * 0.022) '#FFFFFF' 120 'r' $true $false
+        }
+        'obars' {
+            WGrad $g $w $h $c[0] $c[1] $true
+            WGlow $g ($w * 0.5) $h ($h * 0.8) $c[2] 90
+            $n = 48; $bw = $w / $n; $rnd = New-Object System.Random 1; $seg = $h * 0.025
+            for ($k = 0; $k -lt $n; $k++) {
+                $t = $k / ($n - 1.0); $v = 0.25 + 0.55 * [math]::Exp(-[math]::Pow(($t - 0.5) / 0.28, 2)) + $rnd.NextDouble() * 0.08
+                $segs = [int][math]::Floor($h * $v * 0.75 / $seg); $col = WMix $c[3] $c[2] $t
+                for ($s = 0; $s -lt $segs; $s++) { WRect $g ($k * $bw + $bw * 0.15) ($h - ($s + 1) * $seg + $h * 0.004) ($bw * 0.7) ($h * 0.017) $col ([int](60 + 170 * $s / [math]::Max(1, $segs))) }
+            }
+            WText $g 'ONEPC' ($w * 0.5) ($h * 0.22) ($h * 0.06) '#FFFFFF' 220 'c' $true $true
+            WText $g 'TOUT À FOND' ($w * 0.5) ($h * 0.30) ($h * 0.022) $c[2] 210 'c' $true $false
+        }
         'stripes' {
             $g.Clear((WCol $c[0] 255))
             $bw = $w / 6.0; $sk = $h * 0.6
@@ -7230,6 +8624,18 @@ function Apply-Wall($d) {
         $bmp = New-Object System.Drawing.Bitmap $sw, $sh
         $g = [System.Drawing.Graphics]::FromImage($bmp)
         Draw-Wall $g $sw $sh $d
+        if ($cfg.WallName -and [string]$cfg.Pseudo) {
+            # pseudo en grand et discret, en bas à droite (au-dessus de la barre des tâches)
+            try {
+                $g.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
+                $fnt = New-Object System.Drawing.Font('Segoe UI Black', [single]($sh * 0.085), [System.Drawing.FontStyle]::Regular, [System.Drawing.GraphicsUnit]::Pixel)
+                $txt = ([string]$cfg.Pseudo).ToUpper()
+                $sz = $g.MeasureString($txt, $fnt)
+                $tbr = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(40, 255, 255, 255))
+                $g.DrawString($txt, $fnt, $tbr, [single]($sw - $sz.Width - $sw * 0.03), [single]($sh * 0.88 - $sz.Height))
+                $tbr.Dispose(); $fnt.Dispose()
+            } catch {}
+        }
         $g.Dispose()
         $file = Join-Path $appDir 'fond.png'
         $bmp.Save($file, [System.Drawing.Imaging.ImageFormat]::Png); $bmp.Dispose()
@@ -7242,6 +8648,7 @@ function Load-Walls {
     if ($script:wallsLoaded) { return }
     $script:wallsLoaded = $true
     Add-Type -AssemblyName System.Drawing
+    try { (UI 'WallName').IsChecked = [bool]$cfg.WallName } catch {}
     foreach ($d in $walls) {
         $prev = New-Object System.Windows.Controls.Border
         $prev.Width = 176; $prev.Height = 99; $prev.CornerRadius = New-Object System.Windows.CornerRadius 8
@@ -7263,10 +8670,22 @@ function Load-Walls {
         $bt.Style = $win.FindResource('Ghost'); $bt.Content = $sp; $bt.Tag = $d
         $bt.Margin = New-Object System.Windows.Thickness 0, 0, 12, 12
         $bt.Add_Click({ param($sender, $e) Apply-Wall $sender.Tag })
-        if ($d.T -eq 'grad') { [void](UI 'WallHost').Children.Add($bt) } else { [void](UI 'WallHostA').Children.Add($bt) }
+        if ($d.Opti) { [void](UI 'WallHostO').Children.Add($bt) } elseif ($d.New) { [void](UI 'WallHostN').Children.Add($bt) } else { [void](UI 'WallHostA').Children.Add($bt) }
     }
 }
 (UI 'WallSettings').Add_Click({ Open-Settings 'ms-settings:personalization-background' })
+(UI 'WallName').Add_Click({
+    if ((UI 'WallName').IsChecked -and -not [string]$cfg.Pseudo) { (UI 'WallName').IsChecked = $false; (UI 'WallMsg').Text = "Tu n'as pas encore de pseudo : choisis-le dans Mon profil, puis reviens ici."; return }
+    $cfg.WallName = [bool](UI 'WallName').IsChecked; Save-Cfg
+    if ($cfg.WallName) { (UI 'WallMsg').Text = "Ton pseudo « " + [string]$cfg.Pseudo + " » sera sur le prochain fond : clique sur un fond pour l'appliquer." }
+    else { (UI 'WallMsg').Text = "Pseudo retiré : clique sur un fond pour l'appliquer sans." }
+})
+(UI 'WallRandom').Add_Click({
+    $pool = @($walls | Where-Object { $_.T -ne 'grad' -and $_.N -ne $script:wallLast })
+    if (-not $pool.Count) { return }
+    $d = $pool[(New-Object System.Random).Next(0, $pool.Count)]; $script:wallLast = $d.N
+    Apply-Wall $d
+})
 (UI 'WallRestore').Add_Click({
     if (-not (Test-Path -LiteralPath $wallPrev)) { (UI 'WallMsg').Text = "Aucun ancien fond enregistré : OnePC n'a pas encore changé ton fond d'écran."; return }
     $old = ([string](Get-Content -LiteralPath $wallPrev -Encoding UTF8 | Select-Object -First 1)).Trim()
@@ -7380,7 +8799,7 @@ function Send-Alert($key, $title, $text) {
 function Check-Alerts {
     if ($sync.GpuT -gt 0 -and $sync.GpuT -ge [int]$cfg.GpuMax) { Send-Alert 'gpu' 'Carte graphique chaude' ("" + $sync.GpuT + " °C : au-dessus du seuil de " + $cfg.GpuMax + " °C.") }
     if ($sync.Ram -ge [int]$cfg.RamMax) { Send-Alert 'ram' 'Mémoire presque pleine' ("RAM utilisée à " + $sync.Ram + " %. Ferme quelques applications.") }
-    if ($sync.DiskFree -le [int]$cfg.DiskMin) { Send-Alert 'disk' 'Disque C: presque plein' ("Il ne reste que " + $sync.DiskFree + " % de libre. Lance un nettoyage.") }
+    if (Test-DiskLow ([int]$cfg.DiskMin)) { Send-Alert 'disk' 'Disque C: presque plein' ("Il ne reste que " + $sync.DiskGb + " Go de libre (" + $sync.DiskFree + " %). Lance un nettoyage.") }
 }
 
 # ---------- Réseau : test de débit ----------
@@ -7741,25 +9160,28 @@ function Show-Cal {
         }
         $card = New-Object System.Windows.Controls.Border
         $card.Width = $inner + 32; $card.Margin = New-Object System.Windows.Thickness 0, 0, 12, 12; $card.Padding = New-Object System.Windows.Thickness 16, 14, 16, 14
-        $card.Background = $brush.ConvertFromString('#1D1D22'); $card.BorderBrush = $brush.ConvertFromString('#2E2E35'); $card.BorderThickness = New-Object System.Windows.Thickness 1
-        $card.CornerRadius = New-Object System.Windows.CornerRadius 12
+        $cc = [System.Windows.Media.ColorConverter]::ConvertFromString($col); $mx = { param($k) [System.Windows.Media.Color]::FromRgb([byte](0x1B + ($cc.R - 0x1B) * $k), [byte](0x1B + ($cc.G - 0x1B) * $k), [byte](0x20 + ($cc.B - 0x20) * $k)) }
+        $gb = New-Object System.Windows.Media.LinearGradientBrush; $gb.StartPoint = New-Object System.Windows.Point 0, 0; $gb.EndPoint = New-Object System.Windows.Point 1, 1
+        [void]$gb.GradientStops.Add((New-Object System.Windows.Media.GradientStop ((& $mx 0.16)), 0)); [void]$gb.GradientStops.Add((New-Object System.Windows.Media.GradientStop ((& $mx 0.0)), 0.8))
+        $card.Background = $gb; $card.BorderBrush = New-Object System.Windows.Media.SolidColorBrush ((& $mx 0.38)); $card.BorderThickness = New-Object System.Windows.Thickness 1
+        $card.CornerRadius = New-Object System.Windows.CornerRadius 14
         $sp = New-Object System.Windows.Controls.StackPanel
         # en-tête : icône + nom
         $head = New-Object System.Windows.Controls.StackPanel; $head.Orientation = 'Horizontal'
         $ib = New-Object System.Windows.Controls.Border; $ib.Width = 34; $ib.Height = 34; $ib.CornerRadius = New-Object System.Windows.CornerRadius 9
-        $ib.Background = $brush.ConvertFromString('#26262C'); $ib.Margin = New-Object System.Windows.Thickness 0, 0, 10, 0
+        $ib.Background = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.Color]::FromArgb(0x30, $cc.R, $cc.G, $cc.B)); $ib.Margin = New-Object System.Windows.Thickness 0, 0, 10, 0
         $ic = New-Object System.Windows.Controls.TextBlock; $ic.Text = [string][char]$icons[$r.Item.K]; $ic.FontFamily = New-Object System.Windows.Media.FontFamily 'Segoe MDL2 Assets'
         $ic.FontSize = 16; $ic.Foreground = $brush.ConvertFromString($col); $ic.HorizontalAlignment = 'Center'; $ic.VerticalAlignment = 'Center'
         $ib.Child = $ic
         $nm = New-Object System.Windows.Controls.TextBlock; $nm.Text = $r.Item.N; $nm.FontWeight = 'SemiBold'; $nm.VerticalAlignment = 'Center'; $nm.TextTrimming = 'CharacterEllipsis'; $nm.MaxWidth = $inner - 46
         [void]$head.Children.Add($ib); [void]$head.Children.Add($nm)
         # grand texte + sous-texte
-        $tb = New-Object System.Windows.Controls.TextBlock; $tb.Text = $big; $tb.FontSize = 20; $tb.FontWeight = 'Bold'; $tb.Margin = New-Object System.Windows.Thickness 0, 12, 0, 0
+        $tb = New-Object System.Windows.Controls.TextBlock; $tb.Text = $big; $tb.FontSize = 22; $tb.FontWeight = 'Bold'; $tb.Margin = New-Object System.Windows.Thickness 0, 12, 0, 0
         $ts = New-Object System.Windows.Controls.TextBlock; $ts.Text = $sub; $ts.Foreground = $brush.ConvertFromString($col); $ts.FontSize = 12; $ts.Margin = New-Object System.Windows.Thickness 0, 2, 0, 10
         # barre de temps écoulé
-        $track = New-Object System.Windows.Controls.Border; $track.Height = 6; $track.Width = $inner; $track.HorizontalAlignment = 'Left'
-        $track.CornerRadius = New-Object System.Windows.CornerRadius 3; $track.Background = $brush.ConvertFromString('#2A2A31')
-        $fill = New-Object System.Windows.Controls.Border; $fill.Height = 6; $fill.HorizontalAlignment = 'Left'; $fill.CornerRadius = New-Object System.Windows.CornerRadius 3
+        $track = New-Object System.Windows.Controls.Border; $track.Height = 8; $track.Width = $inner; $track.HorizontalAlignment = 'Left'
+        $track.CornerRadius = New-Object System.Windows.CornerRadius 4; $track.Background = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.Color]::FromArgb(0x26, $cc.R, $cc.G, $cc.B))
+        $fill = New-Object System.Windows.Controls.Border; $fill.Height = 8; $fill.HorizontalAlignment = 'Left'; $fill.CornerRadius = New-Object System.Windows.CornerRadius 4
         $fill.Width = [math]::Max(0, [math]::Round($inner * $ratio)); $fill.Background = $brush.ConvertFromString($col)
         $track.Child = $fill
         # pied : date + bouton
@@ -8155,7 +9577,7 @@ $devCode = {
         (UI 'DevScan').IsEnabled = $true
         $rows = @($r | Where-Object { $_.IP } | Sort-Object { [int](($_.IP -split '\.')[-1]) } | ForEach-Object {
             $label = $_.Name; if (-not $label) { $label = 'Nom inconnu' }; if ($_.Note) { $label = $_.Note + "  ·  " + $label }
-            Row $_.IP $label $_.Mac
+            if ($cfg.StreamMode) { $nt = 'Appareil'; if ($_.Note) { $nt = $_.Note }; Row '•••.•••.•••.•••' $nt '' } else { Row $_.IP $label $_.Mac }
         })
         (UI 'DevList').ItemsSource = $rows
         if ($rows.Count) { (UI 'DevMsg').Text = "" + $rows.Count + " appareil(s) trouvé(s). Ceux qui sont en veille peuvent ne pas répondre." } else { (UI 'DevMsg').Text = "Aucun réseau local détecté." }
@@ -8190,6 +9612,7 @@ $wifiCode = {
     } catch {}
 }
 (UI 'WifiShow').Add_Click({
+    if ($cfg.StreamMode) { (UI 'WifiMsg').Text = "Désactivé en mode stream : tes mots de passe Wi-Fi ne s'affichent pas pendant que tu streames."; return }
     (UI 'WifiShow').IsEnabled = $false
     (UI 'WifiMsg').Text = 'Lecture des réseaux enregistrés...'
     Start-Bg $wifiCode $null {
@@ -8250,13 +9673,13 @@ Show-Back
 
 # ---------- Fond d'écran personnalisé et thème Windows ----------
 $custColors = '#000000', '#0E0E11', '#1B1E25', '#0A0F1F', '#141E30', '#07130F', '#140908', '#FFFFFF', '#38BDF8', '#2F6BFF', '#34D399', '#FBBF24', '#FB923C', '#FF5A3C', '#F472B6', '#F43F5E'
-$custTypes = @(@('Dégradé', 'grad'), @('Halo', 'glow'), @('Vagues', 'waves'), @('Ondes', 'rings'), @('Étoiles', 'stars'), @('Grille', 'grid'), @('Bandes', 'stripes'))
+$custTypes = @(@('Dégradé', 'grad'), @('Halo', 'glow'), @('Processeur', 'ocpu'), @('Compteur FPS', 'ogauge'), @('Rétro néon', 'synth'), @('Viseur', 'reticle'), @('Cristal', 'lowpoly'), @('Étoiles', 'stars'))
 $script:custA = '#0A0F1F'; $script:custB = '#38BDF8'
 function Get-CustDesign {
     $t = 'grad'; if ((UI 'CustType').SelectedItem) { $t = [string](UI 'CustType').SelectedItem.Tag }
     $a = $script:custA; $b = $script:custB
     if ($t -in 'grad', 'grid', 'stripes') { return @{ N = 'Personnalisé'; T = $t; C = $a, $b } }
-    return @{ N = 'Personnalisé'; T = $t; C = $a, $a, $b }
+    return @{ N = 'Personnalisé'; T = $t; C = $a, $a, $b, $b, $b }
 }
 function Get-WallBrush($d) {
     $bmp = New-Object System.Drawing.Bitmap 352, 198
@@ -8581,6 +10004,7 @@ $searchIndex = @(
     @('Alertes et notifications', 'Set', 'temperature seuil reglages'),
     @('Lancer OnePC avec Windows', 'Set', 'demarrage automatique horloge reglages'),
     @('Manette', 'Pad', 'manette lag usb bluetooth anti-lag'),
+    @('Micro : mon micro ne marche pas', 'Mic', 'micro microphone casque discord vocal son entendre test volume'),
     @('Souris', 'Mouse', 'souris dpi acceleration vitesse curseur viser precision'),
     @('Aide et ticket', 'Help', 'aide support ticket diagnostic probleme discord'),
     @('Problemes frequents', 'Help', 'rame lent ecran bleu son lag internet manette disque plein faq'),
@@ -8593,6 +10017,9 @@ $searchIndex = @(
     @('Tout remettre comme avant', 'Set', 'annuler reinitialiser restaurer reglages'),
     @('Mon PC rame : trouver la cause', 'Slow', 'lent rame lag ralenti lenteur pourquoi assistant'),
     @("Fréquence de l'écran (Hz)", 'Hw', 'ecran 60 hz 144 hz 240 hz rafraichissement fluide'),
+    @('Bilan santé de Windows', 'Check', 'sante securite antivirus defender mise a jour windows update kms pirate licence bilan diagnostic uac pare-feu integrite memoire'),
+    @('Réglages du panneau NVIDIA / AMD', 'Check', 'panneau nvidia amd adrenalin faible latence anti-lag cache shaders chill boost reglages carte graphique'),
+    @('Opti BIOS (Resizable BAR, PBO)', 'Check', 'bios resizable bar rebar sam pbo curve optimizer overclock above 4g'),
     @('Activer le XMP / EXPO de la RAM', 'Hw', 'ram memoire xmp expo docp bios vitesse mhz'),
     @("Conseils d'upgrade", 'Hw', 'upgrade changer carte graphique processeur ram ssd acheter'),
     @('Mode compétitif Fortnite', 'Comp', 'latence reflex vsync fps fortnite competitif input lag planification gpu game bar pubs taches applis inutiles bloatware'),
@@ -9054,7 +10481,7 @@ function Update-ObsScore {
     $pts = 0
     if (-not $cur) {
         foreach ($n in 'Enc', 'Qual', 'Net') { Set-Tile $n 'none' '—' "OBS n'a pas encore de réglages : lance-le une fois." '' '' '' }
-        (UI 'ObsScore').Text = '--'; (UI 'ObsScoreTxt').Text = 'Lance OBS une première fois'; return
+        (UI 'ObsScore').Text = '--'; (UI 'ObsScoreTxt').Text = 'Lance OBS une première fois'; Set-Ring 'ObsRing' 0 '#A78BFA'; return
     }
     # encodeur
     $curGpu = ($cur.Enc -notmatch '(?i)x264'); $canGpu = ($hw.Vendor -ne 'cpu')
@@ -9077,7 +10504,7 @@ function Update-ObsScore {
     }
     (UI 'ObsScore').Text = [string][math]::Min(100, $pts)
     $col = '#34D399'; if ($pts -lt 80) { $col = '#FBBF24' }; if ($pts -lt 50) { $col = '#F87171' }
-    (UI 'ObsScore').Foreground = $brush.ConvertFromString($col)
+    (UI 'ObsScore').Foreground = $brush.ConvertFromString($col); Set-Ring 'ObsRing' ([math]::Min(100, $pts) / 100.0) $col
     (UI 'ObsScoreTxt').Text = $(if ($pts -ge 80) { 'Setup au top' } elseif ($pts -ge 50) { 'Peut mieux faire' } else { 'À régler' })
 }
 function Show-TileDetail($n) {
@@ -9633,6 +11060,7 @@ namespace PcmDesk {
 
 # ---------- Raccourcis Windows ----------
 function Open-Tool($c) {
+    if ($c -notlike 'ms-settings:*' -and (Test-OpenTwice ('tool:' + $c))) { return }
     (UI 'ToolsMsg').Text = ' '
     try {
         switch ($c) {
@@ -10006,6 +11434,360 @@ function Run-Upg {
 (UI 'HwUpgGo').Add_Click({ Run-Upg })
 (UI 'BtnUpg').Add_Click({ Show-Page 'Hw'; Run-Upg })
 
+# ---------- Bilan santé : sécurité de Windows, réglages perf, matériel ----------
+$checkCode = {
+    param($a)
+    function R($sec, $n, $d, $l, $fix, $go, $btn) { [pscustomobject]@{ Sec = $sec; Name = $n; Detail = $d; Level = $l; Fix = $fix; Go = $go; Btn = $btn } }
+    function Svc($n) { try { Get-CimInstance Win32_Service -Filter ("Name='" + $n + "'") -ErrorAction Stop } catch { $null } }
+    function Pol($p, $n) { try { (Get-ItemProperty -LiteralPath $p -Name $n -ErrorAction Stop).$n } catch { $null } }
+    $cv = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+    $build = [int]$cv.CurrentBuild
+
+    # ===== SÉCURITÉ =====
+    # --- antivirus ---
+    $mp = $null; try { $mp = Get-MpComputerStatus -ErrorAction Stop } catch {}
+    $wd = Svc 'WinDefend'
+    $other = @(); try { $other = @(Get-CimInstance -Namespace root\SecurityCenter2 -ClassName AntiVirusProduct -ErrorAction Stop | Where-Object { [string]$_.displayName -notlike '*Defender*' } | ForEach-Object { [string]$_.displayName }) } catch {}
+    $defPol = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender'
+    $defBlocked = ((Pol $defPol 'DisableAntiSpyware') -eq 1) -or ((Pol $defPol 'DisableAntiVirus') -eq 1) -or ((Pol ($defPol + '\Real-Time Protection') 'DisableRealtimeMonitoring') -eq 1)
+    if ($other.Count) { R 'Sec' 'Antivirus' ("Protégé par " + ($other -join ', ') + ".") 0 '' '' '' }
+    elseif (-not $wd) { R 'Sec' 'Antivirus' "L'antivirus de Windows (Defender) a été SUPPRIMÉ de ce PC, et aucun autre antivirus n'est installé : ton PC n'a aucune protection. Ça ne se répare pas proprement : il faut réinstaller Windows." 2 '' 'Fresh' 'Réinstaller Windows' }
+    elseif ($defBlocked) { R 'Sec' 'Antivirus' "Defender est présent mais bloqué par un réglage forcé (souvent ajouté par un « pack opti »). Ton PC n'est pas protégé." 2 'def' '' '' }
+    elseif ($mp -and -not $mp.RealTimeProtectionEnabled) { R 'Sec' 'Antivirus' "La protection en temps réel de Defender est coupée. Rallume-la dans Sécurité Windows > Protection contre les virus." 1 '' 'winsec' 'Ouvrir Sécurité Windows' }
+    elseif ($mp) {
+        $age = 0; try { $age = [int]((Get-Date) - [datetime]$mp.AntivirusSignatureLastUpdated).TotalDays } catch {}
+        if ($age -gt 14) { R 'Sec' 'Antivirus' ("Defender est actif, mais sa base de virus date de $age jours : les mises à jour ne passent pas.") 1 '' '' '' }
+        else { R 'Sec' 'Antivirus' "Defender est actif et à jour." 0 '' '' '' }
+    } else { R 'Sec' 'Antivirus' "Defender ne répond pas : il est peut-être désactivé. Vérifie dans Sécurité Windows." 1 '' 'winsec' 'Ouvrir Sécurité Windows' }
+
+    # --- Windows Update ---
+    $wuP = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate'
+    $wuBlocked = ((Pol ($wuP + '\AU') 'NoAutoUpdate') -eq 1) -or ((Pol $wuP 'DisableWindowsUpdateAccess') -eq 1) -or ((Pol $wuP 'SetDisableUXWUAccess') -eq 1) -or ((Pol $wuP 'DoNotConnectToWindowsUpdateInternetLocations') -eq 1) -or ((Pol ($wuP + '\AU') 'UseWUServer') -eq 1 -and [string](Pol $wuP 'WUServer'))
+    $wu = Svc 'wuauserv'; $uso = Svc 'UsoSvc'; $medic = Svc 'WaaSMedicSvc'
+    $last = $null; try { $last = (Get-HotFix -ErrorAction Stop | Where-Object { $_.InstalledOn } | Sort-Object InstalledOn -Descending | Select-Object -First 1).InstalledOn } catch {}
+    $lastTxt = ''; $lastDays = 0; if ($last) { $lastDays = [int]((Get-Date) - $last).TotalDays; $lastTxt = " Dernière mise à jour installée : " + $last.ToString('dd/MM/yyyy') + "." }
+    if (-not $wu -or ($build -ge 22000 -and (-not $uso -or -not $medic))) {
+        R 'Sec' 'Mises à jour Windows' ("Des services de Windows Update ont été SUPPRIMÉS : les mises à jour de sécurité ne peuvent plus s'installer." + $lastTxt + " Ça ne se répare pas proprement : il faut réinstaller Windows.") 2 '' 'Fresh' 'Réinstaller Windows'
+    } elseif ($wuBlocked -or [string]$wu.StartMode -eq 'Disabled') {
+        R 'Sec' 'Mises à jour Windows' ("Windows Update est bloqué par un réglage forcé : plus aucune faille de sécurité n'est corrigée." + $lastTxt) 2 'wu' '' ''
+    } elseif ($lastDays -gt 75) {
+        R 'Sec' 'Mises à jour Windows' ("Pas de mise à jour depuis $lastDays jours." + $lastTxt + " Lance Windows Update.") 1 '' 'wuopen' 'Ouvrir Windows Update'
+    } else { R 'Sec' 'Mises à jour Windows' ("Windows Update fonctionne." + $lastTxt) 0 '' '' '' }
+
+    # --- version de Windows encore suivie ---
+    $ver = [string]$cv.DisplayVersion; $ed = [string]$cv.EditionID
+    if ($build -lt 22000) { R 'Sec' 'Version de Windows' "Windows 10 n'a plus de mises à jour de sécurité gratuites depuis octobre 2025. Passe à Windows 11 si ton PC le permet." 2 '' 'wuopen' 'Ouvrir Windows Update' }
+    elseif ($build -lt 26100) { R 'Sec' 'Version de Windows' ("Windows 11 $ver n'est plus suivi par Microsoft pour les éditions Famille et Pro : plus de correctifs de sécurité. Passe en version 25H2 avec Windows Update.") 2 '' 'wuopen' 'Ouvrir Windows Update' }
+    elseif ($build -lt 26200) { R 'Sec' 'Version de Windows' ("Windows 11 $ver : son suivi se termine en octobre 2026 pour Famille et Pro. Passe en 25H2 avec Windows Update (rapide, tes fichiers restent).") 1 '' 'wuopen' 'Ouvrir Windows Update' }
+    else { R 'Sec' 'Version de Windows' ("Windows 11 $ver : version suivie par Microsoft.") 0 '' '' '' }
+
+    # --- contrôle de compte, pare-feu ---
+    $lua = Pol 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' 'EnableLUA'
+    if ($lua -eq 0) { R 'Sec' 'Contrôle de compte (UAC)' "Coupé : n'importe quel programme, même un virus, se lance en administrateur sans rien te demander. Le rallumer demande un redémarrage." 2 'uac' '' '' }
+    else { R 'Sec' 'Contrôle de compte (UAC)' "Actif : Windows te demande avant qu'un programme modifie le système." 0 '' '' '' }
+    $fwOff = @(); try { $fwOff = @(Get-NetFirewallProfile -ErrorAction Stop | Where-Object { -not $_.Enabled } | ForEach-Object { [string]$_.Name }) } catch {}
+    if ($fwOff.Count) { R 'Sec' 'Pare-feu' ("Coupé pour : " + ($fwOff -join ', ') + ". Les jeux en ligne marchent très bien avec le pare-feu allumé.") 2 'fw' '' '' }
+    else { R 'Sec' 'Pare-feu' "Actif." 0 '' '' '' }
+
+    # --- activation ---
+    $kms = [string](Pol 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform' 'KeyManagementServiceName')
+    $chan = ''; $act = $null
+    try { $sl = Get-CimInstance SoftwareLicensingProduct -Filter "ApplicationID='55c92734-d682-4d71-983e-d6ec3f16059f' AND PartialProductKey IS NOT NULL" -ErrorAction Stop | Select-Object -First 1; $chan = [string]$sl.Description; $act = ([int]$sl.LicenseStatus -eq 1) } catch {}
+    if ($kms -or ($chan -like '*KMSCLIENT*' -and $ed -notlike '*Enterprise*' -and $ed -notlike '*Education*')) {
+        $srv = ''; if ($kms) { $srv = " (serveur : $kms)" }
+        R 'Sec' 'Licence Windows' ("Windows est activé par un serveur KMS$srv. Sur un PC perso, c'est presque toujours une activation pirate : ce n'est pas une vraie licence, et ton PC contacte régulièrement un serveur inconnu. (Normal seulement sur un PC d'école ou d'entreprise.) Solution propre : réinstaller Windows ; sans clé, il marche quand même.") 2 '' 'Fresh' 'Réinstaller Windows'
+    } elseif ($act -eq $false) { R 'Sec' 'Licence Windows' "Windows n'est pas activé : tout marche, mais avec un filigrane et la personnalisation bloquée. Une clé Famille officielle suffit pour jouer." 0 '' '' '' }
+    else { R 'Sec' 'Licence Windows' "Windows est activé normalement." 0 '' '' '' }
+
+    # --- services essentiels coupés ---
+    $ess = [ordered]@{ Schedule = 'Planificateur de tâches'; EventLog = "Journal d'événements"; Themes = 'Thèmes'; BITS = 'Transfert en arrière-plan (mises à jour)'; CryptSvc = 'Services de chiffrement'; AudioSrv = 'Son de Windows'; Dnscache = 'Client DNS' }
+    $off = @(); foreach ($k in $ess.Keys) { $s = Svc $k; if ($s -and [string]$s.StartMode -eq 'Disabled') { $off += $ess[$k] } }
+    if ($off.Count) { R 'Sec' 'Services de Windows' ("Des services dont Windows a besoin sont désactivés : " + ($off -join ', ') + ". Ça casse des mises à jour, des applis, et empêche de savoir pourquoi le PC plante. Ils ne coûtent quasiment rien en FPS.") 2 'svc' '' '' }
+    else { R 'Sec' 'Services de Windows' "Les services essentiels sont actifs." 0 '' '' '' }
+
+    # ===== PERFORMANCE =====
+    $pl = ''; try { $pl = [string](powercfg /getactivescheme) } catch {}
+    $plName = ''; if ($pl -match '\((.+)\)\s*$') { $plName = $Matches[1] }
+    if ($pl -match 'a1841308-3541-4fab-bc81-f71556f20b4a') { R 'Perf' "Plan d'alimentation" "« Économie d'énergie » : le processeur est bridé, tu perds beaucoup de FPS." 2 '' 'Opti' 'Régler dans Optimisation' }
+    elseif ($pl -match '381b4222-f694-41f0-9685-ff5bb260df2e') { R 'Perf' "Plan d'alimentation" "« Utilisation normale » : correct, mais le plan perf de OnePC donne des FPS plus stables." 1 '' 'Opti' 'Régler dans Optimisation' }
+    else { R 'Perf' "Plan d'alimentation" ("« $plName » : bon pour jouer.") 0 '' '' '' }
+    $gm = Pol 'HKCU:\Software\Microsoft\GameBar' 'AutoGameModeEnabled'
+    if ($gm -eq 0) { R 'Perf' 'Mode Jeu de Windows' "Coupé. Allumé, Windows donne la priorité au jeu et repousse ses tâches de fond." 1 'gm' '' '' }
+    else { R 'Perf' 'Mode Jeu de Windows' "Allumé." 0 '' '' '' }
+    $dvr1 = Pol 'HKCU:\System\GameConfigStore' 'GameDVR_Enabled'; $dvr2 = Pol 'HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR' 'AppCaptureEnabled'
+    if ($dvr1 -ne 0 -or $dvr2 -eq 1) { R 'Perf' 'Enregistrement en arrière-plan' "La Xbox Game Bar peut enregistrer tes parties en continu : ça coûte des FPS et crée des saccades. À couper si tu ne t'en sers pas." 1 'dvr' '' '' }
+    else { R 'Perf' 'Enregistrement en arrière-plan' "Coupé." 0 '' '' '' }
+    $hvci = $false; try { $dg = Get-CimInstance -Namespace root\Microsoft\Windows\DeviceGuard -ClassName Win32_DeviceGuard -ErrorAction Stop; $hvci = (@($dg.SecurityServicesRunning) -contains 2) } catch {}
+    if ($hvci) { R 'Perf' 'Intégrité de la mémoire' "Allumée : elle protège contre certains pilotes piégés, mais coûte souvent 5 à 10 % de FPS. La couper est un compromis courant chez les joueurs (l'antivirus et le pare-feu restent actifs). Redémarrage nécessaire." 1 'hvcioff' '' 'La couper (+FPS)' }
+    else { R 'Perf' 'Intégrité de la mémoire' "Coupée : pas de perte de FPS. Tu peux la rallumer si tu préfères la sécurité maximale." 0 'hvcion' '' 'La rallumer' }
+    try {
+        $c = Get-CimInstance Win32_LogicalDisk -Filter ("DeviceID='" + $env:SystemDrive + "'") -ErrorAction Stop
+        $pct = [math]::Round($c.FreeSpace * 100 / $c.Size); $go = [math]::Round($c.FreeSpace / 1GB)
+        if ($pct -lt 10) { R 'Perf' 'Place sur le disque' ("Plus que $go Go libres ($pct %) : Windows et les jeux ralentissent quand le disque est plein.") 2 '' 'Care' 'Faire de la place' }
+        elseif ($pct -lt 20) { R 'Perf' 'Place sur le disque' ("$go Go libres ($pct %) : ça passe, pense à faire du ménage.") 1 '' 'Care' 'Faire de la place' }
+        else { R 'Perf' 'Place sur le disque' ("$go Go libres : OK.") 0 '' '' '' }
+    } catch {}
+    # pilotes
+    $vc = @(); try { $vc = @(Get-CimInstance Win32_VideoController -ErrorAction Stop) } catch {}
+    if (@($vc | Where-Object { [string]$_.Name -like '*Basic Display*' -or [string]$_.Name -like '*Carte vidéo de base*' }).Count -and -not @($vc | Where-Object { [string]$_.Name -match 'NVIDIA|AMD|Radeon|Intel' }).Count) {
+        R 'Perf' 'Pilote graphique' "Aucun vrai pilote graphique : le jeu tourne sur le pilote de secours de Windows. Installe celui de ta carte graphique." 2 '' 'Drv' 'Installer le pilote'
+    } else { R 'Perf' 'Pilote graphique' ("Installé : " + ((@($vc | ForEach-Object { [string]$_.Name }) | Where-Object { $_ }) -join ', ') + ".") 0 '' '' '' }
+    if ($a.CpuAmd) {
+        $chip = $false
+        foreach ($u in 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*') { try { if (@(Get-ItemProperty $u -ErrorAction Stop | Where-Object { [string]$_.DisplayName -like 'AMD Chipset Software*' }).Count) { $chip = $true } } catch {} }
+        if ($chip) { R 'Perf' 'Pilote chipset AMD' "Installé." 0 '' '' '' }
+        else { R 'Perf' 'Pilote chipset AMD' "Pas installé : sans lui, ton processeur Ryzen gère moins bien ses cœurs et sa vitesse (saccades possibles, surtout sur les X3D). Il se télécharge gratuitement sur amd.com." 1 '' 'Drv' 'Voir les pilotes' }
+    }
+
+    # ===== MATÉRIEL & BIOS =====
+    if ($a.RamCur -gt 0 -and $a.RamRated -gt 0 -and ($a.RamRated - $a.RamCur) -ge 200) { R 'Hw' 'Vitesse de la RAM' ("Ta RAM tourne à " + $a.RamCur + " MHz alors qu'elle est faite pour " + $a.RamRated + " MHz. Active le profil XMP / EXPO dans le BIOS : c'est le plus gros gain gratuit (surtout sur les chutes de FPS).") 1 '' 'Hw' 'Guide XMP / EXPO' }
+    elseif ($a.RamCur -gt 0) { R 'Hw' 'Vitesse de la RAM' ("" + $a.RamCur + " MHz : la RAM tourne à sa vitesse prévue.") 0 '' '' '' }
+    if ($a.RamCount -eq 1 -and -not $a.Laptop) { R 'Hw' 'Double canal' "Une seule barrette : la mémoire tourne en simple canal. Une 2e barrette identique donne des FPS plus réguliers." 1 '' '' '' }
+    $smi = Join-Path $env:windir 'System32\nvidia-smi.exe'
+    if (Test-Path $smi) {
+        try {
+            $q = (& $smi -q -d MEMORY 2>$null) -join "`n"
+            if ($q -match 'BAR1 Memory Usage\s*\n\s*Total\s*:\s*(\d+)') {
+                if ([int]$Matches[1] -gt 256) { R 'Hw' 'Resizable BAR' "Actif : ta carte graphique accède à toute sa mémoire d'un coup." 0 '' '' '' }
+                else { R 'Hw' 'Resizable BAR' "Coupé. L'activer dans le BIOS (« Above 4G Decoding » + « Re-Size BAR ») donne quelques FPS dans beaucoup de jeux. Voir le guide BIOS plus bas." 1 '' '' '' }
+            }
+        } catch {}
+    }
+    if ($a.CpuT -ge 90) { R 'Hw' 'Température du processeur' ("" + $a.CpuT + " °C mesurés : c'est chaud. Vérifie la poussière et le ventirad ; un processeur trop chaud baisse sa vitesse tout seul.") 1 '' 'Hw' 'Voir mon matériel' }
+    if ($a.GpuT -ge 85) { R 'Hw' 'Température de la carte graphique' ("" + $a.GpuT + " °C mesurés : c'est chaud. Nettoie les ventilateurs et laisse respirer le boîtier.") 1 '' 'Hw' 'Voir mon matériel' }
+}
+
+# --- réparations (une seule fenêtre administrateur, cachée) ---
+$checkFix = @{
+    wu = @'
+$p = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate'
+foreach ($n in 'DisableWindowsUpdateAccess', 'SetDisableUXWUAccess', 'DoNotConnectToWindowsUpdateInternetLocations', 'WUServer', 'WUStatusServer') { Remove-ItemProperty -LiteralPath $p -Name $n -ErrorAction SilentlyContinue }
+foreach ($n in 'NoAutoUpdate', 'UseWUServer', 'AUOptions') { Remove-ItemProperty -LiteralPath ($p + '\AU') -Name $n -ErrorAction SilentlyContinue }
+foreach ($s in 'wuauserv', 'BITS') { $k = 'HKLM:\SYSTEM\CurrentControlSet\Services\' + $s; if ((Get-ItemProperty $k -ErrorAction SilentlyContinue).Start -eq 4) { Set-ItemProperty $k -Name Start -Value 3 -Type DWord } }
+'@
+    def = @'
+$p = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender'
+foreach ($n in 'DisableAntiSpyware', 'DisableAntiVirus', 'DisableRoutinelyTakingAction') { Remove-ItemProperty -LiteralPath $p -Name $n -ErrorAction SilentlyContinue }
+foreach ($n in 'DisableRealtimeMonitoring', 'DisableBehaviorMonitoring', 'DisableOnAccessProtection', 'DisableScanOnRealtimeEnable', 'DisableIOAVProtection') { Remove-ItemProperty -LiteralPath ($p + '\Real-Time Protection') -Name $n -ErrorAction SilentlyContinue }
+try { Set-MpPreference -DisableRealtimeMonitoring $false -ErrorAction Stop } catch {}
+'@
+    uac = @'
+Set-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name EnableLUA -Value 1 -Type DWord
+'@
+    fw = @'
+Set-NetFirewallProfile -Profile Domain, Private, Public -Enabled True
+'@
+    svc = @'
+$def = @{ Schedule = 2; EventLog = 2; Themes = 2; BITS = 3; CryptSvc = 2; AudioSrv = 2; Dnscache = 2 }
+foreach ($s in $def.Keys) { $k = 'HKLM:\SYSTEM\CurrentControlSet\Services\' + $s; if ((Get-ItemProperty $k -ErrorAction SilentlyContinue).Start -eq 4) { Set-ItemProperty $k -Name Start -Value $def[$s] -Type DWord } }
+'@
+    hvcioff = @'
+$k = 'HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity'
+if (-not (Test-Path $k)) { New-Item $k -Force | Out-Null }
+Set-ItemProperty $k -Name Enabled -Value 0 -Type DWord
+'@
+    hvcion = @'
+$k = 'HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity'
+if (-not (Test-Path $k)) { New-Item $k -Force | Out-Null }
+Set-ItemProperty $k -Name Enabled -Value 1 -Type DWord
+'@
+}
+$checkNames = @{ wu = 'débloquer Windows Update'; def = "débloquer l'antivirus Defender"; uac = 'rallumer le contrôle de compte (UAC)'; fw = 'rallumer le pare-feu'; svc = 'réactiver les services essentiels'; hvcioff = "couper l'intégrité de la mémoire"; hvcion = "rallumer l'intégrité de la mémoire" }
+$checkReboot = 'uac', 'svc', 'hvcioff', 'hvcion'
+$script:checkRows = @(); $script:checkBusy = $false
+function Invoke-CheckFix($keys) {
+    $keys = @($keys | Where-Object { $_ })
+    if (-not $keys.Count) { return }
+    $user = @($keys | Where-Object { $_ -in 'dvr', 'gm' })
+    foreach ($k in $user) {
+        try {
+            if ($k -eq 'dvr') {
+                New-Item 'HKCU:\System\GameConfigStore' -Force -ErrorAction SilentlyContinue | Out-Null; Set-ItemProperty 'HKCU:\System\GameConfigStore' -Name GameDVR_Enabled -Value 0 -Type DWord
+                New-Item 'HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR' -Force -ErrorAction SilentlyContinue | Out-Null; Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR' -Name AppCaptureEnabled -Value 0 -Type DWord
+                Log 'Bilan santé : enregistrement en arrière-plan de la Game Bar coupé'
+            }
+            if ($k -eq 'gm') { New-Item 'HKCU:\Software\Microsoft\GameBar' -Force -ErrorAction SilentlyContinue | Out-Null; Set-ItemProperty 'HKCU:\Software\Microsoft\GameBar' -Name AutoGameModeEnabled -Value 1 -Type DWord; Log 'Bilan santé : mode Jeu de Windows allumé' }
+        } catch {}
+    }
+    $adm = @($keys | Where-Object { $checkFix.ContainsKey($_) })
+    if ($adm.Count) {
+        $code = "`$ErrorActionPreference = 'SilentlyContinue'`r`n" + (($adm | ForEach-Object { $checkFix[$_] }) -join "`r`n")
+        (UI 'CheckMsg').Text = "Windows te demande l'autorisation administrateur : clique sur Oui."
+        if (-not (Run-Console $code -HiddenWait)) { (UI 'CheckMsg').Text = 'Annulé : les droits administrateur ont été refusés.'; return }
+        Log ('Bilan santé : ' + (($adm | ForEach-Object { $checkNames[$_] }) -join ', '))
+    }
+    $needReboot = @($keys | Where-Object { $checkReboot -contains $_ }).Count -gt 0
+    Run-Check
+    if ($needReboot) {
+        (UI 'CheckMsg').Text = "C'est fait. Certains changements ne s'appliquent qu'après un redémarrage."
+        Start-Reboot
+    } else { (UI 'CheckMsg').Text = "C'est fait." }
+}
+function Add-CheckSection($title, $col, $rows) {
+    $list = UI 'CheckList'
+    $card = New-Object System.Windows.Controls.Border; $card.CornerRadius = New-Object System.Windows.CornerRadius 16; $card.Padding = New-Object System.Windows.Thickness 22, 18, 22, 10
+    $card.Margin = New-Object System.Windows.Thickness 0, 0, 0, 14; $card.Background = $brush.ConvertFromString('#17171B'); $card.BorderBrush = $brush.ConvertFromString('#2A2A31'); $card.BorderThickness = New-Object System.Windows.Thickness 1
+    $sp = New-Object System.Windows.Controls.StackPanel
+    $h = New-Object System.Windows.Controls.TextBlock; $h.Text = $title; $h.FontWeight = 'Bold'; $h.FontSize = 15; $h.Foreground = $brush.ConvertFromString($col); $h.Margin = New-Object System.Windows.Thickness 0, 0, 0, 12
+    [void]$sp.Children.Add($h)
+    $cols = '#3DDC84', '#FBBF24', '#FF5A6E'; $labels = 'OK', 'À améliorer', 'Important'
+    foreach ($r in @($rows | Sort-Object Level -Descending)) {
+        $row = New-Object System.Windows.Controls.Border; $row.CornerRadius = New-Object System.Windows.CornerRadius 12; $row.Padding = New-Object System.Windows.Thickness 14, 11, 14, 11; $row.Margin = New-Object System.Windows.Thickness 0, 0, 0, 8
+        $row.Background = $brush.ConvertFromString($(if ($r.Level -eq 2) { '#2A1218' } elseif ($r.Level -eq 1) { '#241F10' } else { '#141418' }))
+        $row.BorderBrush = $brush.ConvertFromString($(if ($r.Level -eq 2) { '#5A2430' } elseif ($r.Level -eq 1) { '#4D3F1A' } else { '#26262C' })); $row.BorderThickness = New-Object System.Windows.Thickness 1
+        $dp = New-Object System.Windows.Controls.DockPanel
+        $pill = New-Object System.Windows.Controls.Border; $pill.CornerRadius = New-Object System.Windows.CornerRadius 9; $pill.Padding = New-Object System.Windows.Thickness 9, 3, 9, 3; $pill.VerticalAlignment = 'Top'; $pill.Margin = New-Object System.Windows.Thickness 12, 0, 0, 0
+        $pill.Background = $brush.ConvertFromString('#22' + $cols[$r.Level].TrimStart('#'))
+        $pt = New-Object System.Windows.Controls.TextBlock; $pt.Text = $labels[$r.Level]; $pt.FontSize = 11.5; $pt.FontWeight = 'SemiBold'; $pt.Foreground = $brush.ConvertFromString($cols[$r.Level]); $pill.Child = $pt
+        [System.Windows.Controls.DockPanel]::SetDock($pill, 'Right'); [void]$dp.Children.Add($pill)
+        $txt = New-Object System.Windows.Controls.StackPanel
+        $n = New-Object System.Windows.Controls.TextBlock; $n.Text = $r.Name; $n.FontWeight = 'SemiBold'; $n.FontSize = 13.5; [void]$txt.Children.Add($n)
+        $d = New-Object System.Windows.Controls.TextBlock; $d.Text = Stream-Txt ([string]$r.Detail); $d.TextWrapping = 'Wrap'; $d.Foreground = $brush.ConvertFromString('#B8B8C0'); $d.FontSize = 12.5; $d.LineHeight = 19; $d.Margin = New-Object System.Windows.Thickness 0, 3, 0, 0; [void]$txt.Children.Add($d)
+        $label = ''; if ($r.Fix -and $r.Level -gt 0) { $label = 'Réparer' }; if ($r.Btn) { $label = $r.Btn }
+        if ($r.Fix -eq 'hvcion' -and -not $r.Btn) { $label = '' }
+        if ($label -and ($r.Fix -or $r.Go)) {
+            $b = New-Object System.Windows.Controls.Button; $b.Content = $label; $b.Style = $win.FindResource($(if ($r.Level -eq 2 -and $r.Fix) { 'Action' } else { 'Ghost' })); $b.HorizontalAlignment = 'Left'; $b.Margin = New-Object System.Windows.Thickness 0, 9, 0, 2
+            $b.Tag = @{ Fix = [string]$r.Fix; Go = [string]$r.Go; Name = [string]$r.Name }
+            $b.Add_Click({
+                param($s, $e)
+                $t = $s.Tag
+                if ($t.Fix) {
+                    $what = $checkNames[$t.Fix]; if (-not $what) { $what = $t.Name }
+                    $q = "OnePC va " + $what + ".`r`nC'est le réglage d'origine de Windows. Continuer ?"
+                    if ($t.Fix -like 'hvci*') { $q = "OnePC va " + $what + ".`r`nIl faudra redémarrer le PC pour que ça s'applique. Continuer ?" }
+                    if ($t.Fix -in 'dvr', 'gm' -or (Ask $q)) { Invoke-CheckFix @($t.Fix) }
+                    return
+                }
+                switch ($t.Go) {
+                    'winsec' { try { Start-Process 'windowsdefender:' } catch {} }
+                    'wuopen' { Open-Settings 'ms-settings:windowsupdate' }
+                    default { Show-Page $t.Go }
+                }
+            })
+            [void]$txt.Children.Add($b)
+        }
+        [void]$dp.Children.Add($txt); $row.Child = $dp; [void]$sp.Children.Add($row)
+    }
+    $card.Child = $sp; [void]$list.Children.Add($card)
+}
+function Run-Check {
+    if ($script:checkBusy) { return }
+    $script:checkBusy = $true
+    (UI 'CheckGo').IsEnabled = $false; (UI 'CheckGo').Content = 'Bilan en cours...'; (UI 'CheckMsg').Text = 'OnePC vérifie ton PC (quelques secondes)...'
+    $ram = Get-RamInfo
+    $amd = $false; try { $amd = ([string]$cpu.Manufacturer -eq 'AuthenticAMD' -or [string]$cpu.Name -match 'AMD|Ryzen') } catch {}
+    Start-Bg $checkCode @{ RamCur = [int]$ram.Cur; RamRated = [int]$ram.Rated; RamCount = [int]$ram.Count; Laptop = [bool]$ram.Laptop; CpuAmd = $amd; CpuT = [int]$sync.CpuT; GpuT = [int]$sync.GpuT } {
+        param($r)
+        $script:checkBusy = $false
+        $rows = @($r | Where-Object { $_.Name }); $script:checkRows = $rows
+        (UI 'CheckGo').IsEnabled = $true; (UI 'CheckGo').Content = 'Relancer le bilan'
+        (UI 'CheckList').Children.Clear()
+        Add-CheckSection '🛡  Sécurité de Windows' '#34D399' @($rows | Where-Object { $_.Sec -eq 'Sec' })
+        Add-CheckSection '⚡  Réglages qui jouent sur les FPS' '#38BDF8' @($rows | Where-Object { $_.Sec -eq 'Perf' })
+        $hwRows = @($rows | Where-Object { $_.Sec -eq 'Hw' }); if ($hwRows.Count) { Add-CheckSection '🔧  Matériel' '#FBBF24' $hwRows }
+        $bad = @($rows | Where-Object { $_.Level -eq 2 }); $mid = @($rows | Where-Object { $_.Level -eq 1 })
+        $score = [math]::Max(0, 100 - 15 * $bad.Count - 5 * $mid.Count)
+        (UI 'CheckScore').Text = [string]$score
+        $col = '#34D399'; if ($score -lt 60) { $col = '#FF5A6E' } elseif ($score -lt 85) { $col = '#FBBF24' }
+        (UI 'CheckRing').Stroke = $brush.ConvertFromString($col); (UI 'CheckScore').Foreground = $brush.ConvertFromString($col)
+        $secFix = @($rows | Where-Object { $_.Sec -eq 'Sec' -and $_.Fix -and $_.Level -gt 0 })
+        (UI 'CheckFixAll').IsEnabled = ($secFix.Count -gt 0); (UI 'CheckCopy').IsEnabled = $true
+        $broken = @($bad | Where-Object { $_.Go -eq 'Fresh' })
+        if ($broken.Count) { (UI 'CheckHead').Text = "⚠ Ton Windows a été trafiqué (souvent par un « Windows opti » installé par quelqu'un) : " + (($broken | ForEach-Object { $_.Name }) -join ', ') + ". Certaines choses ne se réparent pas : le plus sûr est de réinstaller Windows proprement avec le Reset PC de OnePC." }
+        elseif ($bad.Count) { (UI 'CheckHead').Text = "À corriger en priorité : " + (($bad | ForEach-Object { $_.Name }) -join ', ') + ". La plupart se réparent en 1 clic." }
+        elseif ($mid.Count) { (UI 'CheckHead').Text = "Ton Windows est sain. Quelques réglages peuvent encore te donner des FPS : " + (($mid | ForEach-Object { $_.Name }) -join ', ') + "." }
+        else { (UI 'CheckHead').Text = "Tout est bon : Windows est sain et bien réglé pour jouer." }
+        (UI 'CheckMsg').Text = ' '
+        Log ('Bilan santé : ' + $score + '/100')
+    }
+}
+(UI 'CheckGo').Add_Click({ Run-Check })
+(UI 'CheckFixAll').Add_Click({
+    $keys = @($script:checkRows | Where-Object { $_.Sec -eq 'Sec' -and $_.Fix -and $_.Level -gt 0 } | ForEach-Object { [string]$_.Fix })
+    if (-not $keys.Count) { return }
+    $lines = ($keys | ForEach-Object { ' - ' + $checkNames[$_] }) -join "`r`n"
+    if (-not (Ask ("OnePC va remettre ces protections comme Windows les a prévues :`r`n" + $lines + "`r`n`r`nTes jeux ne perdent pas de FPS avec. Continuer ?"))) { return }
+    Invoke-CheckFix $keys
+})
+(UI 'CheckCopy').Add_Click({
+    $t = @('Bilan santé OnePC ' + $appVersion + ' : ' + (UI 'CheckScore').Text + '/100')
+    try { $t += 'PC : ' + ([string]$cpu.Name).Trim() + ' | ' + $drvGpuName } catch {}
+    $lab = 'OK', 'A améliorer', 'IMPORTANT'
+    foreach ($r in $script:checkRows) { $t += '[' + $lab[$r.Level] + '] ' + $r.Name + ' : ' + (Stream-Txt ([string]$r.Detail)) }
+    try { [System.Windows.Clipboard]::SetText(($t -join "`r`n")); (UI 'CheckMsg').Text = 'Rapport copié : colle-le (Ctrl + V) dans ton message sur le Discord.' } catch { (UI 'CheckMsg').Text = 'Impossible de copier le rapport.' }
+})
+
+# --- guide panneau de la carte graphique ---
+function Show-CheckGuides {
+    if ($drvVendor -eq 'NV') {
+        (UI 'CheckGpuTag').Text = 'PANNEAU DE CONFIGURATION NVIDIA'; (UI 'CheckGpuOpen').Visibility = 'Visible'
+        (UI 'CheckGpuTitle').Text = "Gérer les paramètres 3D > Paramètres globaux, puis règle ces lignes"
+        Set-StepRows (UI 'CheckGpuSteps') '#8B95FF' @(
+            "Mode de gestion de l'alimentation : « Performances maximales préférées ».",
+            "Mode de faible latence : « Activé ». (Dans Fortnite, mets plutôt NVIDIA Reflex sur « Activé + Boost » : il fait mieux.)",
+            "Taille du cache de shaders : « 10 Go » (ou « Illimitée ») : moins de saccades quand un jeu charge.",
+            "Filtrage de texture - Qualité : « Haute performance ».",
+            "Synchronisation verticale : « Désactivée » (sauf si tu utilises G-Sync).",
+            "Clique sur « Appliquer » en bas à droite.",
+            "Dans « Modifier la résolution » : vérifie que la fréquence est la plus haute de ton écran (144 Hz, 240 Hz...).",
+            "! Tu n'as pas le panneau ? Il s'installe depuis le Microsoft Store (« NVIDIA Control Panel »)."
+        )
+    } elseif ($drvVendor -eq 'AMD') {
+        (UI 'CheckGpuTag').Text = 'LOGICIEL AMD ADRENALIN'; (UI 'CheckGpuOpen').Visibility = 'Visible'
+        (UI 'CheckGpuTitle').Text = "Onglet « Jeux » > « Graphiques », puis règle ces lignes"
+        Set-StepRows (UI 'CheckGpuSteps') '#8B95FF' @(
+            "Profil graphique : « Personnalisé ».",
+            "Radeon Anti-Lag : « Activé » (moins de délai entre ta souris et l'écran).",
+            "Radeon Chill : « Désactivé » (il baisse tes FPS exprès pour économiser).",
+            "Radeon Boost : « Désactivé » (il floute l'image quand tu bouges).",
+            "Attendre la synchronisation verticale : « Toujours désactivé ».",
+            "Onglet « Performances » > « Réglage » : laisse par défaut, sauf si tu sais faire un undervolt et le tester.",
+            "Dans Paramètres > Graphiques : Smart Access Memory sur « Activé » si l'option est là.",
+            "! Coupe l'enregistrement instantané (onglet Enregistrer et diffuser) si tu ne t'en sers pas : il tourne en fond pendant que tu joues."
+        )
+    } else {
+        (UI 'CheckGpuTag').Text = 'PANNEAU DE TA CARTE GRAPHIQUE'; (UI 'CheckGpuOpen').Visibility = 'Collapsed'
+        (UI 'CheckGpuTitle').Text = "Pas de carte NVIDIA ou AMD détectée"
+        Set-StepRows (UI 'CheckGpuSteps') '#8B95FF' @("Avec une puce graphique Intel, le logiciel « Intel Graphics Command Center » (Microsoft Store) permet de régler l'économie d'énergie : mets-la sur performances maximales.")
+    }
+    $bb = ''; try { $bb = [string](Get-CimInstance Win32_BaseBoard).Manufacturer } catch {}
+    $rebar = "Resizable BAR : mets « Above 4G Decoding » et « Re-Size BAR Support » sur « Enabled ». Souvent dans Advanced > PCI Subsystem Settings."
+    if ($bb -match 'Micro-Star|MSI') { $rebar = "Resizable BAR : Settings > Advanced > PCI Subsystem Settings : « Above 4G memory/Crypto Currency mining » et « Re-Size BAR Support » sur « Enabled »." }
+    elseif ($bb -match 'ASUS') { $rebar = "Resizable BAR : Advanced > PCI Subsystem Settings : « Above 4G Decoding » et « Re-Size BAR Support » sur « Enabled »." }
+    elseif ($bb -match 'Gigabyte') { $rebar = "Resizable BAR : Settings > IO Ports : « Above 4G Decoding » et « Re-Size BAR Support » sur « Enabled »." }
+    elseif ($bb -match 'ASRock') { $rebar = "Resizable BAR : Advanced > Chipset Configuration : « Above 4G Decoding » et « C.A.M. (Clever Access Memory) » sur « Enabled »." }
+    $amd = $false; try { $amd = ([string]$cpu.Name -match 'AMD|Ryzen') } catch {}
+    $lap = $false; try { $lap = Test-Laptop } catch {}
+    if ($lap) {
+        (UI 'CheckBiosTitle').Text = "PC portable : le BIOS est verrouillé par le fabricant"
+        Set-StepRows (UI 'CheckBiosSteps') '#FBBF24' @("Sur un portable, presque rien ne se règle dans le BIOS. Le plus utile : brancher le chargeur pour jouer et utiliser le mode « Performance » du logiciel du fabricant (Armoury Crate, Legion Space, Omen...).")
+        (UI 'CheckBiosXmp').Visibility = 'Collapsed'
+        return
+    }
+    (UI 'CheckBiosXmp').Visibility = 'Visible'
+    $cpuLine = "Processeur : laisse les réglages par défaut (« Intel Default Settings » sur les 13e et 14e génération : ils protègent ton processeur)."
+    if ($amd) { $cpuLine = "Processeur Ryzen : « Precision Boost Overdrive » (PBO) sur « Enabled » ou « Auto ». C'est sans risque. Le « Curve Optimizer » donne un peu plus, mais demande des tests de stabilité : si tu ne sais pas en faire, n'y touche pas." }
+    Set-StepRows (UI 'CheckBiosSteps') '#FBBF24' @(
+        "Pour entrer dans le BIOS : redémarre et appuie plusieurs fois sur Suppr (Del). Sur un clavier sans touche Suppr, utilise Fn + la touche qui porte « Del ».",
+        "Profil XMP / EXPO de la RAM : le plus gros gain gratuit. Le bouton « Guide XMP / EXPO » en haut te montre où il est sur ta carte mère.",
+        $rebar,
+        $cpuLine,
+        "Appuie sur F10 pour enregistrer et redémarrer. Si le PC ne démarre plus, il revient tout seul aux réglages d'avant après 2 ou 3 essais.",
+        "! L'overclocking manuel de la RAM ou du processeur peut donner plus, mais un PC instable fait planter les jeux (comme le message « Application Hang » de Fortnite). Ne le fais que si tu sais tester la stabilité pendant des heures."
+    )
+}
+(UI 'CheckGpuOpen').Add_Click({
+    try {
+        if ($drvVendor -eq 'NV') { Start-Process 'shell:AppsFolder\NVIDIACorp.NVIDIAControlPanel_56jybvy8sckqy!NVIDIACorp.NVIDIAControlPanel' }
+        elseif ($drvVendor -eq 'AMD') {
+            $rs = @("$env:ProgramFiles\AMD\CNext\CNext\RadeonSoftware.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if ($rs) { Start-Process $rs } else { (UI 'CheckMsg').Text = "AMD Adrenalin n'est pas installé : installe-le depuis la page Pilotes." }
+        }
+    } catch { (UI 'CheckMsg').Text = "Impossible d'ouvrir le panneau : fais un clic droit sur le bureau, puis « Panneau de configuration NVIDIA » ou « AMD Software »." }
+})
+(UI 'CheckBiosXmp').Add_Click({ Show-Page 'Hw'; try { (UI 'HwXmpShow').RaiseEvent((New-Object System.Windows.RoutedEventArgs ([System.Windows.Controls.Button]::ClickEvent))) } catch {} })
+$script:checkGuided = $false
+
 # ---------- Barre des tâches ----------
 $advKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
 $stuckKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3'
@@ -10254,8 +12036,9 @@ $slowCode = {
     # --- disque ---
     try {
         $c = Get-CimInstance Win32_LogicalDisk -Filter ("DeviceID='" + $env:SystemDrive + "'")
-        $fp = [int](100 * $c.FreeSpace / $c.Size)
-        if ($fp -lt 15) { $sev = 1; if ($fp -lt 8) { $sev = 2 }; $out += F $sev 'Disque presque plein' ("ton disque " + $env:SystemDrive + " est presque plein (plus que " + (Size $c.FreeSpace) + " de libre)") "Windows a besoin de place libre pour bien fonctionner. Un nettoyage récupère souvent plusieurs Go." 'page:Opti' 'Nettoyer le PC' }
+        $fp = [int](100 * $c.FreeSpace / $c.Size); $gb = [double]$c.FreeSpace / 1GB
+        # presque plein = peu de place en Go : 50 Go libres sur un gros disque, c'est largement assez
+        if (($fp -lt 15 -and $gb -lt 30) -or $gb -lt 10) { $sev = 1; if ($gb -lt 5 -or $fp -lt 5) { $sev = 2 }; $out += F $sev 'Disque presque plein' ("ton disque " + $env:SystemDrive + " est presque plein : il ne reste que " + (Size $c.FreeSpace) + " de libre") "Windows a besoin de place libre pour bien fonctionner. Un nettoyage récupère souvent plusieurs Go." 'page:Opti' 'Nettoyer le PC' }
     } catch {}
     try {
         $dk = Get-CimInstance Win32_PerfFormattedData_PerfDisk_PhysicalDisk -Filter "Name='_Total'"
@@ -10269,8 +12052,16 @@ $slowCode = {
     } catch {}
     # --- démarrage ---
     try {
-        $n = 0
-        foreach ($k in 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run', 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run', 'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run') { $i = Get-Item -LiteralPath $k -ErrorAction SilentlyContinue; if ($i) { $n += $i.ValueCount } }
+        # seulement ce qui se lance vraiment (les programmes coupés dans la page Démarrage ne comptent pas)
+        $n = 0; $ap = 'Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved'
+        $on = { param($apPath, $name) try { $v = (Get-Item -LiteralPath $apPath -ErrorAction Stop).GetValue($name); if ($v -and ($v[0] -band 1)) { return $false } } catch {}; $true }
+        foreach ($d in @(@('HKCU:\Software\Microsoft\Windows\CurrentVersion\Run', "HKCU:\$ap\Run"), @('HKLM:\Software\Microsoft\Windows\CurrentVersion\Run', "HKLM:\$ap\Run"), @('HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run', "HKLM:\$ap\Run32"))) {
+            $i = Get-Item -LiteralPath $d[0] -ErrorAction SilentlyContinue
+            if ($i) { foreach ($nm in $i.GetValueNames()) { if ($nm -and (& $on $d[1] $nm)) { $n++ } } }
+        }
+        foreach ($d in @(@([Environment]::GetFolderPath('Startup'), "HKCU:\$ap\StartupFolder"), @([Environment]::GetFolderPath('CommonStartup'), "HKLM:\$ap\StartupFolder"))) {
+            if ($d[0] -and (Test-Path -LiteralPath $d[0])) { foreach ($f in @(Get-ChildItem -LiteralPath $d[0] -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -ne 'desktop.ini' })) { if (& $on $d[1] $f.Name) { $n++ } } }
+        }
         if ($n -ge 9) { $out += F 1 'Trop de programmes au démarrage' "$n programmes se lancent tout seuls avec Windows" "Ils ralentissent le démarrage et tournent en fond tout le temps. Désactive ceux dont tu n'as pas besoin : ils restent installés." 'page:Start' 'Voir le démarrage' }
     } catch {}
     try { $pc = @($procs).Count; if ($pc -ge 280) { $out += F 1 'Beaucoup de choses en arrière-plan' "$pc processus tournent en même temps" "C'est beaucoup. La page Alléger coupe en un clic les applis et services qui ne servent à rien en fond." 'page:Light' 'Alléger Windows' } } catch {}
@@ -10416,14 +12207,62 @@ $freshSizeCode = {
     }
     $res
 }
-$script:freshBoxes = @{}; $script:freshBuilt = $false; $script:freshPoll = $null; $script:freshRoot = ''; $script:freshBack = ''
+$script:freshBoxes = @{}; $script:freshBuilt = $false; $script:freshPoll = $null; $script:freshRoot = ''; $script:freshBack = ''; $script:freshSizes = $null
+$script:fnCfgDir = Join-Path $env:LOCALAPPDATA 'FortniteGame\Saved\Config\WindowsClient'
+# OnePC lancé depuis une copie (après la remise à zéro) : on ouvre directement « Récupérer mes affaires », même en version gratuite
+$script:freshRescue = $false; $script:freshRescueRoot = ''; $script:freshRescueDone = $false
+try { $sd = Split-Path -Parent ([string]$env:SELF); if ($sd -and (Test-Path -LiteralPath (Join-Path $sd 'sauvegarde-onepc.txt'))) { $script:freshRescue = $true; $script:freshRescueRoot = $sd } } catch {}
 $freshTodoItems = @(
     "Mots de passe : connecte-toi à ton compte Google, Microsoft ou Firefox dans ton navigateur, pour les retrouver après (ou note-les)",
     "Codes de double authentification : vérifie que ton appli (Google Authenticator...) est sur ton téléphone, pas sur le PC",
     "Clés de licence de tes logiciels payants (Office, antivirus, logiciels de montage...)",
     "Sauvegardes de jeux qui ne sont pas dans le cloud (Steam et Epic sauvegardent la plupart en ligne)",
-    "Ce qui est rangé ailleurs que dans tes dossiers (par exemple C:\MesTrucs) : copie-le à la main sur ton disque de sauvegarde"
+    "Ce qui est rangé ailleurs que dans tes dossiers (par exemple C:\MesTrucs) : copie-le à la main sur ta clé ou ton autre disque"
 )
+function Set-StepRows($panel, $col, $lines) {
+    $panel.Children.Clear(); $i = 0
+    foreach ($l0 in $lines) {
+        $btns = @(); $l = $l0
+        if ($l0 -is [hashtable]) { $l = [string]$l0.T; $btns = @($l0.B) }
+        $note = ([string]$l).StartsWith('!')
+        $row = New-Object System.Windows.Controls.DockPanel; $row.Margin = New-Object System.Windows.Thickness 0, 0, 0, 10
+        $dot = New-Object System.Windows.Controls.Border; $dot.Width = 26; $dot.Height = 26; $dot.CornerRadius = New-Object System.Windows.CornerRadius 13
+        $dot.Margin = New-Object System.Windows.Thickness 0, 0, 12, 0; $dot.VerticalAlignment = 'Top'
+        $dt = New-Object System.Windows.Controls.TextBlock; $dt.HorizontalAlignment = 'Center'; $dt.VerticalAlignment = 'Center'; $dt.FontWeight = 'Bold'; $dt.FontSize = 12.5
+        if ($note) { $dot.Background = $brush.ConvertFromString('#33FBBF24'); $dt.Text = '!'; $dt.Foreground = $brush.ConvertFromString('#FBBF24') }
+        else { $i++; $dot.Background = $brush.ConvertFromString($col); $dt.Text = [string]$i; $dt.Foreground = $brush.ConvertFromString('#0F0F12') }
+        $dot.Child = $dt; [System.Windows.Controls.DockPanel]::SetDock($dot, 'Left'); [void]$row.Children.Add($dot)
+        $tb = New-Object System.Windows.Controls.TextBlock; $tb.Text = ([string]$l).TrimStart('!').Trim(); $tb.TextWrapping = 'Wrap'; $tb.LineHeight = 20; $tb.VerticalAlignment = 'Center'
+        if ($note) { $tb.Foreground = $brush.ConvertFromString('#E9D9A6'); $tb.FontSize = 12.5 } else { $tb.Foreground = $brush.ConvertFromString('#E8E8EC') }
+        if ($btns.Count) {
+            $col2 = New-Object System.Windows.Controls.StackPanel; [void]$col2.Children.Add($tb)
+            $wp = New-Object System.Windows.Controls.WrapPanel; $wp.Margin = New-Object System.Windows.Thickness 0, 8, 0, 0
+            foreach ($bd in $btns) {
+                $bt = New-Object System.Windows.Controls.Button; $bt.Style = $win.FindResource([string]$bd[2]); $bt.Content = [string]$bd[0]; $bt.Tag = [string]$bd[1]
+                $bt.Margin = New-Object System.Windows.Thickness 0, 0, 8, 4
+                $bt.Add_Click({ param($sn, $e) Do-FreshLink ([string]$sn.Tag) $sn })
+                [void]$wp.Children.Add($bt)
+            }
+            [void]$col2.Children.Add($wp); [void]$row.Children.Add($col2)
+        } else { [void]$row.Children.Add($tb) }
+        [void]$panel.Children.Add($row)
+    }
+}
+function Fresh-Free { if ($script:isPro) { return $false }; [void](Ask-Pro 'Reset PC'); $true }
+function Get-FreshNoneBase {
+    $d = [Environment]::GetFolderPath('MyDocuments')
+    if (-not $d -or $d -match '\\OneDrive' -or -not (Test-Path -LiteralPath $d)) { $d = $env:USERPROFILE }
+    $d
+}
+function Get-DiskNum($path) {
+    try { $l = ([IO.Path]::GetPathRoot([string]$path)).Substring(0, 1); return [int](Get-Partition -DriveLetter $l -ErrorAction Stop | Select-Object -First 1).DiskNumber } catch { return -1 }
+}
+function Test-FreshSameDisk($path) {
+    $a = Get-DiskNum $path; $b = Get-DiskNum $env:SystemDrive
+    ($a -ge 0 -and $a -eq $b)
+}
+function Get-FreshMeth { $m = [string]$cfg.FreshMeth; if ($m -notin '1', '2', '3') { $m = '' }; $m }
+function Get-FreshKind { $k = [string]$cfg.FreshKind; if ($k -notin 'usb', 'part', 'none') { $k = 'usb' }; $k }
 function Build-Fresh {
     if ($script:freshBuilt) { return }
     $script:freshBuilt = $true
@@ -10435,14 +12274,18 @@ function Build-Fresh {
         if ($f.Od) { $cb.ToolTip = "Ce dossier est synchronisé avec OneDrive : il est déjà sauvegardé en ligne. Coche-le seulement si tu veux aussi une copie sur ton disque." }
         $b = New-Object System.Windows.Controls.Border; $b.Width = 300; $b.Margin = New-Object System.Windows.Thickness 0, 0, 10, 10; $b.Padding = New-Object System.Windows.Thickness 12, 9, 12, 9
         $b.Background = $brush.ConvertFromString('#141418'); $b.CornerRadius = New-Object System.Windows.CornerRadius 10; $b.Child = $cb
-        [void]$w.Children.Add($b); $script:freshBoxes[$f.N] = @{ C = $cb; P = $f.P; Od = $f.Od }
+        [void]$w.Children.Add($b); $script:freshBoxes[$f.N] = @{ C = $cb; P = $f.P; Od = $f.Od; B = $b }
         $paths += $f.P
     }
-    foreach ($x in @(@('apps', 'Liste de mes logiciels'), @('drv', 'Mes pilotes'), @('onepc', 'OnePC et ses réglages'))) {
+    $extra = @(@('apps', 'Liste de mes logiciels'), @('drv', 'Mes pilotes'))
+    if (Test-Path -LiteralPath $script:fnCfgDir) { $extra += , @('fn', 'Réglages Fortnite (graphismes, FPS)') }
+    $extra += , @('onepc', 'OnePC et ses réglages')
+    foreach ($x in $extra) {
         $cb = New-Object System.Windows.Controls.CheckBox; $cb.Foreground = $brush.ConvertFromString('#E8E8EC'); $cb.Content = $x[1]; $cb.IsChecked = $true
+        if ($x[0] -eq 'fn') { $cb.ToolTip = "Le fichier de réglages de Fortnite sur ce PC : qualité graphique, résolution, limite de FPS, mode d'affichage. Tes touches et ta sensi sont déjà enregistrées sur ton compte Epic." }
         $b = New-Object System.Windows.Controls.Border; $b.Width = 300; $b.Margin = New-Object System.Windows.Thickness 0, 0, 10, 10; $b.Padding = New-Object System.Windows.Thickness 12, 9, 12, 9
         $b.Background = $brush.ConvertFromString('#141418'); $b.CornerRadius = New-Object System.Windows.CornerRadius 10; $b.Child = $cb
-        [void]$w.Children.Add($b); $script:freshBoxes[$x[0]] = @{ C = $cb; P = ''; Od = $false }
+        [void]$w.Children.Add($b); $script:freshBoxes[$x[0]] = @{ C = $cb; P = ''; Od = $false; B = $b }
     }
     $t = UI 'FreshTodo'; $t.Children.Clear()
     foreach ($s in $freshTodoItems) {
@@ -10453,6 +12296,7 @@ function Build-Fresh {
     Start-Bg $freshSizeCode $paths {
         param($r)
         $h = $r | Select-Object -Last 1
+        if ($h -is [hashtable]) { $script:freshSizes = $h }
         foreach ($k in @($script:freshBoxes.Keys)) {
             $x = $script:freshBoxes[$k]; if (-not $x.P) { continue }
             if ($h -and $h.ContainsKey($x.P)) { $v = $h[$x.P]; $txt = $k + '  ·  ' + (Mo ([double]$v[1])); if ($x.Od) { $txt += '  (OneDrive)' }; $x.C.Content = $txt }
@@ -10460,60 +12304,227 @@ function Build-Fresh {
         }
     }
 }
+# ---------- choix de la méthode ----------
+function Set-FreshMeth($m) {
+    $cfg.FreshMeth = [string]$m; Save-Cfg
+    if ($m -eq '3' -and (Get-FreshKind) -eq 'none') { $cfg.FreshKind = 'usb'; $cfg.FreshDest = ''; Save-Cfg }
+    Show-FreshMeth
+}
+function Show-FreshMeth {
+    $m = Get-FreshMeth
+    foreach ($i in 1..3) {
+        $on = ([string]$i -eq $m)
+        if ($on) { (UI ('FreshMk' + $i)).Visibility = 'Visible' } else { (UI ('FreshMk' + $i)).Visibility = 'Hidden' }
+        if ($m -and -not $on) { (UI ('FreshM' + $i)).Opacity = 0.55 } else { (UI ('FreshM' + $i)).Opacity = 1.0 }
+    }
+    if ($m -eq '1') { (UI 'FreshMeth1').Visibility = 'Visible' } else { (UI 'FreshMeth1').Visibility = 'Collapsed' }
+    if ($m -eq '2' -or $m -eq '3') { (UI 'FreshMeth23').Visibility = 'Visible' } else { (UI 'FreshMeth23').Visibility = 'Collapsed' }
+    if ($m -eq '3') { (UI 'FreshWarnTitle').Text = 'ATTENTION : LA RÉINSTALLATION COMPLÈTE EFFACE TOUT LE DISQUE DE WINDOWS' }
+    else { (UI 'FreshWarnTitle').Text = 'ATTENTION : REMETTRE LE PC À ZÉRO PEUT TOUT EFFACER' }
+    Show-FreshKind
+    Show-FreshState
+}
+(UI 'FreshM1').Add_Click({ if (Fresh-Free) { return }; Set-FreshMeth '1' })
+(UI 'FreshM2').Add_Click({ if (Fresh-Free) { return }; Set-FreshMeth '2' })
+(UI 'FreshM3').Add_Click({ if (Fresh-Free) { return }; Set-FreshMeth '3' })
+# méthode 1 : réparer Windows sans rien perdre
+if ($isWin11) {
+    Set-StepRows (UI 'FreshRepNote') '#34D399' @(
+        "Clique sur « Ouvrir la réparation de Windows » : la page Système > Récupération s'ouvre.",
+        "Dans « Résoudre les problèmes à l'aide de Windows Update », clique sur « Réinstaller maintenant ».",
+        "Laisse faire : Windows télécharge, installe et redémarre tout seul.",
+        "! Paramètres s'ouvre sur l'Accueil ? Clique sur Système (à gauche), puis sur Récupération.",
+        "! Pas de bouton « Réinstaller maintenant » ? Fais d'abord les mises à jour de Windows, ou utilise « Vérifier et réparer Windows »."
+    )
+} else {
+    (UI 'FreshRepWin').Visibility = 'Collapsed'
+    Set-StepRows (UI 'FreshRepNote') '#34D399' @(
+        "Clique sur « Vérifier et réparer Windows » : Windows contrôle et répare ses propres fichiers, sans rien effacer (15 à 30 minutes).",
+        "Redémarre le PC quand c'est fini.",
+        "! Sur Windows 10, la réinstallation sans rien perdre n'existe pas dans les paramètres. Si le PC bugge toujours après, choisis « Remettre le PC à neuf »."
+    )
+}
+(UI 'FreshRepWin').Add_Click({
+    if (Fresh-Free) { return }
+    Log 'Réparation de Windows ouverte (réinstallation sans rien perdre)'
+    Open-Settings 'ms-settings:recovery'
+    (UI 'FreshMsg0').Text = "Paramètres est ouvert. S'il affiche l'Accueil au lieu de Récupération : clique sur Système à gauche, puis sur Récupération."
+})
+(UI 'FreshRepFix').Add_Click({
+    if (Fresh-Free) { return }
+    try { (UI 'BtnRepair').RaiseEvent((New-Object System.Windows.RoutedEventArgs ([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))); (UI 'FreshMsg0').Text = "La vérification de Windows est lancée dans une fenêtre administrateur. Laisse-la finir (15 à 30 minutes)." } catch {}
+})
+# ---------- étape 1 : où mettre la copie ----------
+function Set-FreshKind($k) {
+    if ((Get-FreshMeth) -eq '3' -and $k -eq 'none') { (UI 'FreshMsg1').Text = "Pas possible avec la réinstallation complète : tout le disque de Windows est effacé, ta copie avec."; return }
+    if ($k -ne (Get-FreshKind)) { $cfg.FreshDest = '' }
+    $cfg.FreshKind = $k; Save-Cfg
+    (UI 'FreshType').Text = ''
+    Show-FreshKind
+    Show-FreshState
+}
+function Show-FreshDest {
+    $d = [string]$cfg.FreshDest
+    if ($d -and (Test-Path -LiteralPath $d)) {
+        $free = ''; try { $di = New-Object IO.DriveInfo ([IO.Path]::GetPathRoot($d)); $free = '  ·  ' + (Mo ([double]$di.AvailableFreeSpace)) + ' libres' } catch {}
+        (UI 'FreshDest').Text = $d + $free; (UI 'FreshDest').Foreground = $brush.ConvertFromString('#E8E8EC')
+    } else { (UI 'FreshDest').Text = 'Aucun disque choisi'; (UI 'FreshDest').Foreground = $brush.ConvertFromString('#8E8E98') }
+}
+function Show-FreshParts {
+    $wp = UI 'FreshParts'; $wp.Children.Clear()
+    $sys = ([string]$env:SystemDrive).TrimEnd('\'); $sysDn = Get-DiskNum $env:SystemDrive
+    $n = 0
+    foreach ($dr in @([IO.DriveInfo]::GetDrives())) {
+        try {
+            if (-not $dr.IsReady -or [string]$dr.DriveType -ne 'Fixed') { continue }
+            $root = [string]$dr.Name; if ($root.TrimEnd('\') -ieq $sys) { continue }
+            if ($dr.AvailableFreeSpace -lt 1GB) { continue }
+            $dn = Get-DiskNum $root; $same = ($dn -ge 0 -and $dn -eq $sysDn)
+            $bus = ''; if ($dn -ge 0) { try { $bus = [string](Get-Disk -Number $dn -ErrorAction Stop).BusType } catch {} }
+            $lab = [string]$dr.VolumeLabel; if (-not $lab) { $lab = 'Disque local' }
+            $where = 'autre disque du PC'; if ($same) { $where = 'même disque que Windows' }; if ($bus -eq 'USB') { $where = 'disque externe' }
+            $bt = New-Object System.Windows.Controls.Button; $bt.Style = $tileStyle; $bt.Width = 260; $bt.Margin = New-Object System.Windows.Thickness 0, 0, 10, 8; $bt.Tag = $root
+            $sp = New-Object System.Windows.Controls.StackPanel
+            $a = New-Object System.Windows.Controls.TextBlock; $a.Text = $root.TrimEnd('\') + '   ' + $lab; $a.FontWeight = 'SemiBold'; $a.TextTrimming = 'CharacterEllipsis'
+            $b = New-Object System.Windows.Controls.TextBlock; $b.Text = (Mo ([double]$dr.AvailableFreeSpace)) + ' libres  ·  ' + $where; $b.FontSize = 11.5; $b.Foreground = $brush.ConvertFromString('#8E8E98')
+            [void]$sp.Children.Add($a); [void]$sp.Children.Add($b); $bt.Content = $sp
+            if ((Get-FreshMeth) -eq '3' -and $same) { $bt.IsEnabled = $false; $bt.ToolTip = "Même disque que Windows : la réinstallation complète peut l'effacer. Prends une clé USB ou un autre disque." }
+            $bt.Add_Click({ param($s, $e)
+                if (Fresh-Free) { return }
+                $cfg.FreshDest = [string]$s.Tag; Save-Cfg; Show-FreshDest
+                (UI 'FreshMsg1').Text = ' '; (UI 'FreshMsg1').Foreground = $brush.ConvertFromString('#B8B8C0')
+            })
+            [void]$wp.Children.Add($bt); $n++
+        } catch {}
+    }
+    if (-not $n) {
+        $tb = New-Object System.Windows.Controls.TextBlock; $tb.Foreground = $brush.ConvertFromString('#FBBF24'); $tb.TextWrapping = 'Wrap'
+        $tb.Text = "Aucun autre disque avec de la place sur ce PC (seulement C:). Prends une clé USB ou un disque externe, ou le mode « Sans rien »."
+        [void]$wp.Children.Add($tb)
+    }
+}
+function Show-FreshKind {
+    $k = Get-FreshKind; $m = Get-FreshMeth
+    $i = 1; foreach ($x in 'usb', 'part', 'none') { if ($x -eq $k) { (UI ('FreshD' + $i)).Opacity = 1.0; (UI ('FreshDk' + $i)).Visibility = 'Visible' } else { (UI ('FreshD' + $i)).Opacity = 0.5; (UI ('FreshDk' + $i)).Visibility = 'Hidden' }; $i++ }
+    if ($m -eq '3') { (UI 'FreshD3').IsEnabled = $false; (UI 'FreshD3S').Text = 'Pas possible ici : tout le disque est effacé' }
+    else { (UI 'FreshD3').IsEnabled = $true; (UI 'FreshD3S').Text = 'Seulement « Conserver mes fichiers »' }
+    $info = UI 'FreshKindInfo'
+    switch ($k) {
+        'usb' {
+            $info.Text = "Branche une clé USB ou un disque externe avec assez de place, puis choisis-le. Jamais sur le disque C: : c'est lui qui va être effacé, ta copie avec."
+            (UI 'FreshParts').Visibility = 'Collapsed'; (UI 'FreshDestRow').Visibility = 'Visible'; (UI 'FreshPick').Visibility = 'Visible'
+            Show-FreshDest
+        }
+        'part' {
+            if ($m -eq '3') { $info.Text = "OnePC a cherché les autres disques de ton PC. Pour la réinstallation complète, seul un disque DIFFÉRENT de celui de Windows est sûr (les autres sont grisés)." }
+            else { $info.Text = "OnePC a cherché les autres disques de ton PC. Clique sur celui où mettre ta copie. Windows n'y touche pas tant que tu laisses « Supprimer les fichiers de tous les lecteurs » sur Non : OnePC te le rappellera à l'étape 2." }
+            (UI 'FreshParts').Visibility = 'Visible'; (UI 'FreshDestRow').Visibility = 'Visible'; (UI 'FreshPick').Visibility = 'Collapsed'
+            Show-FreshParts; Show-FreshDest
+        }
+        'none' {
+            $info.Text = "Pas de clé ? OnePC range sa copie (liste de tes logiciels, pilotes, réglages Fortnite et OnePC) dans " + (Get-FreshNoneBase) + ". Tes fichiers (Bureau, Documents, Images...) restent sur le PC, parce que tu choisiras « Conserver mes fichiers » à l'étape 2. C'est moins sûr qu'une clé : avec « Supprimer tout », tout serait perdu."
+            (UI 'FreshParts').Visibility = 'Collapsed'; (UI 'FreshDestRow').Visibility = 'Collapsed'
+        }
+    }
+    foreach ($key in @($script:freshBoxes.Keys)) {
+        $x = $script:freshBoxes[$key]; if (-not $x.P) { continue }
+        if ($k -eq 'none') {
+            $x.C.IsChecked = $false; $x.C.IsEnabled = $false; $x.B.Opacity = 0.45
+            $x.B.ToolTip = "Avec « Conserver mes fichiers », ce dossier reste sur le PC : pas besoin de le copier."
+        } elseif (-not $x.C.IsEnabled) {
+            $x.C.IsEnabled = $true; $x.C.IsChecked = (-not $x.Od); $x.B.Opacity = 1.0; $x.B.ToolTip = $null
+        }
+    }
+    $note = "Les jeux ne sont pas copiés (trop gros) : tu les retéléchargeras. Fortnite : tes touches et ta sensi sont enregistrées sur ton compte Epic."
+    if ($k -eq 'none') { $note = "Bureau, Documents, Images, Vidéos, Musique et Téléchargements restent sur le PC avec « Conserver mes fichiers ». " + $note }
+    (UI 'FreshWhatNote').Text = $note
+}
+(UI 'FreshD1').Add_Click({ if (Fresh-Free) { return }; Set-FreshKind 'usb' })
+(UI 'FreshD2').Add_Click({ if (Fresh-Free) { return }; Set-FreshKind 'part' })
+(UI 'FreshD3').Add_Click({ if (Fresh-Free) { return }; Set-FreshKind 'none' })
 function Set-FreshTab($n) {
+    $cols = @('', '#38BDF8', '#FB7185', '#34D399')
     foreach ($i in 1..3) {
         if ($i -eq $n) { (UI ('FreshP' + $i)).Visibility = 'Visible' } else { (UI ('FreshP' + $i)).Visibility = 'Collapsed' }
-        $col = '#2A2A31'; if ($i -eq $n) { $col = $accent } elseif ($i -eq 1 -and [string]$cfg.FreshOk) { $col = '#2F9E5B' }
+        $col = '#2A2A31'; if ($i -eq $n) { $col = $cols[$i] } elseif ($i -eq 1 -and [string]$cfg.FreshOk) { $col = '#2F9E5B' }
         (UI ('FreshNum' + $i)).Background = $brush.ConvertFromString($col)
+        $bar = '#2A2A31'; if ($i -eq $n) { $bar = $cols[$i] } elseif ($i -eq 1 -and [string]$cfg.FreshOk) { $bar = '#2F9E5B' }
+        (UI ('FreshBar' + $i)).Background = $brush.ConvertFromString($bar)
+        if ($i -eq $n) { (UI ('FreshTab' + $i)).Opacity = 1.0 } else { (UI ('FreshTab' + $i)).Opacity = 0.75 }
     }
     $script:freshTab = $n
 }
 function Show-Fresh {
     Build-Fresh
-    if ([string]$cfg.FreshDest) { (UI 'FreshDest').Text = [string]$cfg.FreshDest; (UI 'FreshDest').Foreground = $brush.ConvertFromString('#E8E8EC') }
-    if ([string]$cfg.FreshOk) {
-        (UI 'FreshSt1').Text = 'Sauvegarde vérifiée'; (UI 'FreshSt1').Foreground = $brush.ConvertFromString('#3DDC84')
-        (UI 'FreshSt2').Text = 'Prêt quand tu veux'; (UI 'FreshC0').IsChecked = $true
-        if ((UI 'FreshSaveBox').Visibility -ne 'Visible' -and (Test-Path -LiteralPath ([string]$cfg.FreshOk))) { [void](Verify-Fresh ([string]$cfg.FreshOk) $true) }
-    } else {
-        (UI 'FreshSt1').Text = 'À faire'; (UI 'FreshSt1').Foreground = $brush.ConvertFromString('#8E8E98')
-        (UI 'FreshSt2').Text = "Bloqué tant que la sauvegarde n'est pas vérifiée"; (UI 'FreshC0').IsChecked = $false
-    }
+    if ($script:freshRescue -and -not $script:freshRescueDone) {
+        $script:freshRescueDone = $true
+        if ((Get-FreshMeth) -ne '3') { $cfg.FreshMeth = '2' }
+        $script:freshTab = 3
+        Show-FreshMeth
+        Set-FreshBack $script:freshRescueRoot
+        (UI 'FreshMsg3').Text = "OnePC a été ouvert depuis ta copie : elle est déjà choisie. Clique sur « Tout remettre d'un coup », ou remets les choses une par une."
+    } else { Show-FreshMeth }
+    if ([string]$cfg.FreshOk -and (UI 'FreshSaveBox').Visibility -ne 'Visible' -and (Test-Path -LiteralPath ([string]$cfg.FreshOk))) { [void](Verify-Fresh ([string]$cfg.FreshOk) $true) }
     if (-not $script:freshTab) { Set-FreshTab 1 } else { Set-FreshTab $script:freshTab }
-    Update-FreshGo
 }
-(UI 'FreshTab1').Add_Click({ Set-FreshTab 1 })
-(UI 'FreshTab2').Add_Click({ Set-FreshTab 2 })
+(UI 'FreshTab1').Add_Click({ if (Fresh-Free) { return }; Set-FreshTab 1 })
+(UI 'FreshTab2').Add_Click({ if (Fresh-Free) { return }; Set-FreshTab 2 })
 (UI 'FreshTab3').Add_Click({ Set-FreshTab 3 })
 (UI 'FreshPick').Add_Click({
-    $p = Pick-Folder 'Choisis ton disque externe ou ta clé USB pour la sauvegarde'
+    if (Fresh-Free) { return }
+    $p = Pick-Folder 'Choisis ton disque externe ou ta clé USB pour la copie'
     if (-not $p) { return }
     $drive = ([IO.Path]::GetPathRoot($p)).TrimEnd('\')
     if ($drive -ieq ([string]$env:SystemDrive).TrimEnd('\')) {
-        (UI 'FreshMsg1').Text = "Impossible : " + $drive + " est le disque de Windows. La sauvegarde serait effacée avec le reste. Choisis un disque externe ou une clé USB."
+        (UI 'FreshMsg1').Text = "Impossible : " + $drive + " est le disque de Windows. La copie serait effacée avec le reste. Choisis une clé USB ou un disque externe."
         (UI 'FreshMsg1').Foreground = $brush.ConvertFromString('#FF6B6B'); return
     }
-    $cfg.FreshDest = $p; Save-Cfg
-    $free = ''; try { $di = New-Object IO.DriveInfo $drive; $free = '  ·  ' + (Mo ([double]$di.AvailableFreeSpace)) + ' libres' } catch {}
-    (UI 'FreshDest').Text = $p + $free; (UI 'FreshDest').Foreground = $brush.ConvertFromString('#E8E8EC')
+    if ((Get-FreshMeth) -eq '3' -and (Test-FreshSameDisk $p)) {
+        (UI 'FreshMsg1').Text = "Impossible : " + $drive + " est sur le même disque que Windows. La réinstallation complète peut l'effacer. Choisis une clé USB ou un disque externe."
+        (UI 'FreshMsg1').Foreground = $brush.ConvertFromString('#FF6B6B'); return
+    }
+    $cfg.FreshDest = $p; Save-Cfg; Show-FreshDest
     (UI 'FreshMsg1').Text = ' '; (UI 'FreshMsg1').Foreground = $brush.ConvertFromString('#B8B8C0')
 })
 (UI 'FreshSave').Add_Click({
-    $dest = [string]$cfg.FreshDest
-    if (-not $dest -or -not (Test-Path -LiteralPath $dest)) { (UI 'FreshMsg1').Text = "Choisis d'abord ton disque de sauvegarde (est-il bien branché ?)."; return }
+    if (Fresh-Free) { return }
+    $kind = Get-FreshKind; $m = Get-FreshMeth
+    (UI 'FreshMsg1').Foreground = $brush.ConvertFromString('#B8B8C0')
+    if ($kind -eq 'none') { $dest = Get-FreshNoneBase }
+    else {
+        $dest = [string]$cfg.FreshDest
+        if (-not $dest -or -not (Test-Path -LiteralPath $dest)) { (UI 'FreshMsg1').Text = "Choisis d'abord où mettre ta copie (ta clé ou ton disque est-il bien branché ?)."; return }
+        if (([IO.Path]::GetPathRoot($dest)).TrimEnd('\') -ieq ([string]$env:SystemDrive).TrimEnd('\')) { (UI 'FreshMsg1').Text = "Impossible : ta copie serait sur le disque de Windows, qui va être effacé."; return }
+        if ($m -eq '3' -and (Test-FreshSameDisk $dest)) { (UI 'FreshMsg1').Text = "Impossible avec la réinstallation complète : ce disque est le même que celui de Windows. Prends une clé USB ou un disque externe."; return }
+    }
     $items = @(); $need = [double]0
     foreach ($k in @($script:freshBoxes.Keys)) {
         $x = $script:freshBoxes[$k]
-        if ($x.P -and $x.C.IsChecked) { $items += , @($k, $x.P) }
+        if ($x.P -and $x.C.IsChecked -and $x.C.IsEnabled) {
+            $items += , @($k, $x.P)
+            if ($script:freshSizes -and $script:freshSizes.ContainsKey($x.P)) { $need += [double]$script:freshSizes[$x.P][1] }
+            else { (UI 'FreshMsg1').Text = "OnePC calcule encore la taille de tes dossiers. Réessaie dans quelques secondes."; return }
+        }
     }
     $doApps = [bool]$script:freshBoxes['apps'].C.IsChecked; $doDrv = [bool]$script:freshBoxes['drv'].C.IsChecked; $doOne = [bool]$script:freshBoxes['onepc'].C.IsChecked
-    if (-not $items.Count -and -not $doApps -and -not $doDrv -and -not $doOne) { (UI 'FreshMsg1').Text = 'Coche au moins une chose à sauvegarder.'; return }
+    $doFn = ($script:freshBoxes.ContainsKey('fn') -and [bool]$script:freshBoxes['fn'].C.IsChecked)
+    if (-not $items.Count -and -not $doApps -and -not $doDrv -and -not $doOne -and -not $doFn) { (UI 'FreshMsg1').Text = 'Coche au moins une chose à copier.'; return }
+    if ($doDrv) { $need += 3GB }
+    $need += 200MB
+    try {
+        $di = New-Object IO.DriveInfo ([IO.Path]::GetPathRoot($dest))
+        if ([double]$di.AvailableFreeSpace -lt $need) {
+            (UI 'FreshMsg1').Text = "Pas assez de place : ta copie a besoin d'environ " + (Mo $need) + " et il reste " + (Mo ([double]$di.AvailableFreeSpace)) + " sur " + ([IO.Path]::GetPathRoot($dest)) + ". Prends un disque plus grand ou décoche des dossiers."
+            (UI 'FreshMsg1').Foreground = $brush.ConvertFromString('#FF6B6B'); return
+        }
+    } catch {}
     $root = Join-Path $dest ('OnePC-Sauvegarde-' + (Get-Date).ToString('yyyy-MM-dd_HHmm'))
     $q = { param($s) "'" + ([string]$s).Replace("'", "''") + "'" }
     $itemsCode = (($items | ForEach-Object { '[void]$items.Add(@(' + (& $q $_[0]) + ', ' + (& $q $_[1]) + '))' }) -join "`r`n")
     $self = [string]$env:SELF; if ($appExe -and (Test-Path -LiteralPath $appExe)) { $self = $appExe }
+    $fnSrc = ''; if ($doFn) { $fnSrc = $script:fnCfgDir }
     $code = @'
-$Host.UI.RawUI.WindowTitle = 'OnePC : sauvegarde avant de remettre le PC a neuf'
+$Host.UI.RawUI.WindowTitle = 'OnePC : copie avant de remettre le PC a neuf'
 $root = __ROOT__
 New-Item -ItemType Directory -Path $root -Force | Out-Null
 function CountF($p) {
@@ -10523,6 +12534,7 @@ function CountF($p) {
 }
 $man = New-Object System.Collections.Generic.List[string]
 $man.Add('ONEPC-SAUVEGARDE|1|' + (Get-Date).ToString('dd/MM/yyyy HH:mm'))
+$man.Add('KIND|__KIND__')
 $items = New-Object System.Collections.ArrayList
 __ITEMS__
 foreach ($it in $items) {
@@ -10543,7 +12555,7 @@ if (__APPS__) {
     $names = @($names | Sort-Object -Unique)
     Set-Content -LiteralPath (Join-Path $root 'logiciels.txt') -Value $names -Encoding UTF8
     $js = 0
-    if (Get-Command winget -ErrorAction SilentlyContinue) { & winget export -o (Join-Path $root 'logiciels.json'); if (Test-Path -LiteralPath (Join-Path $root 'logiciels.json')) { $js = 1 } }
+    if (Get-Command winget -ErrorAction SilentlyContinue) { & winget export -o (Join-Path $root 'logiciels.json') --accept-source-agreements; if (Test-Path -LiteralPath (Join-Path $root 'logiciels.json')) { $js = 1 } }
     $man.Add('APPS|' + $names.Count + '|' + $js)
 }
 if (__DRV__) {
@@ -10551,6 +12563,13 @@ if (__DRV__) {
     $pd = Join-Path $root 'Pilotes'; New-Item -ItemType Directory -Path $pd -Force | Out-Null
     & pnputil /export-driver * $pd | Out-Null
     $man.Add('PILOTES|' + @(Get-ChildItem -LiteralPath $pd -Recurse -Filter *.inf -ErrorAction SilentlyContinue).Count)
+}
+$fn = __FN__
+if ($fn -and (Test-Path -LiteralPath $fn)) {
+    Write-Host ''; Write-Host '=== Reglages Fortnite ===' -ForegroundColor Cyan
+    $fd = Join-Path $root 'Fortnite\WindowsClient'
+    & robocopy $fn $fd /E /R:1 /W:1 /NP /NDL /NFL /NJH
+    $man.Add('FORTNITE|' + @(Get-ChildItem -LiteralPath $fd -Recurse -File -ErrorAction SilentlyContinue).Count)
 }
 if (__ONE__) {
     $od = Join-Path $root 'OnePC'; New-Item -ItemType Directory -Path $od -Force | Out-Null
@@ -10561,17 +12580,20 @@ if (__ONE__) {
 }
 Set-Content -LiteralPath (Join-Path $root 'sauvegarde-onepc.txt') -Value $man -Encoding UTF8
 Write-Host ''
-Write-Host 'Sauvegarde terminee. Retourne dans OnePC : il verifie que tout est bien la.' -ForegroundColor Green
+Write-Host 'Copie terminee. Retourne dans OnePC : il verifie que tout est bien la.' -ForegroundColor Green
 Read-Host 'Appuie sur Entree pour fermer cette fenetre'
 '@
     $code = $code.Replace('__ROOT__', (& $q $root)).Replace('__ITEMS__', $itemsCode).Replace('__APPS__', $(if ($doApps) { '$true' } else { '$false' }))
     $code = $code.Replace('__DRV__', $(if ($doDrv) { '$true' } else { '$false' })).Replace('__ONE__', $(if ($doOne) { '$true' } else { '$false' }))
-    $code = $code.Replace('__APPDIR__', (& $q $appDir)).Replace('__SELF__', (& $q $self))
-    if (-not (Ask ("Lancer la sauvegarde vers`r`n$root ?`r`n`r`nUne fenêtre va s'ouvrir et montrer l'avancement. Windows demandera les droits administrateur (pour copier tes pilotes). Ne débranche pas le disque avant la fin."))) { return }
+    $code = $code.Replace('__APPDIR__', (& $q $appDir)).Replace('__SELF__', (& $q $self)).Replace('__FN__', (& $q $fnSrc)).Replace('__KIND__', $kind)
+    $where = $root; if ($kind -eq 'none') { $where = $root + "`r`n(sur le PC : garde bien « Conserver mes fichiers » à l'étape 2)" }
+    if (-not (Ask ("Lancer la copie vers`r`n$where ?`r`n`r`nUne fenêtre va s'ouvrir et montrer l'avancement. Windows demandera les droits administrateur (pour copier tes pilotes). Ne débranche rien avant la fin."))) { return }
     if (-not (Run-Console $code -Admin)) { (UI 'FreshMsg1').Text = 'Annulé (droits administrateur refusés).'; return }
-    $script:freshRoot = $root; $cfg.FreshOk = ''; Save-Cfg
-    (UI 'FreshMsg1').Text = "Sauvegarde en cours dans la fenêtre noire... OnePC vérifiera tout seul dès qu'elle sera finie."
-    Log ("Sauvegarde avant remise à neuf lancée vers " + $root)
+    $script:freshRoot = $root; $cfg.FreshOk = ''; $cfg.FreshOkKind = ''; Save-Cfg
+    (UI 'FreshSaveBox').Visibility = 'Collapsed'
+    Show-FreshState
+    (UI 'FreshMsg1').Text = "Copie en cours dans la fenêtre noire... OnePC vérifiera tout seul dès qu'elle sera finie."
+    Log ("Copie avant remise à neuf lancée vers " + $root)
     if ($script:freshPoll) { $script:freshPoll.Stop() }
     $script:freshPoll = New-Object System.Windows.Threading.DispatcherTimer; $script:freshPoll.Interval = [TimeSpan]::FromSeconds(3)
     $script:freshPoll.Add_Tick({ if (Test-Path -LiteralPath (Join-Path $script:freshRoot 'sauvegarde-onepc.txt')) { $script:freshPoll.Stop(); Start-Sleep -Milliseconds 500; [void](Verify-Fresh $script:freshRoot $false) } })
@@ -10585,11 +12607,12 @@ function Find-FreshRoot($p) {
     ''
 }
 function Read-FreshMan($root) {
-    $m = @{ Ok = $true; Files = 0; Size = [double]0; Dirs = @(); Apps = -1; Json = $false; Drv = -1; One = $false; Date = '' }
+    $m = @{ Ok = $true; Files = 0; Size = [double]0; Dirs = @(); Apps = -1; Json = $false; Drv = -1; One = $false; Date = ''; Kind = 'usb'; Fn = -1 }
     foreach ($l in @(Get-Content -LiteralPath (Join-Path $root 'sauvegarde-onepc.txt') -Encoding UTF8 -ErrorAction Stop)) {
         $p = ([string]$l).Split('|')
         switch ($p[0]) {
             'ONEPC-SAUVEGARDE' { $m.Date = $p[2] }
+            'KIND' { if ($p[1] -in 'usb', 'part', 'none') { $m.Kind = $p[1] } }
             'DOSSIER' {
                 $sn = [int]$p[3]; $dn = [int]$p[4]; $rc = [int]$p[6]
                 $ok = ($rc -lt 8 -and $dn -ge ($sn - [math]::Max(3, [int]($sn * 0.005))))
@@ -10599,95 +12622,249 @@ function Read-FreshMan($root) {
             }
             'APPS' { $m.Apps = [int]$p[1]; $m.Json = ($p[2] -eq '1') }
             'PILOTES' { $m.Drv = [int]$p[1] }
+            'FORTNITE' { $m.Fn = [int]$p[1] }
             'ONEPC' { $m.One = $true }
         }
     }
     $m
 }
 function Verify-Fresh($root, $quiet) {
-    try { $m = Read-FreshMan $root } catch { (UI 'FreshMsg1').Text = "Pas de sauvegarde OnePC complète dans ce dossier (la fenêtre de sauvegarde est-elle finie ?)."; return $false }
+    try { $m = Read-FreshMan $root } catch { (UI 'FreshMsg1').Text = "Pas de copie OnePC complète dans ce dossier (la fenêtre de copie est-elle finie ?)."; return $false }
     $nf = $m.Files.ToString('N0', [cultureinfo]'fr-FR')
     $lines = @()
-    if ($m.Ok) { $lines += "✓  Sauvegarde vérifiée : $nf fichiers (" + (Mo $m.Size) + "), le " + $m.Date }
-    else { $lines += "✗  Sauvegarde INCOMPLÈTE : certains fichiers n'ont pas été copiés. Ne remets pas le PC à zéro : relance la copie, ou copie ces dossiers à la main." }
+    if ($m.Ok) {
+        if ($m.Kind -eq 'none') { $lines += "✓  Copie vérifiée, le " + $m.Date + " (sur le PC, mode « Conserver mes fichiers »)" }
+        else { $lines += "✓  Copie vérifiée : $nf fichiers (" + (Mo $m.Size) + "), le " + $m.Date }
+    }
+    else { $lines += "✗  Copie INCOMPLÈTE : certains fichiers n'ont pas été copiés. Ne remets pas le PC à zéro : relance la copie, ou copie ces dossiers à la main." }
     foreach ($d in $m.Dirs) {
         $mark = '✓'; if (-not $d[3]) { $mark = '✗' }
         $lines += "   $mark  " + $d[0] + " : " + $d[2].ToString('N0', [cultureinfo]'fr-FR') + " / " + $d[1].ToString('N0', [cultureinfo]'fr-FR') + " fichiers"
     }
     if ($m.Apps -ge 0) { $t = "   ✓  Liste de " + $m.Apps + " logiciels"; if ($m.Json) { $t += " (réinstallables automatiquement)" }; $lines += $t }
     if ($m.Drv -ge 0) { $lines += "   ✓  " + $m.Drv + " pilotes" }
+    if ($m.Fn -ge 0) { $lines += "   ✓  Réglages Fortnite" }
     if ($m.One) { $lines += "   ✓  OnePC et ses réglages" }
     $lines += "   Dossier : " + $root
     (UI 'FreshSaveRes').Text = ($lines -join "`r`n")
     $bx = UI 'FreshSaveBox'; $bx.Visibility = 'Visible'
     if ($m.Ok) {
         $bx.Background = $brush.ConvertFromString('#10261A'); $bx.BorderBrush = $brush.ConvertFromString('#2F7A4E'); (UI 'FreshSaveRes').Foreground = $brush.ConvertFromString('#B8F0CC')
-        if ([string]$cfg.FreshOk -ne $root) { $cfg.FreshOk = $root; Save-Cfg; Log ("Sauvegarde complète vérifiée : $nf fichiers dans " + $root) }
-        if (-not $quiet) { (UI 'FreshMsg1').Text = "Tout est bien sauvegardé. Tu peux passer à l'étape 2 quand tu veux." }
+        if ([string]$cfg.FreshOk -ne $root -or [string]$cfg.FreshOkKind -ne $m.Kind) { $cfg.FreshOk = $root; $cfg.FreshOkKind = $m.Kind; Save-Cfg; Log ("Copie complète vérifiée : $nf fichiers dans " + $root) }
+        if (-not $quiet) { (UI 'FreshMsg1').Text = "Tout est bien copié. Tu peux passer à l'étape 2 quand tu veux." }
     } else {
         $bx.Background = $brush.ConvertFromString('#2A0F14'); $bx.BorderBrush = $brush.ConvertFromString('#E5484D'); (UI 'FreshSaveRes').Foreground = $brush.ConvertFromString('#F5C2C2')
-        if ([string]$cfg.FreshOk -eq $root) { $cfg.FreshOk = ''; Save-Cfg }
+        if ([string]$cfg.FreshOk -eq $root) { $cfg.FreshOk = ''; $cfg.FreshOkKind = ''; Save-Cfg }
     }
     Show-FreshState
     $m.Ok
 }
+# ---------- étape 2 : textes selon la méthode et la copie ----------
+function Get-FreshBlock {
+    # raison qui empêche l'étape 2, ou '' si tout va bien
+    $ok = [string]$cfg.FreshOk
+    if (-not $ok) { return "Bloqué : OnePC n'a pas encore vérifié ta copie (étape 1). Tu n'as rien à garder ? Clique sur « Je n'ai rien à garder, passer »." }
+    if ([string]$cfg.FreshOkKind -eq 'skip') { return '' }
+    # une clé USB est débranchée exprès à cette étape : on ne vérifie sa présence que pour une copie sur le PC
+    if ([string]$cfg.FreshOkKind -in 'part', 'none' -and -not (Test-Path -LiteralPath $ok)) { return "Ta copie n'est plus trouvée (" + $ok + "). Refais l'étape 1." }
+    if ((Get-FreshMeth) -eq '3') {
+        if ([string]$cfg.FreshOkKind -eq 'none') { return "Pour la réinstallation complète, ta copie doit être sur une clé USB ou un autre disque : refais l'étape 1." }
+        if (Test-FreshSameDisk $ok) { return "Ta copie est sur le même disque que Windows : la réinstallation complète peut l'effacer. Refais l'étape 1 sur une clé USB ou un disque externe." }
+    }
+    ''
+}
+function Show-FreshStep2 {
+    $m = Get-FreshMeth; $k = [string]$cfg.FreshOkKind; if (-not $k) { $k = Get-FreshKind }
+    $okRoot = [string]$cfg.FreshOk; $drv = ''; if ($okRoot) { $drv = ([IO.Path]::GetPathRoot($okRoot)).TrimEnd('\') }
+    if ($m -eq '3') {
+        (UI 'FreshTab2T').Text = 'Réinstaller Windows'; (UI 'FreshP2Tag').Text = 'ÉTAPE 2 · RÉINSTALLER WINDOWS AVEC UNE CLÉ USB'
+        (UI 'FreshResetInfo').Visibility = 'Collapsed'; (UI 'FreshUsbGuide').Visibility = 'Visible'
+        (UI 'FreshGo').Visibility = 'Collapsed'; (UI 'FreshUsb').Visibility = 'Visible'
+        $u = $(if ($isWin11) { 'Windows 11' } else { 'Windows 10' })
+        Set-StepRows (UI 'FreshUsbSteps') '#FB7185' @(
+            "Prends une clé USB VIDE de 8 Go ou plus (elle sera effacée). Pas ta clé de copie !",
+            @{ T = "Branche ta clé vide et clique ici : OnePC télécharge l'outil officiel de Microsoft ($u) et le lance. Dans l'outil, choisis « Disque mémoire flash USB », puis ta clé vide. Compte 20 à 40 minutes."; B = @(@("Télécharger et lancer l'outil", 'usbtool', 'Action'), @('Ouvrir la page de Microsoft', 'usbpage', 'Ghost')) },
+            "Débranche ta clé ou ton disque de copie. Coche tout en bas, puis clique sur « Redémarrer sur ma clé USB » : dans le menu bleu, choisis « Utiliser un périphérique », puis ta clé USB.",
+            "! Pas de « Utiliser un périphérique » dans le menu bleu ? Redémarre et appuie plusieurs fois sur F12, F11, F8 ou Échap (ça dépend de ton PC), puis choisis la clé USB.",
+            "Choisis « Installation personnalisée ». Supprime SEULEMENT les partitions du disque où était Windows (Lecteur 0 en général), puis installe sur l'espace libre.",
+            "Connecte-toi à Internet : ta licence Windows se réactive toute seule.",
+            "Rebranche ta copie et passe à l'étape 3.",
+            "! Un doute pendant l'installation ? Arrête-toi et demande sur le Discord avant de supprimer quoi que ce soit."
+        )
+        (UI 'FreshC2T').Text = "J'ai débranché ma clé ou mon disque de copie avant d'installer (seule la clé Windows reste branchée)"
+        if ($k -eq 'part') { (UI 'FreshC2T').Text = "Pendant l'installation, je supprimerai SEULEMENT les partitions du disque de Windows, jamais celui de ma copie (" + $drv + ")" }
+        (UI 'FreshC4T').Text = "J'ai compris que ce qui n'est pas copié sera perdu pour toujours"
+        (UI 'FreshWord').Text = 'FORMATER'
+        if ($k -eq 'skip') {
+            (UI 'FreshC2T').Text = "Seule la clé USB Windows est branchée (pas d'autre clé ni de disque externe)"
+            (UI 'FreshC4T').Text = "J'ai choisi de ne rien garder : tout ce qui est sur le disque de Windows sera perdu pour toujours"
+            (UI 'FreshStep3Txt').Text = "Tu as choisi de ne rien garder : il n'y a rien à remettre. Relance OnePC sur ton Windows tout neuf pour l'optimiser."
+            return
+        }
+        (UI 'FreshStep3Txt').Text = "Quand Windows est réinstallé, rebranche ta clé ou ton disque et ouvre le fichier OnePC.cmd qui est dans ta copie (OnePC l'a copié pour toi). Ta copie est choisie toute seule : clique sur « Tout remettre d'un coup »."
+        return
+    }
+    (UI 'FreshTab2T').Text = 'Remettre le PC à zéro'; (UI 'FreshP2Tag').Text = 'ÉTAPE 2 · REMETTRE À ZÉRO'
+    (UI 'FreshResetInfo').Visibility = 'Visible'; (UI 'FreshUsbGuide').Visibility = 'Collapsed'
+    (UI 'FreshGo').Visibility = 'Visible'; (UI 'FreshUsb').Visibility = 'Collapsed'
+    (UI 'FreshKeepTitle').Text = 'Conserver mes fichiers'; (UI 'FreshDelTitle').Text = 'Supprimer tout'
+    (UI 'FreshDelTxt').Text = "Tout est effacé sur le disque C:. Le PC redevient comme le jour où tu l'as acheté."
+    (UI 'FreshKeepBox').BorderBrush = $brush.ConvertFromString('#2F7A4E'); (UI 'FreshKeepBox').BorderThickness = New-Object System.Windows.Thickness 1
+    (UI 'FreshC4T').Text = "J'ai compris que ce qui n'est pas copié sera perdu pour toujours"
+    (UI 'FreshWord').Text = 'FORMATER'
+    switch ($k) {
+        'skip' {
+            (UI 'FreshC2T').Text = "Je sais que je n'ai rien copié : choisir « Supprimer tout » ou « Conserver mes fichiers », c'est mon choix"
+            (UI 'FreshC4T').Text = "J'ai choisi de ne rien garder : avec « Supprimer tout », tout est perdu pour toujours"
+            (UI 'FreshStep3Txt').Text = "Tu as choisi de ne rien garder : il n'y a rien à remettre. Relance OnePC sur ton Windows tout neuf pour l'optimiser."
+        }
+        'usb' {
+            (UI 'FreshC2T').Text = "J'ai débranché ma clé USB ou mon disque (sinon Windows pourrait l'effacer aussi)"
+            (UI 'FreshStep3Txt').Text = "Quand le PC est remis à zéro, rebranche ta clé USB ou ton disque et ouvre le fichier OnePC.cmd qui est dans ta copie (OnePC l'a copié pour toi). Ta copie est choisie toute seule : clique sur « Tout remettre d'un coup »."
+        }
+        'part' {
+            (UI 'FreshC2T').Text = "Si Windows me demande « Supprimer les fichiers de tous les lecteurs ? », je laisse sur Non (sinon ma copie sur " + $drv + " est effacée aussi)"
+            (UI 'FreshStep3Txt').Text = "Quand le PC est remis à zéro, ouvre le disque " + $drv + " puis le dossier OnePC-Sauvegarde-... et lance OnePC.cmd. Ta copie est choisie toute seule : clique sur « Tout remettre d'un coup »."
+        }
+        'none' {
+            (UI 'FreshKeepTitle').Text = 'Conserver mes fichiers  ✓  choisis celui-là'
+            (UI 'FreshKeepBox').BorderBrush = $brush.ConvertFromString('#3DDC84'); (UI 'FreshKeepBox').BorderThickness = New-Object System.Windows.Thickness 2
+            (UI 'FreshDelTitle').Text = 'Supprimer tout  ✗  INTERDIT pour toi'
+            (UI 'FreshDelTxt').Text = "Ta copie est sur le disque C: : « Supprimer tout » l'effacerait avec tout le reste."
+            (UI 'FreshC2T').Text = "Dans Windows, je choisirai « Conserver mes fichiers ». JAMAIS « Supprimer tout »"
+            (UI 'FreshC4T').Text = "J'ai compris que si je choisis « Supprimer tout », ma copie est effacée aussi et tout est perdu"
+            (UI 'FreshWord').Text = 'CONSERVER'
+            (UI 'FreshStep3Txt').Text = "Quand le PC est remis à zéro, ouvre " + (Get-FreshNoneBase) + ", puis le dossier OnePC-Sauvegarde-... et lance OnePC.cmd. Ta copie est choisie toute seule : clique sur « Tout remettre d'un coup »."
+        }
+    }
+}
 function Show-FreshState {
-    if ([string]$cfg.FreshOk) {
-        (UI 'FreshSt1').Text = 'Sauvegarde vérifiée'; (UI 'FreshSt1').Foreground = $brush.ConvertFromString('#3DDC84')
-        (UI 'FreshSt2').Text = 'Prêt quand tu veux'; (UI 'FreshC0').IsChecked = $true
+    if ([string]$cfg.FreshOkKind -eq 'skip') {
+        (UI 'FreshSt1').Text = '⏭ Passé : rien à garder'; (UI 'FreshSt1').Foreground = $brush.ConvertFromString('#FBBF24')
+        (UI 'FreshC0').IsChecked = $true
+    } elseif ([string]$cfg.FreshOk) {
+        (UI 'FreshSt1').Text = '✓ Copie vérifiée'; (UI 'FreshSt1').Foreground = $brush.ConvertFromString('#3DDC84')
+        (UI 'FreshC0').IsChecked = $true
     } else {
         (UI 'FreshSt1').Text = 'À faire'; (UI 'FreshSt1').Foreground = $brush.ConvertFromString('#8E8E98')
-        (UI 'FreshSt2').Text = "Bloqué tant que la sauvegarde n'est pas vérifiée"; (UI 'FreshC0').IsChecked = $false
+        (UI 'FreshC0').IsChecked = $false
     }
+    $bl = Get-FreshBlock
+    if ($bl) { (UI 'FreshSt2').Text = "🔒 Bloqué tant que la copie n'est pas prête"; (UI 'FreshSt2').Foreground = $brush.ConvertFromString('#8E8E98') } else { (UI 'FreshSt2').Text = '✓ Prêt quand tu veux'; (UI 'FreshSt2').Foreground = $brush.ConvertFromString('#3DDC84') }
+    Show-FreshStep2
     if ($script:freshTab) { Set-FreshTab $script:freshTab }
     Update-FreshGo
 }
+(UI 'FreshSkip').Add_Click({
+    if (Fresh-Free) { return }
+    if (-not (Ask "Ne rien copier ?`r`n`r`nOnePC ne fera aucune copie : tes fichiers (Bureau, Documents, Images, captures...) seront perdus pour toujours avec la remise à zéro.`r`n`r`nTes jeux et tes comptes en ligne ne sont pas touchés : tu les retrouves en te reconnectant.`r`n`r`nContinuer sans copie ?")) { return }
+    $cfg.FreshOk = '(aucune copie)'; $cfg.FreshOkKind = 'skip'; Save-Cfg
+    Log 'Reset PC : copie passée (rien à garder)'
+    (UI 'FreshMsg1').Text = "OK, pas de copie. Passe à l'étape 2."
+    Show-FreshState; Set-FreshTab 2
+})
 (UI 'FreshCheck').Add_Click({
+    if (Fresh-Free) { return }
     $r = $script:freshRoot; if (-not $r) { $r = [string]$cfg.FreshOk }
+    if ((Get-FreshKind) -eq 'none' -and (-not $r -or -not (Test-Path -LiteralPath $r))) { $r = Find-FreshRoot (Get-FreshNoneBase) }
     if (-not $r -or -not (Test-Path -LiteralPath $r)) { $r = Find-FreshRoot ([string]$cfg.FreshDest) }
-    if (-not $r) { $p = Pick-Folder 'Choisis le dossier de ta sauvegarde OnePC'; $r = Find-FreshRoot $p }
-    if (-not $r) { (UI 'FreshMsg1').Text = "Je ne trouve pas de sauvegarde OnePC terminée. Lance d'abord la sauvegarde, et attends la fin dans la fenêtre noire."; return }
+    if (-not $r) { $p = Pick-Folder 'Choisis le dossier de ta copie OnePC'; $r = Find-FreshRoot $p }
+    if (-not $r) { (UI 'FreshMsg1').Text = "Je ne trouve pas de copie OnePC terminée. Lance d'abord la copie, et attends la fin dans la fenêtre noire."; return }
     [void](Verify-Fresh $r $false)
 })
 # --- étape 2 : verrous ---
 $script:freshCount = -1
+function Get-FreshBtn { if ((Get-FreshMeth) -eq '3') { return @((UI 'FreshUsb'), 'Redémarrer sur ma clé USB') }; @((UI 'FreshGo'), 'Remettre le PC à zéro') }
 $script:freshTimer = New-Object System.Windows.Threading.DispatcherTimer; $script:freshTimer.Interval = [TimeSpan]::FromSeconds(1)
 $script:freshTimer.Add_Tick({
+    $fb = Get-FreshBtn
     $script:freshCount--
-    if ($script:freshCount -le 0) { $script:freshTimer.Stop(); $script:freshCount = 0; (UI 'FreshGo').IsEnabled = $true; (UI 'FreshGo').Content = 'Remettre le PC à zéro' }
-    else { (UI 'FreshGo').Content = "Lis encore une fois les avertissements... " + $script:freshCount + " s" }
+    if ($script:freshCount -le 0) { $script:freshTimer.Stop(); $script:freshCount = 0; $fb[0].IsEnabled = $true; $fb[0].Content = $fb[1] }
+    else { $fb[0].Content = "Lis encore une fois les avertissements... " + $script:freshCount + " s" }
 })
 function Update-FreshGo {
-    $ok = [bool][string]$cfg.FreshOk
+    $bl = Get-FreshBlock
+    $ok = (-not $bl)
     foreach ($n in 'FreshC1', 'FreshC2', 'FreshC3', 'FreshC4') { if (-not (UI $n).IsChecked) { $ok = $false } }
-    if ([string](UI 'FreshType').Text -cne 'FORMATER') { $ok = $false }
+    if ([string](UI 'FreshType').Text -cne [string](UI 'FreshWord').Text) { $ok = $false }
+    $fb = Get-FreshBtn
+    foreach ($x in @((UI 'FreshGo'), (UI 'FreshUsb'))) { if ($x -ne $fb[0]) { $x.IsEnabled = $false } }
     if (-not $ok) {
         $script:freshTimer.Stop(); $script:freshCount = -1
-        (UI 'FreshGo').IsEnabled = $false; (UI 'FreshGo').Content = 'Remettre le PC à zéro'
-        if (-not [string]$cfg.FreshOk) { (UI 'FreshMsg2').Text = "Bloqué : OnePC n'a pas encore vérifié ta sauvegarde (étape 1)." } else { (UI 'FreshMsg2').Text = ' ' }
+        $fb[0].IsEnabled = $false; $fb[0].Content = $fb[1]
+        if ($bl) { (UI 'FreshMsg2').Text = $bl } else { (UI 'FreshMsg2').Text = ' ' }
         return
     }
-    if ($script:freshCount -eq -1) { $script:freshCount = 6; (UI 'FreshGo').IsEnabled = $false; (UI 'FreshGo').Content = "Lis encore une fois les avertissements... 5 s"; $script:freshTimer.Start() }
+    (UI 'FreshMsg2').Text = ' '
+    if ($script:freshCount -eq -1) { $script:freshCount = 6; $fb[0].IsEnabled = $false; $fb[0].Content = "Lis encore une fois les avertissements... 5 s"; $script:freshTimer.Start() }
 }
 foreach ($n in 'FreshC1', 'FreshC2', 'FreshC3', 'FreshC4') { (UI $n).Add_Click({ Update-FreshGo }) }
 (UI 'FreshType').Add_TextChanged({ Update-FreshGo })
 (UI 'FreshGo').Add_Click({
-    if (-not (Ask ("DERNIÈRE VÉRIFICATION`r`n`r`nTa sauvegarde : " + [string]$cfg.FreshOk + "`r`n`r`nSi tu choisis « Supprimer tout » dans Windows, tout ce qui n'est pas dans cette sauvegarde sera perdu pour toujours.`r`n`r`nOuvrir maintenant l'outil de Windows pour remettre le PC à zéro ?"))) { return }
+    if (Fresh-Free) { return }
+    if (Get-FreshBlock) { Update-FreshGo; return }
+    $k = [string]$cfg.FreshOkKind
+    $warn = "Si tu choisis « Supprimer tout » dans Windows, tout ce qui n'est pas dans cette copie sera perdu pour toujours."
+    if ($k -eq 'skip') { $warn = "Tu as choisi de ne rien garder : avec « Supprimer tout », rien ne pourra être récupéré." }
+    if ($k -eq 'none') { $warn = "Dans la fenêtre de Windows, choisis « CONSERVER MES FICHIERS ».`r`nTa copie est sur le disque C: : avec « Supprimer tout », elle serait effacée et tout serait perdu." }
+    elseif ($k -eq 'part') { $warn += "`r`nSi Windows demande « Supprimer les fichiers de tous les lecteurs ? », laisse sur Non." }
+    if (-not (Ask ("DERNIÈRE VÉRIFICATION`r`n`r`nTa copie : " + [string]$cfg.FreshOk + "`r`n`r`n" + $warn + "`r`n`r`nOuvrir maintenant l'outil de Windows pour remettre le PC à zéro ?"))) { return }
     Log 'Réinitialisation de Windows ouverte (Remettre mon PC à neuf)'
     try { Start-Process -FilePath (Join-Path $env:windir 'System32\systemreset.exe') -ArgumentList '-factoryreset' -ErrorAction Stop; (UI 'FreshMsg2').Text = "La fenêtre de Windows est ouverte. Prends ton temps et lis bien chaque écran avant de cliquer." }
     catch { (UI 'FreshMsg2').Text = "Je t'ouvre la page Récupération de Windows : clique sur « Réinitialiser le PC »."; Open-Settings 'ms-settings:recovery' }
     (UI 'FreshType').Text = ''
 })
+function Do-FreshLink($tag, $btn) {
+    if (Fresh-Free) { return }
+    $page = 'https://www.microsoft.com/fr-fr/software-download/windows11'; $exeUrl = 'https://go.microsoft.com/fwlink/?linkid=2156295'; $ver = 'Windows11'
+    if (-not $isWin11) { $page = 'https://www.microsoft.com/fr-fr/software-download/windows10'; $exeUrl = 'https://go.microsoft.com/fwlink/?LinkId=691209'; $ver = 'Windows10' }
+    if ($tag -eq 'usbpage') { try { Start-Process $page } catch {}; (UI 'FreshMsg2').Text = "La page de Microsoft est ouverte : clique sur « Télécharger maintenant » dans « Créer un support d'installation »."; return }
+    if ($tag -ne 'usbtool') { return }
+    $dl = ''; try { $dl = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path } catch {}
+    if (-not $dl -or -not (Test-Path -LiteralPath $dl)) { $dl = Join-Path $env:USERPROFILE 'Downloads' }
+    $dst = Join-Path $dl ('MediaCreationTool-' + $ver + '.exe')
+    if ($btn) { $btn.IsEnabled = $false; $script:freshDlBtn = $btn }
+    (UI 'FreshMsg2').Text = "Téléchargement de l'outil de Microsoft dans tes Téléchargements..."
+    Log ('Réinstallation complète : téléchargement de l''outil de Microsoft (' + $ver + ')')
+    Start-Bg {
+        param($a)
+        try {
+            [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+            (New-Object Net.WebClient).DownloadFile($a[0], $a[1])
+            $sg = Get-AuthenticodeSignature -LiteralPath $a[1]
+            # on ne lance que l'outil signé par Microsoft
+            if ($sg.Status -eq 'Valid' -and [string]$sg.SignerCertificate.Subject -match 'O=Microsoft Corporation') { 'OK' } else { Remove-Item -LiteralPath $a[1] -Force -ErrorAction SilentlyContinue; 'SIG' }
+        } catch { 'ERR' }
+    } @($exeUrl, $dst, $page) {
+        param($r)
+        $res = [string]($r | Select-Object -Last 1)
+        try { if ($script:freshDlBtn) { $script:freshDlBtn.IsEnabled = $true } } catch {}
+        $p2 = 'https://www.microsoft.com/fr-fr/software-download/windows11'; if (-not $isWin11) { $p2 = 'https://www.microsoft.com/fr-fr/software-download/windows10' }
+        $f = Join-Path ((New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path) ('MediaCreationTool-' + $(if ($isWin11) { 'Windows11' } else { 'Windows10' }) + '.exe')
+        if ($res -eq 'OK') {
+            try { Start-Process -FilePath $f; (UI 'FreshMsg2').Text = "L'outil de Microsoft se lance (Windows va demander l'autorisation). Accepte, choisis « Disque mémoire flash USB », puis ta clé vide." }
+            catch { (UI 'FreshMsg2').Text = "L'outil est dans tes Téléchargements (" + $f + ") : double-clique dessus." }
+        } else {
+            try { Start-Process $p2 } catch {}
+            (UI 'FreshMsg2').Text = "Le téléchargement direct n'a pas marché : je t'ouvre la page de Microsoft. Clique sur « Télécharger maintenant » dans « Créer un support d'installation »."
+        }
+    }
+}
 (UI 'FreshUsb').Add_Click({
-    $u = 'https://www.microsoft.com/fr-fr/software-download/windows11'; if (-not $isWin11) { $u = 'https://www.microsoft.com/fr-fr/software-download/windows10' }
-    try { Start-Process $u } catch {}
-    (UI 'FreshMsg2').Text = "Sur la page de Microsoft, télécharge l'outil (« Créer un support d'installation »), branche une clé USB vide de 8 Go ou plus, et suis les étapes : il prépare une clé qui réinstalle Windows. Fais quand même l'étape 1 avant !"
+    if (Fresh-Free) { return }
+    if (Get-FreshBlock) { Update-FreshGo; return }
+    if (-not (Ask "REDÉMARRER SUR LA CLÉ USB WINDOWS`r`n`r`nVérifie : ta clé Windows est prête et branchée, ta clé ou ton disque de copie est débranché.`r`n`r`nEnregistre et ferme tout ce qui est ouvert. Le PC va redémarrer sur le menu bleu de Windows : choisis « Utiliser un périphérique », puis ta clé USB.`r`n`r`nRedémarrer maintenant ?")) { return }
+    Log 'Réinstallation complète : redémarrage vers le menu de démarrage (clé USB)'
+    try { Start-Process -FilePath (Join-Path $env:windir 'System32\shutdown.exe') -ArgumentList '/r', '/o', '/t', '5' -Verb RunAs -ErrorAction Stop; (UI 'FreshMsg2').Text = "Redémarrage dans 5 secondes..." }
+    catch { (UI 'FreshMsg2').Text = "Annulé. Tu peux aussi redémarrer toi-même et appuyer sur F12, F11, F8 ou Échap au démarrage pour choisir la clé USB." }
+    (UI 'FreshType').Text = ''
 })
 # --- étape 3 : tout remettre ---
 $freshTileDefs = @(
-    @('apps', 0xE71D, 'Réinstaller mes logiciels', "Discord, Steam, Chrome... d'après la liste sauvegardée"),
+    @('apps', 0xE71D, 'Réinstaller mes logiciels', "Discord, Steam, Chrome... d'après la liste copiée"),
     @('drv', 0xE950, 'Remettre mes pilotes', 'Les pilotes copiés à l''étape 1'),
     @('files', 0xE8B7, 'Remettre mes fichiers', 'Bureau, Documents, Images... sans écraser le plus récent'),
+    @('fn', 0xE7FC, 'Remettre mes réglages Fortnite', 'Graphismes, résolution, FPS. Ferme Fortnite avant'),
     @('cfg', 0xE713, 'Remettre mes réglages OnePC', 'Couleur, jeux, préférences (OnePC redémarre)')
 )
 $script:freshTileBtns = @()
@@ -10708,13 +12885,13 @@ foreach ($d in $freshTileDefs) {
     $bt.Add_Click({ param($s, $e) Do-FreshRestore ([string]$s.Tag) })
     [void](UI 'FreshTiles').Children.Add($bt); $script:freshTileBtns += $bt
 }
-(UI 'FreshPickBack').Add_Click({
-    $p = Pick-Folder 'Choisis ta sauvegarde OnePC (le dossier OnePC-Sauvegarde-... ou le disque qui la contient)'
-    $r = Find-FreshRoot $p
-    if (-not $r) { (UI 'FreshBackInfo').Text = "Pas de sauvegarde OnePC dans ce dossier."; (UI 'FreshBackInfo').Foreground = $brush.ConvertFromString('#FF6B6B'); return }
-    try { $m = Read-FreshMan $r } catch { (UI 'FreshBackInfo').Text = 'Sauvegarde illisible.'; return }
+function Set-FreshBack($r) {
+    if (-not $r) { (UI 'FreshBackInfo').Text = "Pas de copie OnePC dans ce dossier."; (UI 'FreshBackInfo').Foreground = $brush.ConvertFromString('#FF6B6B'); return }
+    try { $m = Read-FreshMan $r } catch { (UI 'FreshBackInfo').Text = 'Copie illisible.'; (UI 'FreshBackInfo').Foreground = $brush.ConvertFromString('#FF6B6B'); return }
     $script:freshBack = $r
-    (UI 'FreshBackInfo').Text = "Sauvegarde du " + $m.Date + " : " + $m.Files.ToString('N0', [cultureinfo]'fr-FR') + " fichiers (" + (Mo $m.Size) + ")"
+    $t = "Copie du " + $m.Date
+    if ($m.Files -gt 0) { $t += " : " + $m.Files.ToString('N0', [cultureinfo]'fr-FR') + " fichiers (" + (Mo $m.Size) + ")" }
+    (UI 'FreshBackInfo').Text = $t + "`r`n" + $r
     (UI 'FreshBackInfo').Foreground = $brush.ConvertFromString('#3DDC84')
     foreach ($b in $script:freshTileBtns) {
         $on = $true
@@ -10722,11 +12899,17 @@ foreach ($d in $freshTileDefs) {
             'apps' { $on = (Test-Path -LiteralPath (Join-Path $r 'logiciels.txt')) }
             'drv' { $on = (Test-Path -LiteralPath (Join-Path $r 'Pilotes')) }
             'files' { $on = (Test-Path -LiteralPath (Join-Path $r 'Fichiers')) }
+            'fn' { $on = (Test-Path -LiteralPath (Join-Path $r 'Fortnite\WindowsClient')) }
             'cfg' { $on = (Test-Path -LiteralPath (Join-Path $r 'OnePC\reglages.json')) }
         }
         $b.IsEnabled = $on
     }
     (UI 'FreshRAll').IsEnabled = $true
+}
+(UI 'FreshPickBack').Add_Click({
+    $p = Pick-Folder 'Choisis ta copie OnePC (le dossier OnePC-Sauvegarde-... ou le disque qui la contient)'
+    if (-not $p) { return }
+    Set-FreshBack (Find-FreshRoot $p)
 })
 function Get-FreshRestoreCode($what) {
     $r = $script:freshBack; $q = { param($s) "'" + ([string]$s).Replace("'", "''") + "'" }
@@ -10737,31 +12920,39 @@ function Get-FreshRestoreCode($what) {
             if (Test-Path -LiteralPath $src) { $c += "Write-Host ''; Write-Host '=== " + $f.N.Replace("'", "''") + " ===' -ForegroundColor Cyan; & robocopy " + (& $q $src) + " " + (& $q $f.P) + " /E /XO /R:1 /W:1 /NP /NDL /NFL /NJH /MT:8" }
         }
     }
+    if ($what -contains 'fn') {
+        $fs = Join-Path $r 'Fortnite\WindowsClient'
+        if (Test-Path -LiteralPath $fs) {
+            $c += "Write-Host ''; Write-Host '=== Reglages Fortnite ===' -ForegroundColor Cyan"
+            $c += "if (Get-Process -Name 'FortniteClient-Win64-Shipping', 'FortniteLauncher' -ErrorAction SilentlyContinue) { Write-Host 'Fortnite est ouvert : ferme-le, puis recommence (reglages Fortnite non remis).' -ForegroundColor Yellow } else { & robocopy " + (& $q $fs) + " " + (& $q $script:fnCfgDir) + " /E /R:1 /W:1 /NP /NDL /NFL /NJH; Write-Host 'Reglages Fortnite remis.' -ForegroundColor Green }"
+        }
+    }
     if ($what -contains 'drv') { $c += "Write-Host ''; Write-Host '=== Pilotes ===' -ForegroundColor Cyan; & pnputil /add-driver " + (& $q (Join-Path $r 'Pilotes\*.inf')) + " /subdirs /install" }
     if ($what -contains 'apps') {
         $js = Join-Path $r 'logiciels.json'
         $c += "Write-Host ''; Write-Host '=== Logiciels ===' -ForegroundColor Cyan"
-        $c += "if ((Test-Path -LiteralPath " + (& $q $js) + ") -and (Get-Command winget -ErrorAction SilentlyContinue)) { & winget import -i " + (& $q $js) + " --ignore-unavailable } else { Write-Host 'Installation automatique impossible : la liste de tes logiciels va s''ouvrir.' -ForegroundColor Yellow; Start-Process notepad.exe -ArgumentList " + (& $q ('"' + (Join-Path $r 'logiciels.txt') + '"')) + " }"
+        $c += "if ((Test-Path -LiteralPath " + (& $q $js) + ") -and (Get-Command winget -ErrorAction SilentlyContinue)) { & winget import -i " + (& $q $js) + " --ignore-unavailable --accept-package-agreements --accept-source-agreements } else { Write-Host 'Installation automatique impossible : la liste de tes logiciels va s''ouvrir.' -ForegroundColor Yellow; Start-Process notepad.exe -ArgumentList " + (& $q ('"' + (Join-Path $r 'logiciels.txt') + '"')) + " }"
     }
     $c += "Write-Host ''; Write-Host 'Termine.' -ForegroundColor Green; Read-Host 'Appuie sur Entree pour fermer'"
     $c -join "`r`n"
 }
 function Do-FreshRestore($what) {
-    if (-not $script:freshBack) { (UI 'FreshMsg3').Text = "Choisis d'abord ta sauvegarde."; return }
+    if (-not $script:freshBack) { (UI 'FreshMsg3').Text = "Choisis d'abord ta copie."; return }
     switch ($what) {
         'cfg' {
-            if (-not (Ask "Remettre tes réglages OnePC sauvegardés ?`r`nOnePC va se fermer et se rouvrir.")) { return }
+            if (-not (Ask "Remettre tes réglages OnePC copiés ?`r`nOnePC va se fermer et se rouvrir.")) { return }
             $src = (Join-Path $script:freshBack 'OnePC\reglages.json').Replace("'", "''")
-            Log 'Réglages OnePC remis depuis la sauvegarde'
+            Log 'Réglages OnePC remis depuis la copie'
             if (-not (Restart-App ("Copy-Item -LiteralPath '" + $src + "' -Destination '" + $cfgFile.Replace("'", "''") + "' -Force;"))) { (UI 'FreshMsg3').Text = "Impossible de redémarrer OnePC tout seul : ferme-le et rouvre-le." }
             return
         }
-        'drv' { if (Run-Console (Get-FreshRestoreCode @('drv')) -Admin) { Log 'Pilotes remis depuis la sauvegarde'; (UI 'FreshMsg3').Text = 'Installation des pilotes dans la fenêtre noire...' } else { (UI 'FreshMsg3').Text = 'Annulé (droits administrateur refusés).' } }
-        'apps' { if (Run-Console (Get-FreshRestoreCode @('apps'))) { Log 'Réinstallation des logiciels lancée'; (UI 'FreshMsg3').Text = "Réinstallation dans la fenêtre noire. Si winget te pose une question, réponds O (oui)." } }
-        'files' { if (Run-Console (Get-FreshRestoreCode @('files'))) { Log 'Fichiers remis depuis la sauvegarde'; (UI 'FreshMsg3').Text = 'Copie de tes fichiers dans la fenêtre noire...' } }
+        'drv' { if (Run-Console (Get-FreshRestoreCode @('drv')) -Admin) { Log 'Pilotes remis depuis la copie'; (UI 'FreshMsg3').Text = 'Installation des pilotes dans la fenêtre noire...' } else { (UI 'FreshMsg3').Text = 'Annulé (droits administrateur refusés).' } }
+        'apps' { if (Run-Console (Get-FreshRestoreCode @('apps'))) { Log 'Réinstallation des logiciels lancée'; (UI 'FreshMsg3').Text = "Réinstallation dans la fenêtre noire. Ça peut prendre un moment : laisse-la finir." } }
+        'files' { if (Run-Console (Get-FreshRestoreCode @('files'))) { Log 'Fichiers remis depuis la copie'; (UI 'FreshMsg3').Text = 'Copie de tes fichiers dans la fenêtre noire...' } }
+        'fn' { if (Run-Console (Get-FreshRestoreCode @('fn'))) { Log 'Réglages Fortnite remis depuis la copie'; (UI 'FreshMsg3').Text = 'Réglages Fortnite remis (regarde la fenêtre noire).' } }
         'all' {
-            if (-not (Ask "Tout remettre d'un coup (fichiers, pilotes, logiciels) ?`r`nWindows demandera les droits administrateur. Ensuite, clique sur « Remettre mes réglages OnePC » si tu veux aussi tes réglages.")) { return }
-            if (Run-Console (Get-FreshRestoreCode @('files', 'drv', 'apps')) -Admin) { Log 'Remise en place complète lancée (fichiers, pilotes, logiciels)'; (UI 'FreshMsg3').Text = 'Tout se remet en place dans la fenêtre noire. Ça peut prendre un moment.' } else { (UI 'FreshMsg3').Text = 'Annulé (droits administrateur refusés).' }
+            if (-not (Ask "Tout remettre d'un coup (fichiers, réglages Fortnite, pilotes, logiciels) ?`r`nWindows demandera les droits administrateur. Ensuite, clique sur « Remettre mes réglages OnePC » si tu veux aussi tes réglages.")) { return }
+            if (Run-Console (Get-FreshRestoreCode @('files', 'fn', 'drv', 'apps')) -Admin) { Log 'Remise en place complète lancée (fichiers, Fortnite, pilotes, logiciels)'; (UI 'FreshMsg3').Text = 'Tout se remet en place dans la fenêtre noire. Ça peut prendre un moment.' } else { (UI 'FreshMsg3').Text = 'Annulé (droits administrateur refusés).' }
         }
     }
 }
@@ -10775,10 +12966,22 @@ function Update-HomeHero {
     if ([int]$sync.CpuT -ge 90 -or [int]$sync.GpuT -ge 85) { $s = @('Ton PC chauffe : regarde Mon PC rame', '#FF6B6B', '#3A1519') }
     elseif ([int]$sync.Ram -ge 90) { $s = @('Ta mémoire est presque pleine', '#FBBF24', '#33280F') }
     elseif ([int]$sync.Cpu -ge 90) { $s = @('Ton processeur est très occupé', '#FBBF24', '#33280F') }
-    elseif ([int]$sync.DiskFree -lt 10) { $s = @('Ton disque est presque plein : fais un nettoyage', '#FBBF24', '#33280F') }
+    elseif (Test-DiskLow 10) { $s = @('Ton disque est presque plein : fais un nettoyage', '#FBBF24', '#33280F') }
     (UI 'HeroState').Text = $s[0]; (UI 'HeroState').Foreground = $brush.ConvertFromString($s[1]); (UI 'HeroDot').Fill = $brush.ConvertFromString($s[1])
     (UI 'HeroPill').Background = $brush.ConvertFromString($s[2])
     (UI 'HeroProc').Text = "" + $sync.ProcCount + " processus"
+}
+# anneau de progression (score) : arc dessiné dans un carré de 150 px
+function Set-Ring($name, $frac, $col) {
+    try {
+        $p = UI $name; $f = [math]::Max(0.0, [math]::Min(0.9999, [double]$frac)); $r = 68.0; $c = 75.0
+        if ($f -le 0) { $p.Data = [System.Windows.Media.Geometry]::Empty; return }
+        $an = (-90 + 360 * $f) * [math]::PI / 180; $x = $c + $r * [math]::Cos($an); $y = $c + $r * [math]::Sin($an)
+        $large = 0; if ($f -gt 0.5) { $large = 1 }
+        $inv = [cultureinfo]::InvariantCulture
+        $p.Data = [System.Windows.Media.Geometry]::Parse([string]::Format($inv, 'M {0},{1} A {2},{2} 0 {3} 1 {4:0.##},{5:0.##}', $c, ($c - $r), $r, $large, $x, $y))
+        $p.Stroke = $brush.ConvertFromString($col)
+    } catch {}
 }
 
 # ---------- Mode compétitif (Pro) ----------
@@ -10807,10 +13010,10 @@ $compItems = @(
     @{ K = 't_maps'; S = 'task'; T = 'Mise à jour des cartes hors connexion'; D = "Télécharge les cartes de l'appli Cartes en fond."; Rec = $true; Type = 'task'; Tp = '\Microsoft\Windows\Maps\'; Tn = 'MapsUpdateTask' }
 )
 $compSecs = @(
-    @('fn', 'FORTNITE', '#38BDF8', "Réglages écrits directement dans le fichier de Fortnite, jeu fermé. Une sauvegarde de tes réglages est faite avant."),
-    @('win', 'WINDOWS POUR LE JEU', '#34D399', "Les réglages de Windows qui jouent sur la latence et la stabilité des FPS. Sur un PC bien réglé, plusieurs sont déjà au top : c'est normal."),
-    @('ads', 'PUBS ET SUGGESTIONS', '#FBBF24', "Ça ne fait pas gagner de FPS, mais Windows arrête de te déranger."),
-    @('task', 'TÂCHES DE FOND INUTILES', '#F472B6', "Des tâches que Windows lance tout seul, surtout pour envoyer des statistiques à Microsoft. Le gain de FPS est quasi nul, mais il y a moins de choses qui tournent derrière ton dos. Chacune se coupe séparément.")
+    @('fn', 'FORTNITE', '#38BDF8', "Réglages écrits directement dans le fichier de Fortnite, jeu fermé. Une sauvegarde de tes réglages est faite avant.", 0xE7FC),
+    @('win', 'WINDOWS POUR LE JEU', '#34D399', "Les réglages de Windows qui jouent sur la latence et la stabilité des FPS. Sur un PC bien réglé, plusieurs sont déjà au top : c'est normal.", 0xE770),
+    @('ads', 'PUBS ET SUGGESTIONS', '#FBBF24', "Ça ne fait pas gagner de FPS, mais Windows arrête de te déranger.", 0xE711),
+    @('task', 'TÂCHES DE FOND INUTILES', '#F472B6', "Des tâches que Windows lance tout seul, surtout pour envoyer des statistiques à Microsoft. Le gain de FPS est quasi nul, mais il y a moins de choses qui tournent derrière ton dos. Chacune se coupe séparément.", 0xE9D9)
 )
 $script:compWant = @{}; $script:compBoxes = @{}; $script:compHz = 0
 function Get-RegVal($p, $n) { try { return (Get-ItemProperty -LiteralPath $p -Name $n -ErrorAction Stop).$n } catch { return $null } }
@@ -10851,20 +13054,43 @@ function Load-Comp {
     $recOk = 0; $recN = 0
     foreach ($s in $compSecs) {
         $items = @($compItems | Where-Object { $_.S -eq $s[0] })
-        $hd = New-Object System.Windows.Controls.StackPanel; $hd.Margin = New-Object System.Windows.Thickness 4, 10, 0, 8
-        $t = New-Object System.Windows.Controls.TextBlock; $t.Text = $s[1]; $t.Style = $win.FindResource('Tag'); $t.Foreground = $brush.ConvertFromString($s[2]); $t.Margin = New-Object System.Windows.Thickness 0
-        $d = New-Object System.Windows.Controls.TextBlock; $d.Text = $s[3]; $d.Foreground = $brush.ConvertFromString('#8E8E98'); $d.FontSize = 12; $d.TextWrapping = 'Wrap'; $d.Margin = New-Object System.Windows.Thickness 0, 3, 0, 0
-        [void]$hd.Children.Add($t); [void]$hd.Children.Add($d); [void]$h.Children.Add($hd)
-        $card = New-Object System.Windows.Controls.Border; $card.Style = $win.FindResource('Card'); $card.Padding = New-Object System.Windows.Thickness 14, 2, 14, 2
-        $sp = New-Object System.Windows.Controls.StackPanel; $first = $true
+        $col = $s[2]; $cc = [System.Windows.Media.ColorConverter]::ConvertFromString($col)
+        $mx = { param($k) [System.Windows.Media.Color]::FromRgb([byte](0x17 + ($cc.R - 0x17) * $k), [byte](0x17 + ($cc.G - 0x17) * $k), [byte](0x1B + ($cc.B - 0x1B) * $k)) }
+        # carte de la section : dégradé à sa couleur, en-tête avec icône
+        $card = New-Object System.Windows.Controls.Border; $card.CornerRadius = New-Object System.Windows.CornerRadius 16
+        $card.Padding = New-Object System.Windows.Thickness 22, 20, 22, 18; $card.Margin = New-Object System.Windows.Thickness 0, 0, 0, 14
+        $gb = New-Object System.Windows.Media.LinearGradientBrush; $gb.StartPoint = New-Object System.Windows.Point 0, 0; $gb.EndPoint = New-Object System.Windows.Point 1, 1
+        [void]$gb.GradientStops.Add((New-Object System.Windows.Media.GradientStop ((& $mx 0.15)), 0)); [void]$gb.GradientStops.Add((New-Object System.Windows.Media.GradientStop ((& $mx 0.0)), 0.65))
+        $card.Background = $gb; $card.BorderBrush = New-Object System.Windows.Media.SolidColorBrush ((& $mx 0.32)); $card.BorderThickness = New-Object System.Windows.Thickness 1
+        $outer = New-Object System.Windows.Controls.StackPanel
+        $hd = New-Object System.Windows.Controls.DockPanel; $hd.Margin = New-Object System.Windows.Thickness 0, 0, 0, 14
+        $ib = New-Object System.Windows.Controls.Border; $ib.Width = 44; $ib.Height = 44; $ib.CornerRadius = New-Object System.Windows.CornerRadius 13; $ib.VerticalAlignment = 'Top'
+        $ib.Background = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.Color]::FromArgb(0x26, $cc.R, $cc.G, $cc.B)); $ib.Margin = New-Object System.Windows.Thickness 0, 0, 14, 0
+        $ic = New-Object System.Windows.Controls.TextBlock; $ic.Text = [string][char]$s[4]; $ic.FontFamily = New-Object System.Windows.Media.FontFamily 'Segoe MDL2 Assets'; $ic.FontSize = 19
+        $ic.Foreground = $brush.ConvertFromString($col); $ic.HorizontalAlignment = 'Center'; $ic.VerticalAlignment = 'Center'; $ib.Child = $ic
+        [System.Windows.Controls.DockPanel]::SetDock($ib, 'Left'); [void]$hd.Children.Add($ib)
+        $cnt = New-Object System.Windows.Controls.Border; $cnt.CornerRadius = New-Object System.Windows.CornerRadius 9; $cnt.Padding = New-Object System.Windows.Thickness 10, 4, 10, 4; $cnt.VerticalAlignment = 'Top'; $cnt.Margin = New-Object System.Windows.Thickness 12, 0, 0, 0
+        $cnt.Background = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.Color]::FromArgb(0x22, $cc.R, $cc.G, $cc.B))
+        $cntT = New-Object System.Windows.Controls.TextBlock; $cntT.FontSize = 11.5; $cntT.FontWeight = 'SemiBold'; $cntT.Foreground = $brush.ConvertFromString($col); $cnt.Child = $cntT
+        [System.Windows.Controls.DockPanel]::SetDock($cnt, 'Right'); [void]$hd.Children.Add($cnt)
+        $tx = New-Object System.Windows.Controls.StackPanel; $tx.VerticalAlignment = 'Center'
+        $t = New-Object System.Windows.Controls.TextBlock; $t.Text = $s[1]; $t.Style = $win.FindResource('Tag'); $t.Foreground = $brush.ConvertFromString($col); $t.Margin = New-Object System.Windows.Thickness 0, 0, 0, 2
+        $d = New-Object System.Windows.Controls.TextBlock; $d.Text = $s[3]; $d.Foreground = $brush.ConvertFromString('#B8B8C0'); $d.FontSize = 12.5; $d.TextWrapping = 'Wrap'; $d.LineHeight = 19
+        [void]$tx.Children.Add($t); [void]$tx.Children.Add($d); [void]$hd.Children.Add($tx)
+        [void]$outer.Children.Add($hd)
+        $inner = New-Object System.Windows.Controls.Border; $inner.CornerRadius = New-Object System.Windows.CornerRadius 12; $inner.Padding = New-Object System.Windows.Thickness 14, 2, 14, 2
+        $inner.Background = $brush.ConvertFromString('#141418'); $inner.BorderBrush = $brush.ConvertFromString('#26262C'); $inner.BorderThickness = New-Object System.Windows.Thickness 1
+        $sp = New-Object System.Windows.Controls.StackPanel; $first = $true; $secOk = 0; $secN = 0
+        $inner.Child = $sp; [void]$outer.Children.Add($inner); $card.Child = $outer
         if ($s[0] -eq 'fn' -and -not (Test-Path -LiteralPath $fnIni)) {
             $m = New-Object System.Windows.Controls.TextBlock; $m.Text = "Je ne trouve pas les réglages de Fortnite sur ce PC. Lance Fortnite une fois, puis reviens ici."; $m.Foreground = $brush.ConvertFromString('#CACAD2'); $m.Margin = New-Object System.Windows.Thickness 2, 14, 2, 14; $m.TextWrapping = 'Wrap'
-            [void]$sp.Children.Add($m); $card.Child = $sp; [void]$h.Children.Add($card); continue
+            [void]$sp.Children.Add($m); $cnt.Visibility = 'Collapsed'; [void]$h.Children.Add($card); continue
         }
         foreach ($it in $items) {
             $on = Get-CompOn $it
             if ($null -eq $on) { continue }
             $script:compCur[$it.K] = [bool]$on; $script:compWant[$it.K] = [bool]$on
+            $secN++; if ($on) { $secOk++ }
             if ($it.Rec) { $recN++; if ($on) { $recOk++ } }
             if (-not $first) { $sep = New-Object System.Windows.Controls.Border; $sep.Height = 1; $sep.Background = $brush.ConvertFromString('#222227'); [void]$sp.Children.Add($sep) }
             $first = $false
@@ -10876,7 +13102,7 @@ function Load-Comp {
             [void]$tr.Children.Add($tt)
             $pb = New-Object System.Windows.Controls.Border; $pb.CornerRadius = New-Object System.Windows.CornerRadius 8; $pb.Padding = New-Object System.Windows.Thickness 8, 1, 8, 2; $pb.VerticalAlignment = 'Center'
             $pt = New-Object System.Windows.Controls.TextBlock; $pt.FontSize = 11; $pt.FontWeight = 'SemiBold'
-            if ($on) { $pb.Background = $brush.ConvertFromString('#173326'); $pt.Foreground = $brush.ConvertFromString('#3DDC84'); $pt.Text = 'Déjà au top' }
+            if ($on) { $pb.Background = $brush.ConvertFromString('#173326'); $pt.Foreground = $brush.ConvertFromString('#3DDC84'); $pt.Text = '✓ Déjà au top' }
             elseif ($it.Rec) { $pb.Background = $brush.ConvertFromString('#26203A'); $pt.Foreground = $brush.ConvertFromString('#A78BFA'); $pt.Text = 'Conseillé' }
             $pb.Child = $pt; if ($pt.Text) { [void]$tr.Children.Add($pb) }
             $dd = New-Object System.Windows.Controls.TextBlock; $dd.Text = $it.D; $dd.Foreground = $brush.ConvertFromString('#8E8E98'); $dd.FontSize = 12; $dd.TextWrapping = 'Wrap'; $dd.Margin = New-Object System.Windows.Thickness 0, 4, 0, 0
@@ -10884,9 +13110,14 @@ function Load-Comp {
             $cb.Add_Click({ param($sn, $e) $script:compWant[[string]$sn.Tag] = [bool]$sn.IsChecked; Update-CompApply })
             [void]$sp.Children.Add($cb); $script:compBoxes[$it.K] = $cb
         }
-        $card.Child = $sp; [void]$h.Children.Add($card)
+        if (-not $secN) {
+            # rien d'affichable (tâches absentes de ce Windows, par exemple) : on le dit au lieu d'une carte vide
+            $m = New-Object System.Windows.Controls.TextBlock; $m.Text = "Rien à régler ici : ces éléments n'existent pas sur ton Windows, ou sont déjà coupés."; $m.Foreground = $brush.ConvertFromString('#CACAD2'); $m.Margin = New-Object System.Windows.Thickness 2, 14, 2, 14; $m.TextWrapping = 'Wrap'
+            [void]$sp.Children.Add($m); $cntT.Text = '✓ Rien à faire'
+        } else { $cntT.Text = "$secOk / $secN au top" }
+        [void]$h.Children.Add($card)
     }
-    if ($recN) { (UI 'CompScore').Text = "$recOk/$recN" } else { (UI 'CompScore').Text = '-' }
+    if ($recN) { (UI 'CompScore').Text = "$recOk/$recN"; Set-Ring 'CompRing' ($recOk / [double]$recN) '#A78BFA' } else { (UI 'CompScore').Text = '-'; Set-Ring 'CompRing' 0 '#A78BFA' }
     $gpu = "Carte graphique Intel ou non reconnue : garde les réglages par défaut de son panneau. Ce qui compte, ce sont les réglages Fortnite et Windows au-dessus."; (UI 'CompGpuOpen').Visibility = 'Collapsed'
     if ($drvVendor -eq 'NV') { $gpu = "1. Dans Fortnite : Réglages, onglet Affichage (ou Graphismes), mets « NVIDIA Reflex » sur « Activé + Boost ». C'est le réglage qui réduit le plus la latence. OnePC ne peut pas le changer à ta place.`r`n2. Pour tes jeux sans Reflex : panneau de configuration NVIDIA, « Gérer les paramètres 3D », « Mode de faible latence » sur Ultra (dans l'appli NVIDIA : Graphiques, Paramètres globaux).`r`n3. Le reste : laisse par défaut, ça ne change presque rien aujourd'hui."; (UI 'CompGpuOpen').Visibility = 'Visible'; (UI 'CompGpuOpen').Content = 'Ouvrir le panneau NVIDIA' }
     elseif ($drvVendor -eq 'AMD') { $gpu = "1. Ouvre AMD Software (Adrenalin), onglet Jeux, puis Graphismes, et active « Radeon Anti-Lag ». C'est le réglage AMD qui réduit la latence.`r`n2. Le reste : laisse par défaut, ça ne change presque rien aujourd'hui."; (UI 'CompGpuOpen').Visibility = 'Visible'; (UI 'CompGpuOpen').Content = 'Ouvrir AMD Software' }
@@ -11156,7 +13387,7 @@ $timer.Add_Tick({
         if ($sync.Ping -ge 0) { (UI 'PingVal').Text = "" + $sync.Ping + " ms" } else { (UI 'PingVal').Text = 'Hors ligne' }
         try { Set-PingQual ([int]$sync.Ping) } catch {}
         (UI 'DownVal').Text = (N $sync.Down); (UI 'UpVal').Text = (N $sync.Up)
-        (UI 'NetInfo').Text = $sync.NetInfo
+        (UI 'NetInfo').Text = (Stream-Txt ([string]$sync.NetInfo))
         $script:ticks++
         try { if ((UI 'PageHome').Visibility -eq 'Visible') { Update-HomeHero } } catch {}
         if ($showEvt.WaitOne(0)) { Show-Win }
@@ -11271,7 +13502,7 @@ function Get-PcState {
     $why = @(); $lvl = 0
     if ([int]$sync.CpuT -ge 88) { $lvl = 2; $why += 'processeur à ' + $sync.CpuT + ' °C' }
     if ([int]$sync.GpuT -ge 88) { $lvl = 2; $why += 'carte graphique à ' + $sync.GpuT + ' °C' }
-    if ([int]$sync.DiskFree -lt 10) { $lvl = 2; $why += 'disque système presque plein (' + $sync.DiskFree + ' % libre)' }
+    if (Test-DiskLow 10) { $lvl = 2; $why += 'disque système presque plein (' + $sync.DiskGb + ' Go libres)' }
     $late = @(Get-CalState | Where-Object { $_.Item.Days -gt 0 -and $_.Level -gt 0 })
     if ($late.Count) { if ($lvl -lt 1) { $lvl = 1 }; $why += 'entretien à faire : ' + (($late | ForEach-Object { $_.Item.N.ToLower() }) -join ', ') }
     $word = 'En forme', 'À entretenir', 'À surveiller'; $cols = '#3DDC84', '#FBBF24', '#FF5A6E'
@@ -11340,17 +13571,127 @@ function Set-NavMe {
 }
 $win.Add_ContentRendered({ try { Set-NavMe } catch {} })
 
-function New-MeTile($value, $label, $col) {
+function New-MeTile($value, $label, $col, $icon = 0xE946) {
+    $cc = [System.Windows.Media.ColorConverter]::ConvertFromString($col)
+    $mx = { param($k) [System.Windows.Media.Color]::FromRgb([byte](0x17 + ($cc.R - 0x17) * $k), [byte](0x17 + ($cc.G - 0x17) * $k), [byte](0x1B + ($cc.B - 0x1B) * $k)) }
     $card = New-Object System.Windows.Controls.Border
-    $card.Width = 186; $card.Margin = New-Object System.Windows.Thickness 0, 0, 12, 12; $card.Padding = New-Object System.Windows.Thickness 16, 14, 16, 14
-    $card.Background = $brush.ConvertFromString('#17171B'); $card.BorderBrush = $brush.ConvertFromString('#2E2E35'); $card.BorderThickness = New-Object System.Windows.Thickness 1
-    $card.CornerRadius = New-Object System.Windows.CornerRadius 12
+    $card.Width = 170; $card.Margin = New-Object System.Windows.Thickness 0, 0, 12, 12; $card.Padding = New-Object System.Windows.Thickness 16, 14, 16, 14
+    $gb = New-Object System.Windows.Media.LinearGradientBrush; $gb.StartPoint = New-Object System.Windows.Point 0, 0; $gb.EndPoint = New-Object System.Windows.Point 1, 1
+    [void]$gb.GradientStops.Add((New-Object System.Windows.Media.GradientStop ((& $mx 0.18)), 0)); [void]$gb.GradientStops.Add((New-Object System.Windows.Media.GradientStop ((& $mx 0.0)), 0.8))
+    $card.Background = $gb; $card.BorderBrush = New-Object System.Windows.Media.SolidColorBrush ((& $mx 0.35)); $card.BorderThickness = New-Object System.Windows.Thickness 1
+    $card.CornerRadius = New-Object System.Windows.CornerRadius 14
     $sp = New-Object System.Windows.Controls.StackPanel
-    $v = New-Object System.Windows.Controls.TextBlock; $v.Text = [string]$value; $v.FontSize = 28; $v.FontWeight = 'Bold'; $v.Foreground = $brush.ConvertFromString($col)
+    $ib = New-Object System.Windows.Controls.Border; $ib.Width = 32; $ib.Height = 32; $ib.CornerRadius = New-Object System.Windows.CornerRadius 10; $ib.HorizontalAlignment = 'Left'
+    $ib.Background = New-Object System.Windows.Media.SolidColorBrush ([System.Windows.Media.Color]::FromArgb(0x2A, $cc.R, $cc.G, $cc.B))
+    $ic = New-Object System.Windows.Controls.TextBlock; $ic.Text = [string][char]$icon; $ic.FontFamily = New-Object System.Windows.Media.FontFamily 'Segoe MDL2 Assets'; $ic.FontSize = 14
+    $ic.Foreground = $brush.ConvertFromString($col); $ic.HorizontalAlignment = 'Center'; $ic.VerticalAlignment = 'Center'; $ib.Child = $ic
+    $v = New-Object System.Windows.Controls.TextBlock; $v.Text = [string]$value; $v.FontSize = 26; $v.FontWeight = 'Bold'; $v.Foreground = $brush.ConvertFromString($col); $v.Margin = New-Object System.Windows.Thickness 0, 10, 0, 0
     $l = New-Object System.Windows.Controls.TextBlock; $l.Text = [string]$label; $l.Foreground = $brush.ConvertFromString('#B8B8C0'); $l.FontSize = 12; $l.TextWrapping = 'Wrap'
-    [void]$sp.Children.Add($v); [void]$sp.Children.Add($l); $card.Child = $sp
+    [void]$sp.Children.Add($ib); [void]$sp.Children.Add($v); [void]$sp.Children.Add($l); $card.Child = $sp
     $card
 }
+# ---------- niveau et XP ----------
+function Get-MeXp {
+    $h = Read-Kv $statFile
+    $days = 0; try { $days = [int][math]::Floor(((Get-Date) - [datetime]::ParseExact([string]$cfg.Since, 'dd/MM/yyyy', [cultureinfo]::InvariantCulture)).TotalDays) } catch {}
+    $play = Read-Kv $playFile; $tot = 0.0; foreach ($kv in @($play.GetEnumerator())) { $tot += [double]$kv.Value }
+    $xp = $days * 10 + [int]$h['clean'] * 25 + [int]$h['drv'] * 15 + [int]$h['games'] * 10 + [int]$h['uninst'] * 5 + [int]($tot / 60) + [int]$script:meBadgeN * 100
+    # niveau n atteint à 50 x n x (n-1) XP : 100, 300, 600, 1000, 1500...
+    $lvl = [int][math]::Floor((1 + [math]::Sqrt(1 + $xp / 12.5)) / 2); if ($lvl -lt 1) { $lvl = 1 }
+    $cur = 50 * $lvl * ($lvl - 1); $next = 50 * ($lvl + 1) * $lvl
+    $title = 'Débutant'; if ($lvl -ge 3) { $title = 'Joueur' }; if ($lvl -ge 5) { $title = 'Tryhard' }; if ($lvl -ge 8) { $title = 'Pro' }; if ($lvl -ge 12) { $title = 'Légende' }
+    @{ Xp = $xp; Lvl = $lvl; Cur = $cur; Next = $next; Title = $title; Days = $days; Play = $tot }
+}
+function Update-MeLevel {
+    try {
+        $m = Get-MeXp
+        (UI 'MeLevel').Text = 'NIVEAU ' + $m.Lvl; (UI 'MeLevelTitle').Text = $m.Title
+        $r = [math]::Max(0.0, [math]::Min(1.0, ($m.Xp - $m.Cur) / [double]($m.Next - $m.Cur)))
+        (UI 'MeXpC1').Width = New-Object System.Windows.GridLength ([double][math]::Max(0.0001, $r)), ([System.Windows.GridUnitType]::Star)
+        (UI 'MeXpC2').Width = New-Object System.Windows.GridLength ([double][math]::Max(0.0001, 1 - $r)), ([System.Windows.GridUnitType]::Star)
+        $fr = [cultureinfo]'fr-FR'
+        (UI 'MeXpTxt').Text = ([int]$m.Xp).ToString('N0', $fr) + ' XP   ·   encore ' + ([int]($m.Next - $m.Xp)).ToString('N0', $fr) + ' XP pour le niveau ' + ($m.Lvl + 1)
+    } catch {}
+}
+# ---------- carte de joueur à partager ----------
+function Export-MeCard {
+    Add-Type -AssemblyName System.Drawing
+    $W = 1200; $H = 630
+    $m = Get-MeXp
+    $bmp = New-Object System.Drawing.Bitmap $W, $H
+    $g = [System.Drawing.Graphics]::FromImage($bmp)
+    $g.SmoothingMode = 'AntiAlias'
+    $i = [int]$cfg.Banner; if ($i -lt 0 -or $i -ge $walls.Count) { $i = 0 }
+    try { Draw-Wall $g $W $H $walls[$i] } catch { $g.Clear([System.Drawing.Color]::FromArgb(255, 15, 15, 20)) }
+    $g.SmoothingMode = 'AntiAlias'
+    $ov = New-Object System.Drawing.Drawing2D.LinearGradientBrush((WPt 0 0), (WPt 0 $H), [System.Drawing.Color]::FromArgb(110, 8, 8, 12), [System.Drawing.Color]::FromArgb(235, 8, 8, 12))
+    $g.FillRectangle($ov, 0, 0, $W, $H); $ov.Dispose()
+    # avatar rond
+    $ax = 70; $ay = 90; $as = 190
+    $ring = New-Object System.Drawing.Drawing2D.LinearGradientBrush((WPt $ax $ay), (WPt ($ax + $as) ($ay + $as)), (WCol '#A78BFA' 255), (WCol '#38BDF8' 255))
+    $g.FillEllipse($ring, [single]($ax - 8), [single]($ay - 8), [single]($as + 16), [single]($as + 16)); $ring.Dispose()
+    $drawn = $false
+    if (Test-Path -LiteralPath $avatarFile) {
+        try {
+            $img = [System.Drawing.Image]::FromStream((New-Object System.IO.MemoryStream (, [System.IO.File]::ReadAllBytes($avatarFile))))
+            $clip = New-Object System.Drawing.Drawing2D.GraphicsPath; $clip.AddEllipse([single]$ax, [single]$ay, [single]$as, [single]$as)
+            $g.SetClip($clip); $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+            $s = [math]::Max($as / $img.Width, $as / $img.Height); $iw = $img.Width * $s; $ih = $img.Height * $s
+            $g.DrawImage($img, [single]($ax + ($as - $iw) / 2), [single]($ay + ($as - $ih) / 2), [single]$iw, [single]$ih)
+            $g.ResetClip(); $clip.Dispose(); $img.Dispose(); $drawn = $true
+        } catch { try { $g.ResetClip() } catch {} }
+    }
+    if (-not $drawn) {
+        WEll $g ($ax + $as / 2) ($ay + $as / 2) ($as / 2) $accent 255 $true 1
+        $l = '?'; if ([string]$cfg.Pseudo) { $l = ([string]$cfg.Pseudo).Trim().Substring(0, 1).ToUpper() }
+        WText $g $l ($ax + $as / 2) ($ay + $as / 2) 90 '#FFFFFF' 255 'c' $false $true
+    }
+    # pseudo, niveau, PC
+    $name = [string]$cfg.Pseudo; if (-not $name.Trim()) { $name = 'Joueur OnePC' }
+    WText $g $name.Trim() 300 150 66 '#FFFFFF' 255 'l' $false $true
+    WRound $g 302 205 200 40 12 '#7C3AED' 255 $null 0 0
+    WText $g ('NIVEAU ' + $m.Lvl) 402 225 20 '#FFFFFF' 255 'c' $false $true
+    WText $g $m.Title.ToUpper() 520 225 20 '#C4B5FD' 255 'l' $true $false
+    $gpuN = ([string]$mainGpu.Name) -replace '^(NVIDIA|AMD)\s+', '' -replace '\(TM\)|\(R\)', ''
+    $cpuN = ([string]$cpu.Name) -replace '\(TM\)|\(R\)|CPU|Processor|\d+-Core|@.*$', '' -replace '\s+', ' '
+    WText $g ($gpuN.Trim() + '  ·  ' + $cpuN.Trim() + '  ·  ' + [math]::Round($ramGo) + ' Go') 302 275 22 '#B8B8C0' 255 'l' $false $false
+    # chiffres
+    $badges = [string]$script:meBadgeTxt; if (-not $badges) { $badges = '-' }
+    $tiles = @(@("$($m.Days) j", 'avec OnePC', '#38BDF8'), @((Format-Play $m.Play), 'de jeu mesuré', '#A78BFA'), @($badges, 'badges', '#FBBF24'), @(([int]$m.Xp).ToString('N0', [cultureinfo]'fr-FR'), 'XP', '#3DDC84'))
+    $tx = 70; $tw = 250; $gap = 20
+    foreach ($t in $tiles) {
+        WRound $g $tx 380 $tw 120 18 '#FFFFFF' 18 '#FFFFFF' 40 2
+        WText $g $t[0] ($tx + 24) 425 40 $t[2] 255 'l' $false $true
+        WText $g $t[1] ($tx + 24) 470 20 '#CACAD2' 255 'l' $false $false
+        $tx += $tw + $gap
+    }
+    # marque
+    WLogo $g 1118 568 64
+    WText $g 'OnePC' 1078 556 30 '#FFFFFF' 255 'r' $false $true
+    WText $g 'Mon PC, optimisé pour jouer' 1078 586 16 '#B8B8C0' 255 'r' $false $false
+    $g.Dispose()
+    $dir = Join-Path ([Environment]::GetFolderPath('MyPictures')) 'OnePC'
+    if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    $file = Join-Path $dir ('carte-onepc-' + (Get-Date).ToString('yyyy-MM-dd_HHmm') + '.png')
+    $bmp.Save($file, [System.Drawing.Imaging.ImageFormat]::Png); $bmp.Dispose()
+    $file
+}
+(UI 'MeShare').Add_Click({
+    (UI 'MeShareMsg').Foreground = $brush.ConvertFromString('#3DDC84')
+    try {
+        $f = Export-MeCard
+        $copied = $false
+        try {
+            $bi = New-Object System.Windows.Media.Imaging.BitmapImage
+            $bi.BeginInit(); $bi.StreamSource = New-Object System.IO.MemoryStream (, [System.IO.File]::ReadAllBytes($f)); $bi.CacheOption = 'OnLoad'; $bi.EndInit(); $bi.Freeze()
+            [System.Windows.Clipboard]::SetImage($bi); $copied = $true
+        } catch {}
+        try { Start-Process explorer.exe -ArgumentList ('/select,"' + $f + '"') } catch {}
+        Log 'Carte de joueur créée'
+        if ($copied) { (UI 'MeShareMsg').Text = "Ta carte est copiée : colle-la sur Discord ou Twitter avec Ctrl+V. Elle est aussi dans Images > OnePC." }
+        else { (UI 'MeShareMsg').Text = "Ta carte est enregistrée dans Images > OnePC." }
+    } catch { (UI 'MeShareMsg').Foreground = $brush.ConvertFromString('#FF6B6B'); (UI 'MeShareMsg').Text = "Impossible de créer la carte : " + $_.Exception.Message }
+})
 function Show-Me {
     $name = [string]$cfg.Pseudo; if (-not $name.Trim()) { $name = 'Choisis ton pseudo' }
     (UI 'MeName').Text = $name
@@ -11367,12 +13708,12 @@ function Show-Me {
     $play = Read-Kv $playFile; $tot = 0.0; foreach ($kv in @($play.GetEnumerator())) { $tot += [double]$kv.Value }
     $totTxt = Format-Play $tot; if ($tot -lt 60) { $totTxt = '0 min' }
     $ms = UI 'MeStats'; $ms.Children.Clear()
-    [void]$ms.Children.Add((New-MeTile ("$days j") ("avec OnePC (depuis le " + [string]$cfg.Since + ")") '#38BDF8'))
-    [void]$ms.Children.Add((New-MeTile ([int]$h['clean']) 'nettoyage(s) du PC' '#34D399'))
-    [void]$ms.Children.Add((New-MeTile ([int]$h['drv']) 'vérification(s) de pilotes' '#FBBF24'))
-    [void]$ms.Children.Add((New-MeTile ([int]$h['games']) 'jeu(x) lancé(s) depuis l''appli' '#F472B6'))
-    [void]$ms.Children.Add((New-MeTile ([int]$h['uninst']) 'application(s) désinstallée(s)' '#FB923C'))
-    [void]$ms.Children.Add((New-MeTile $totTxt 'de jeu mesuré' '#A78BFA'))
+    [void]$ms.Children.Add((New-MeTile ("$days j") ("avec OnePC (depuis le " + [string]$cfg.Since + ")") '#38BDF8' 0xE787))
+    [void]$ms.Children.Add((New-MeTile $totTxt 'de jeu mesuré' '#A78BFA' 0xE916))
+    [void]$ms.Children.Add((New-MeTile ([int]$h['games']) 'jeu(x) lancé(s) depuis l''appli' '#F472B6' 0xE7FC))
+    [void]$ms.Children.Add((New-MeTile ([int]$h['clean']) 'nettoyage(s) du PC' '#34D399' 0xE74D))
+    [void]$ms.Children.Add((New-MeTile ([int]$h['drv']) 'vérification(s) de pilotes' '#FBBF24' 0xE950))
+    [void]$ms.Children.Add((New-MeTile ([int]$h['uninst']) 'application(s) désinstallée(s)' '#FB923C' 0xE74D))
     # jeux
     $mg = UI 'MeGames'; $mg.Children.Clear()
     $list = @()
@@ -11552,6 +13893,515 @@ if ($script:lic) {
 } elseif (-not $licOn) { $licTxt += '   ·   Fichier de travail (sans licence)' }
 (UI 'LicInfo').Text = $licTxt
 
+# ---------- Micro ----------
+$micCs = @'
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+namespace PcmMic {
+  [StructLayout(LayoutKind.Sequential)] public struct PKey { public Guid fmt; public int pid; }
+  [StructLayout(LayoutKind.Explicit, Size = 24)] public struct PVar { [FieldOffset(0)] public short vt; [FieldOffset(8)] public IntPtr p; }
+  [ComImport, Guid("886d8eeb-8cf2-4446-8d02-cdba1dbdcf99"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+  interface IPropStore { int GetCount(out int c); int GetAt(int i, out PKey k); int GetValue(ref PKey k, out PVar v); }
+  [ComImport, Guid("D666063F-1587-4E43-81F1-B948E807363F"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+  interface IDev {
+    int Activate(ref Guid iid, int ctx, IntPtr p, [MarshalAs(UnmanagedType.IUnknown)] out object o);
+    int OpenPropertyStore(int acc, out IPropStore ps);
+    int GetId([MarshalAs(UnmanagedType.LPWStr)] out string id);
+    int GetState(out int st);
+  }
+  [ComImport, Guid("0BD7A1BE-7A1A-44DB-8397-CC5392387B5E"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+  interface IDevCol { int GetCount(out int c); int Item(int i, out IDev d); }
+  [ComImport, Guid("A95664D2-9614-4F35-A746-DE8DB63617E6"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+  interface IDevEnum {
+    int EnumAudioEndpoints(int flow, int mask, out IDevCol col);
+    int GetDefaultAudioEndpoint(int flow, int role, out IDev d);
+    int GetDevice([MarshalAs(UnmanagedType.LPWStr)] string id, out IDev d);
+  }
+  [ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")] class DevEnumCls { }
+  [ComImport, Guid("5CDF2C82-841E-4546-9722-0CF74078229A"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+  interface IEpVol {
+    int RegisterControlChangeNotify(IntPtr n);
+    int UnregisterControlChangeNotify(IntPtr n);
+    int GetChannelCount(out int c);
+    int SetMasterVolumeLevel(float db, ref Guid ctx);
+    int SetMasterVolumeLevelScalar(float lvl, ref Guid ctx);
+    int GetMasterVolumeLevel(out float db);
+    int GetMasterVolumeLevelScalar(out float lvl);
+    int SetChannelVolumeLevel(uint ch, float db, ref Guid ctx);
+    int SetChannelVolumeLevelScalar(uint ch, float lvl, ref Guid ctx);
+    int GetChannelVolumeLevel(uint ch, out float db);
+    int GetChannelVolumeLevelScalar(uint ch, out float lvl);
+    int SetMute([MarshalAs(UnmanagedType.Bool)] bool m, ref Guid ctx);
+    int GetMute([MarshalAs(UnmanagedType.Bool)] out bool m);
+  }
+  [ComImport, Guid("C02216F6-8C67-4B5B-9D00-D008E73E0064"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+  interface IMeter { int GetPeakValue(out float p); }
+  [ComImport, Guid("f8679f50-850a-41cf-9c72-430f290290c8"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+  interface IPolicyConfig {
+    int GetMixFormat(IntPtr a, IntPtr b); int GetDeviceFormat(IntPtr a, int b, IntPtr c); int ResetDeviceFormat(IntPtr a);
+    int SetDeviceFormat(IntPtr a, IntPtr b, IntPtr c); int GetProcessingPeriod(IntPtr a, int b, IntPtr c, IntPtr d);
+    int SetProcessingPeriod(IntPtr a, IntPtr b); int GetShareMode(IntPtr a, IntPtr b); int SetShareMode(IntPtr a, IntPtr b);
+    int GetPropertyValue(IntPtr a, IntPtr b, IntPtr c); int SetPropertyValue(IntPtr a, IntPtr b, IntPtr c);
+    int SetDefaultEndpoint([MarshalAs(UnmanagedType.LPWStr)] string id, int role);
+  }
+  [ComImport, Guid("870af99c-171d-4f9e-af0d-e63df40c2bc9")] class PolicyConfigCls { }
+  public static class Mic {
+    [DllImport("ole32.dll")] static extern int PropVariantClear(ref PVar v);
+    [DllImport("winmm.dll", CharSet = CharSet.Unicode)] static extern int mciSendStringW(string cmd, System.Text.StringBuilder ret, int len, IntPtr cb);
+    static IDevEnum En() { return (IDevEnum)(new DevEnumCls()); }
+    static string Name(IDev d) {
+      try {
+        IPropStore ps; d.OpenPropertyStore(0, out ps);
+        PKey k = new PKey(); k.fmt = new Guid("a45c254e-df1c-4efd-8020-67d146a850e0"); k.pid = 14;
+        PVar v; ps.GetValue(ref k, out v);
+        string s = (v.vt == 31) ? Marshal.PtrToStringUni(v.p) : "";
+        PropVariantClear(ref v); return s;
+      } catch { return ""; }
+    }
+    // micros : "id|nom|état|défaut"  (état : 1 actif, 2 désactivé, 8 débranché)
+    public static string[] List() {
+      List<string> r = new List<string>();
+      string def = DefaultId();
+      IDevCol col; En().EnumAudioEndpoints(1, 1 | 2 | 8, out col);
+      int n; col.GetCount(out n);
+      for (int i = 0; i < n; i++) {
+        IDev d; col.Item(i, out d);
+        string id; d.GetId(out id); int st; d.GetState(out st);
+        r.Add(id + "|" + Name(d) + "|" + st + "|" + (id == def ? "1" : "0"));
+      }
+      return r.ToArray();
+    }
+    public static string DefaultId() {
+      try { IDev d; int hr = En().GetDefaultAudioEndpoint(1, 0, out d); if (hr != 0 || d == null) return ""; string id; d.GetId(out id); return id; } catch { return ""; }
+    }
+    public static string DefaultName() {
+      try { IDev d; int hr = En().GetDefaultAudioEndpoint(1, 0, out d); if (hr != 0 || d == null) return ""; return Name(d); } catch { return ""; }
+    }
+    static IEpVol Vol(string id) {
+      IDev d; En().GetDevice(id, out d);
+      Guid g = new Guid("5CDF2C82-841E-4546-9722-0CF74078229A"); object o; d.Activate(ref g, 23, IntPtr.Zero, out o); return (IEpVol)o;
+    }
+    public static float GetVol(string id) { float f; Vol(id).GetMasterVolumeLevelScalar(out f); return f; }
+    public static void SetVol(string id, float f) { Guid z = Guid.Empty; Vol(id).SetMasterVolumeLevelScalar(Math.Max(0f, Math.Min(1f, f)), ref z); }
+    public static bool GetMute(string id) { bool m; Vol(id).GetMute(out m); return m; }
+    public static void SetMute(string id, bool m) { Guid z = Guid.Empty; Vol(id).SetMute(m, ref z); }
+    static string meterId = null; static IMeter meter = null;
+    public static float Peak(string id) {
+      try {
+        if (meter == null || meterId != id) { IDev d; En().GetDevice(id, out d); Guid g = new Guid("C02216F6-8C67-4B5B-9D00-D008E73E0064"); object o; d.Activate(ref g, 23, IntPtr.Zero, out o); meter = (IMeter)o; meterId = id; }
+        float p; meter.GetPeakValue(out p); return p;
+      } catch { meter = null; return 0f; }
+    }
+    public static void SetDefault(string id) {
+      IPolicyConfig pc = (IPolicyConfig)(new PolicyConfigCls());
+      pc.SetDefaultEndpoint(id, 0); pc.SetDefaultEndpoint(id, 1); pc.SetDefaultEndpoint(id, 2);
+    }
+    // enregistrement de test avec le micro par défaut de Windows
+    public static int Mci(string cmd) { return mciSendStringW(cmd, null, 0, IntPtr.Zero); }
+  }
+}
+'@
+$script:micFile = ''; $script:micPlayer = $null
+$micDuckKey = 'HKCU:\Software\Microsoft\Multimedia\Audio'
+$micPrivUser = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone'
+$micPrivSys = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone'
+$script:micId = ''; $script:micBusy = $false; $script:micMax = 0.0; $script:micT0 = $null
+function Ensure-Mic {
+    if ('PcmMic.Mic' -as [type]) { return }
+    # préparé en arrière-plan au démarrage : on attend qu'il ait fini plutôt que de tout refaire
+    if ($script:micPrepH -and -not $script:micPrepH.IsCompleted) { [void]$script:micPrepH.AsyncWaitHandle.WaitOne(8000) }
+    if (-not ('PcmMic.Mic' -as [type])) { Add-Type -TypeDefinition $micCs -ErrorAction Stop }
+}
+$script:micPrep = [powershell]::Create(); [void]$script:micPrep.AddScript({ param($c) Start-Sleep -Seconds 3; try { Add-Type -TypeDefinition $c -ErrorAction Stop } catch {} }).AddArgument($micCs); $script:micPrepH = $script:micPrep.BeginInvoke()
+function Set-MicBar($c1, $c2, $r) {
+    $r = [math]::Max(0.0, [math]::Min(1.0, [double]$r))
+    (UI $c1).Width = New-Object System.Windows.GridLength ([double][math]::Max(0.0001, $r)), ([System.Windows.GridUnitType]::Star)
+    (UI $c2).Width = New-Object System.Windows.GridLength ([double][math]::Max(0.0001, 1 - $r)), ([System.Windows.GridUnitType]::Star)
+}
+function Get-Mics {
+    $l = @()
+    foreach ($row in @([PcmMic.Mic]::List())) {
+        $p = ([string]$row).Split('|')
+        if ($p.Count -ge 4) { $l += [pscustomobject]@{ Id = $p[0]; Name = $p[1]; State = [int]$p[2]; Def = ($p[3] -eq '1') } }
+    }
+    $l
+}
+function Show-MicVol {
+    try {
+        if (-not $script:micId) { (UI 'MicVolTxt').Text = 'Volume du micro : aucun micro'; Set-MicBar 'MicVoC1' 'MicVoC2' 0; return }
+        $v = [PcmMic.Mic]::GetVol($script:micId); $mu = [PcmMic.Mic]::GetMute($script:micId)
+        $t = 'Volume du micro : ' + [int][math]::Round($v * 100) + ' %'; if ($mu) { $t += '  (COUPÉ)' }
+        (UI 'MicVolTxt').Text = $t; Set-MicBar 'MicVoC1' 'MicVoC2' $v
+    } catch { (UI 'MicVolTxt').Text = 'Volume du micro : illisible' }
+}
+function Load-Mic {
+    try { Ensure-Mic } catch { (UI 'MicCur').Text = "Impossible de lire les micros sur ce PC."; return }
+    $mics = @(); try { $mics = @(Get-Mics) } catch {}
+    $script:micId = ''; $def = $mics | Where-Object { $_.Def -and $_.State -eq 1 } | Select-Object -First 1
+    if ($def) { $script:micId = $def.Id; (UI 'MicCur').Text = '🎙  ' + $def.Name } else { (UI 'MicCur').Text = 'Aucun micro par défaut' }
+    # liste des micros
+    $wp = UI 'MicList'; $wp.Children.Clear()
+    foreach ($m in $mics) {
+        $bt = New-Object System.Windows.Controls.Button; $bt.Style = $tileStyle; $bt.Width = 300; $bt.Margin = New-Object System.Windows.Thickness 0, 0, 10, 10; $bt.Tag = $m.Id
+        $dp = New-Object System.Windows.Controls.DockPanel
+        $ib = New-Object System.Windows.Controls.Border; $ib.Width = 36; $ib.Height = 36; $ib.CornerRadius = New-Object System.Windows.CornerRadius 10; $ib.Margin = New-Object System.Windows.Thickness 0, 0, 12, 0
+        $col = '#8E8E98'; $st = 'Clique pour le mettre par défaut'
+        if ($m.Def -and $m.State -eq 1) { $col = '#3DDC84'; $st = '✓ Micro utilisé par défaut' }
+        if ($m.State -eq 2) { $col = '#FB7185'; $st = 'Désactivé dans Windows' }
+        if ($m.State -eq 8) { $col = '#6C6C76'; $st = 'Débranché' }
+        $ib.Background = $brush.ConvertFromString('#22' + $col.Substring(1))
+        $ic = New-Object System.Windows.Controls.TextBlock; $ic.Text = [string][char]0xE720; $ic.FontFamily = New-Object System.Windows.Media.FontFamily 'Segoe MDL2 Assets'; $ic.FontSize = 15
+        $ic.Foreground = $brush.ConvertFromString($col); $ic.HorizontalAlignment = 'Center'; $ic.VerticalAlignment = 'Center'; $ib.Child = $ic
+        [System.Windows.Controls.DockPanel]::SetDock($ib, 'Left'); [void]$dp.Children.Add($ib)
+        $sp = New-Object System.Windows.Controls.StackPanel; $sp.VerticalAlignment = 'Center'
+        $a = New-Object System.Windows.Controls.TextBlock; $a.Text = $m.Name; $a.FontWeight = 'SemiBold'; $a.TextTrimming = 'CharacterEllipsis'
+        $b = New-Object System.Windows.Controls.TextBlock; $b.Text = $st; $b.FontSize = 11.5; $b.Foreground = $brush.ConvertFromString($col)
+        [void]$sp.Children.Add($a); [void]$sp.Children.Add($b); [void]$dp.Children.Add($sp); $bt.Content = $dp
+        if ($m.State -eq 8) { $bt.IsEnabled = $false }
+        $bt.Add_Click({ param($s, $e)
+            $id = [string]$s.Tag; $mm = @(Get-Mics) | Where-Object { $_.Id -eq $id } | Select-Object -First 1
+            if ($mm -and $mm.State -eq 2) { Start-Process control.exe -ArgumentList 'mmsys.cpl,,1'; (UI 'MicSetMsg').Text = "Dans la fenêtre Son : clic droit sur « " + $mm.Name + " », puis « Activer »."; return }
+            if ($mm -and $mm.Def) { (UI 'MicSetMsg').Text = '« ' + $mm.Name + ' » est déjà ton micro par défaut.'; return }
+            if (-not (Ask-Pro 'Choisir son micro')) { return }
+            try { [PcmMic.Mic]::SetDefault($id); Log ('Micro par défaut : ' + $mm.Name); (UI 'MicSetMsg').Text = '« ' + $mm.Name + ' » est maintenant ton micro par défaut. Dans Discord, laisse le périphérique d''entrée sur « Par défaut » ou choisis-le.' } catch { (UI 'MicSetMsg').Text = "Windows a refusé de changer le micro par défaut." }
+            Load-Mic
+        })
+        [void]$wp.Children.Add($bt)
+    }
+    if (-not $mics.Count) { $tb = New-Object System.Windows.Controls.TextBlock; $tb.Text = "Aucun micro trouvé. Branche ton casque ou ton micro, puis reviens ici."; $tb.Foreground = $brush.ConvertFromString('#FBBF24'); [void]$wp.Children.Add($tb) }
+    Show-MicVol
+    # atténuation de Windows : 3 = ne rien faire
+    $dk = $null; try { $dk = (Get-ItemProperty -LiteralPath $micDuckKey -Name UserDuckingPreference -ErrorAction Stop).UserDuckingPreference } catch {}
+    $script:micDuckLoading = $true; (UI 'MicDuck').IsChecked = ([int]$dk -eq 3 -and $null -ne $dk); $script:micDuckLoading = $false
+    Show-MicDiag
+}
+function Get-MicDiag {
+    $res = @()
+    $mics = @(); try { $mics = @(Get-Mics) } catch {}
+    $act = @($mics | Where-Object { $_.State -eq 1 }); $dis = @($mics | Where-Object { $_.State -eq 2 })
+    if (-not $act.Count) {
+        $t = "Branche ton casque ou ton micro."; if ($dis.Count) { $t = "Ton micro « " + $dis[0].Name + " » est désactivé dans Windows." }
+        $res += @{ Ok = $false; T = 'Aucun micro qui marche'; D = $t; Fix = 'sound'; FixT = 'Ouvrir les réglages du son' }
+    } else { $res += @{ Ok = $true; T = 'Micro trouvé'; D = '' + $act.Count + ' micro(s) branché(s) et activé(s).' } }
+    if ($dis.Count -and $act.Count) { $res += @{ Ok = $false; T = 'Un micro est désactivé'; D = "« " + $dis[0].Name + " » est désactivé. Si c'est celui de ton casque, il faut le réactiver."; Fix = 'sound'; FixT = 'Le réactiver' } }
+    if ($script:micId) {
+        $mu = $false; $v = 1.0; try { $mu = [PcmMic.Mic]::GetMute($script:micId); $v = [PcmMic.Mic]::GetVol($script:micId) } catch {}
+        if ($mu) { $res += @{ Ok = $false; T = 'Ton micro est coupé dans Windows'; D = "Personne ne peut t'entendre, même si Discord montre que tu parles."; Fix = 'unmute'; FixT = 'Réactiver le micro' } }
+        else { $res += @{ Ok = $true; T = 'Micro pas coupé'; D = 'Windows laisse passer ta voix.' } }
+        if ($v -lt 0.3) { $res += @{ Ok = $false; T = 'Volume du micro trop bas (' + [int]($v * 100) + ' %)'; D = "On t'entend à peine."; Fix = 'vol80'; FixT = 'Mettre à 80 %' } }
+        else { $res += @{ Ok = $true; T = 'Volume du micro correct (' + [int]($v * 100) + ' %)'; D = '' } }
+        $def = $act | Where-Object { $_.Id -eq $script:micId } | Select-Object -First 1
+        $other = @($act | Where-Object { $_.Id -ne $script:micId -and $_.Name -match '(?i)casque|headset|micro|mic|usb|hyperx|razer|logitech|steelseries|corsair|astro|blue|rode|fifine|elgato|jabra' })
+        if ($def -and $def.Name -match '(?i)webcam|camera|cam\b' -and $other.Count) { $res += @{ Ok = $false; T = 'Le micro par défaut est celui de ta webcam'; D = "Tu as aussi « " + $other[0].Name + " » : en général, il est bien meilleur."; Fix = 'pick:' + $other[0].Id; FixT = 'Utiliser ' + $other[0].Name } }
+    }
+    $u = ''; $n = ''; $s = ''
+    try { $u = [string](Get-ItemProperty -LiteralPath $micPrivUser -Name Value -ErrorAction Stop).Value } catch {}
+    try { $n = [string](Get-ItemProperty -LiteralPath (Join-Path $micPrivUser 'NonPackaged') -Name Value -ErrorAction Stop).Value } catch {}
+    try { $s = [string](Get-ItemProperty -LiteralPath $micPrivSys -Name Value -ErrorAction Stop).Value } catch {}
+    if ($s -eq 'Deny') { $res += @{ Ok = $false; T = 'Windows bloque le micro sur tout le PC'; D = "Dans Confidentialité, « Accès au microphone » est coupé : aucune appli ne peut t'entendre."; Fix = 'privsys'; FixT = 'Ouvrir le réglage' } }
+    elseif ($u -eq 'Deny' -or $n -eq 'Deny') { $res += @{ Ok = $false; T = 'Windows bloque le micro pour Discord et les jeux'; D = "C'est la cause n°1 des « mon micro ne marche pas sur Discord »."; Fix = 'privuser'; FixT = 'Autoriser le micro' } }
+    else { $res += @{ Ok = $true; T = 'Discord et les jeux ont le droit d''utiliser le micro'; D = '' } }
+    $res
+}
+function Show-MicDiag {
+    $h = UI 'MicDiagList'; $h.Children.Clear(); $bad = 0
+    foreach ($r in @(Get-MicDiag)) {
+        if (-not $r.Ok) { $bad++ }
+        $row = New-Object System.Windows.Controls.Border; $row.CornerRadius = New-Object System.Windows.CornerRadius 12; $row.Padding = New-Object System.Windows.Thickness 14, 10, 14, 10; $row.Margin = New-Object System.Windows.Thickness 0, 0, 0, 8
+        $row.BorderThickness = New-Object System.Windows.Thickness 1
+        if ($r.Ok) { $row.Background = $brush.ConvertFromString('#10201A'); $row.BorderBrush = $brush.ConvertFromString('#1F4D3A') } else { $row.Background = $brush.ConvertFromString('#2A1218'); $row.BorderBrush = $brush.ConvertFromString('#6B2A33') }
+        $dp = New-Object System.Windows.Controls.DockPanel
+        $dot = New-Object System.Windows.Controls.Border; $dot.Width = 24; $dot.Height = 24; $dot.CornerRadius = New-Object System.Windows.CornerRadius 12; $dot.Margin = New-Object System.Windows.Thickness 0, 0, 12, 0; $dot.VerticalAlignment = 'Center'
+        $dt = New-Object System.Windows.Controls.TextBlock; $dt.FontFamily = New-Object System.Windows.Media.FontFamily 'Segoe MDL2 Assets'; $dt.FontSize = 11; $dt.HorizontalAlignment = 'Center'; $dt.VerticalAlignment = 'Center'; $dt.Foreground = $brush.ConvertFromString('#0F0F12')
+        if ($r.Ok) { $dot.Background = $brush.ConvertFromString('#3DDC84'); $dt.Text = [string][char]0xE73E } else { $dot.Background = $brush.ConvertFromString('#FB7185'); $dt.Text = [string][char]0xE711 }
+        $dot.Child = $dt; [System.Windows.Controls.DockPanel]::SetDock($dot, 'Left'); [void]$dp.Children.Add($dot)
+        if (-not $r.Ok -and $r.Fix) {
+            $fb = New-Object System.Windows.Controls.Button; $fb.Style = $win.FindResource('Action'); $fb.Content = $r.FixT; $fb.Tag = $r.Fix; $fb.VerticalAlignment = 'Center'; $fb.Margin = New-Object System.Windows.Thickness 12, 0, 0, 0
+            $fb.Add_Click({ param($s, $e) Do-MicFix ([string]$s.Tag) })
+            [System.Windows.Controls.DockPanel]::SetDock($fb, 'Right'); [void]$dp.Children.Add($fb)
+        }
+        $sp = New-Object System.Windows.Controls.StackPanel; $sp.VerticalAlignment = 'Center'
+        $a = New-Object System.Windows.Controls.TextBlock; $a.Text = $r.T; $a.FontWeight = 'SemiBold'; $a.TextWrapping = 'Wrap'
+        [void]$sp.Children.Add($a)
+        if ($r.D) { $b = New-Object System.Windows.Controls.TextBlock; $b.Text = $r.D; $b.FontSize = 12; $b.Foreground = $brush.ConvertFromString('#B8B8C0'); $b.TextWrapping = 'Wrap'; $b.Margin = New-Object System.Windows.Thickness 0, 2, 0, 0; [void]$sp.Children.Add($b) }
+        [void]$dp.Children.Add($sp); $row.Child = $dp; [void]$h.Children.Add($row)
+    }
+    if ($bad) { (UI 'MicDiagMsg').Text = "$bad problème(s) trouvé(s). Clique sur le bouton à droite de chacun pour le corriger." }
+    else { (UI 'MicDiagMsg').Text = "Tout est bon côté Windows. Si on t'entend mal, fais le test du micro en haut, puis règle Discord en bas." }
+}
+function Do-MicFix($tag) {
+    try {
+        switch -Wildcard ($tag) {
+            'sound' { Start-Process control.exe -ArgumentList 'mmsys.cpl,,1'; (UI 'MicDiagMsg').Text = "Dans la fenêtre Son (onglet Enregistrement) : clic droit dans la liste, coche « Afficher les périphériques désactivés », puis clic droit sur ton micro et « Activer ». Clique ensuite sur « Revérifier »."; return }
+            'unmute' { [PcmMic.Mic]::SetMute($script:micId, $false); Log 'Micro réactivé (il était coupé dans Windows)' }
+            'vol80' { [PcmMic.Mic]::SetVol($script:micId, 0.8); Log 'Volume du micro réglé à 80 %' }
+            'privuser' {
+                foreach ($k in $micPrivUser, (Join-Path $micPrivUser 'NonPackaged')) { if (-not (Test-Path -LiteralPath $k)) { New-Item -Path $k -Force | Out-Null }; Set-ItemProperty -LiteralPath $k -Name Value -Value 'Allow' -Type String }
+                Log 'Accès au micro autorisé pour les applis (Discord, jeux)'
+                (UI 'MicDiagMsg').Text = "Micro autorisé. Redémarre Discord pour qu'il le voie."
+            }
+            'privsys' { Open-Settings 'ms-settings:privacy-microphone'; (UI 'MicDiagMsg').Text = "Active « Accès au microphone » tout en haut de la page qui vient de s'ouvrir, puis clique sur « Revérifier »."; return }
+            'pick:*' { [PcmMic.Mic]::SetDefault($tag.Substring(5)); Log 'Micro par défaut changé (diagnostic)' }
+        }
+    } catch { (UI 'MicDiagMsg').Text = "Windows a refusé ce changement : " + $_.Exception.Message; return }
+    Load-Mic
+}
+(UI 'MicDiag').Add_Click({ Load-Mic })
+function Set-MicVolStep($v) {
+    if (-not $script:micId) { return }
+    if (-not (Ask-Pro 'Régler le volume du micro')) { return }
+    try { [PcmMic.Mic]::SetVol($script:micId, [single]$v); if ([PcmMic.Mic]::GetMute($script:micId)) { [PcmMic.Mic]::SetMute($script:micId, $false) } } catch {}
+    Show-MicVol; Show-MicDiag
+}
+(UI 'MicVol80').Add_Click({ Set-MicVolStep 0.8 })
+(UI 'MicVolUp').Add_Click({ $v = 0.5; try { $v = [PcmMic.Mic]::GetVol($script:micId) } catch {}; Set-MicVolStep ([math]::Min(1.0, [math]::Round($v * 10 + 1) / 10)) })
+(UI 'MicVolDn').Add_Click({ $v = 0.5; try { $v = [PcmMic.Mic]::GetVol($script:micId) } catch {}; Set-MicVolStep ([math]::Max(0.0, [math]::Round($v * 10 - 1) / 10)) })
+(UI 'MicDuck').Add_Click({
+    if ($script:micDuckLoading) { return }
+    if (-not (Ask-Pro 'Garder le son du jeu')) { (UI 'MicDuck').IsChecked = -not (UI 'MicDuck').IsChecked; return }
+    try {
+        if (-not (Test-Path -LiteralPath $micDuckKey)) { New-Item -Path $micDuckKey -Force | Out-Null }
+        if ((UI 'MicDuck').IsChecked) { Set-ItemProperty -LiteralPath $micDuckKey -Name UserDuckingPreference -Value 3 -Type DWord; Log 'Atténuation du son pendant les appels coupée' }
+        else { Set-ItemProperty -LiteralPath $micDuckKey -Name UserDuckingPreference -Value 1 -Type DWord; Log 'Atténuation du son pendant les appels remise par défaut' }
+        (UI 'MicSetMsg').Text = "C'est fait. Ça s'applique au prochain appel Discord."
+    } catch { (UI 'MicSetMsg').Text = "Windows a refusé ce réglage." }
+})
+# test : 5 s d'enregistrement en arrière-plan (l'appli ne se fige pas), barre de niveau fluide, puis réécoute
+$script:micJob = $null; $script:micShow = 0.0
+# barre de niveau : échelle en décibels (une voix normale remplit 50 à 80 %), animée par la carte graphique
+$script:micScale = New-Object System.Windows.Media.ScaleTransform 0, 1
+(UI 'MicLvFill').RenderTransform = $script:micScale
+function Set-MicLevel($v, $ms) {
+    $v = [math]::Max(0.0, [math]::Min(1.0, [double]$v))
+    $an = New-Object System.Windows.Media.Animation.DoubleAnimation; $an.To = $v; $an.Duration = New-Object System.Windows.Duration ([TimeSpan]::FromMilliseconds($ms))
+    $script:micScale.BeginAnimation([System.Windows.Media.ScaleTransform]::ScaleXProperty, $an)
+}
+function Get-MicDb($p) { if ($p -le 0.0005) { return 0.0 }; [math]::Max(0.0, [math]::Min(1.0, (20 * [math]::Log10($p) + 48) / 46)) }
+$script:micTimer = New-Object System.Windows.Threading.DispatcherTimer ([System.Windows.Threading.DispatcherPriority]::Render); $script:micTimer.Interval = [TimeSpan]::FromMilliseconds(33)
+$script:micTimer.Add_Tick({
+    $p = 0.0; try { $p = [PcmMic.Mic]::Peak($script:micId) } catch {}
+    if ($p -gt $script:micMax) { $script:micMax = $p }
+    # montée immédiate, descente douce : la barre ne clignote pas
+    $lv = Get-MicDb $p
+    if ($lv -ge $script:micShow) { $script:micShow = $lv } else { $script:micShow = [math]::Max($lv, $script:micShow - 0.035) }
+    Set-MicLevel $script:micShow 45
+    $left = 5 - ((Get-Date) - $script:micT0).TotalSeconds
+    if ($left -gt 0) { (UI 'MicLvTxt').Text = "Parle normalement... " + [math]::Ceiling($left) + " s"; return }
+    if ($script:micJob -and -not $script:micJob.H.IsCompleted) { (UI 'MicLvTxt').Text = "Enregistrement..."; return }
+    $script:micTimer.Stop(); Set-MicLevel 0 300
+    $res = ''; try { $res = [string]($script:micJob.P.EndInvoke($script:micJob.H) | Select-Object -Last 1); $script:micJob.P.Dispose() } catch {}
+    $script:micJob = $null; $script:micBusy = $false; (UI 'MicTest').IsEnabled = $true
+    if ($res -ne 'OK' -or -not (Test-Path -LiteralPath $script:micFile)) { (UI 'MicLvTxt').Text = "Windows n'arrive pas à enregistrer avec ce micro. Regarde le diagnostic en dessous."; return }
+    $mx = $script:micMax
+    if ($mx -lt 0.04) { (UI 'MicLvTxt').Text = "On ne t'a presque pas entendu. Vérifie le diagnostic en dessous, ou rapproche le micro de ta bouche." }
+    elseif ($mx -lt 0.15) { (UI 'MicLvTxt').Text = "On t'entend, mais faiblement : monte le volume du micro (80 % conseillé) ou rapproche-le." }
+    elseif ($mx -gt 0.98) { (UI 'MicLvTxt').Text = "Ta voix sature (trop fort) : baisse un peu le volume du micro. Réécoute-toi pour vérifier." }
+    else { (UI 'MicLvTxt').Text = "Ton micro capte bien ta voix. Voilà ce que les autres entendent :" }
+    (UI 'MicPlay').IsEnabled = $true; Play-MicTest
+})
+function Play-MicTest {
+    try { if ($script:micPlayer) { $script:micPlayer.Stop(); $script:micPlayer.Dispose() } } catch {}
+    try { $script:micPlayer = New-Object System.Media.SoundPlayer $script:micFile; $script:micPlayer.Load(); $script:micPlayer.Play() } catch {}
+}
+(UI 'MicTest').Add_Click({
+    if ($script:micBusy) { return }
+    if (-not (Ask-Pro 'Tester son micro')) { return }
+    try { Ensure-Mic } catch { return }
+    if (-not $script:micId) { Load-Mic }
+    if (-not $script:micId) { (UI 'MicLvTxt').Text = "Aucun micro par défaut : branche ton micro, puis regarde le diagnostic."; return }
+    try { if ($script:micPlayer) { $script:micPlayer.Stop(); $script:micPlayer.Dispose(); $script:micPlayer = $null } } catch {}
+    # un nouveau fichier à chaque test : l'ancien peut encore être ouvert par la réécoute
+    Get-ChildItem -LiteralPath $env:TEMP -Filter 'onepc-test-micro*.wav' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    $script:micFile = Join-Path $env:TEMP ('onepc-test-micro-' + (Get-Date).Ticks + '.wav')
+    $ps = [powershell]::Create()
+    [void]$ps.AddScript({
+        param($f)
+        $a = 'onepcrec' + [Environment]::TickCount
+        if ([PcmMic.Mic]::Mci("open new type waveaudio alias $a") -ne 0) { return 'ERR' }
+        [void][PcmMic.Mic]::Mci("set $a bitspersample 16 channels 1 samplespersec 44100 bytespersec 88200 alignment 2")
+        if ([PcmMic.Mic]::Mci("record $a") -ne 0) { [void][PcmMic.Mic]::Mci("close $a"); return 'ERR' }
+        Start-Sleep -Milliseconds 5000
+        [void][PcmMic.Mic]::Mci("stop $a")
+        $r = [PcmMic.Mic]::Mci("save $a `"$f`"")
+        [void][PcmMic.Mic]::Mci("close $a")
+        if ($r -eq 0) { 'OK' } else { 'ERR' }
+    }).AddArgument($script:micFile)
+    $script:micJob = @{ P = $ps; H = $ps.BeginInvoke() }
+    $script:micBusy = $true; (UI 'MicTest').IsEnabled = $false; (UI 'MicPlay').IsEnabled = $false
+    $script:micMax = 0.0; $script:micShow = 0.0; $script:micT0 = Get-Date; $script:micTimer.Start()
+})
+(UI 'MicPlay').Add_Click({ if ($script:micFile -and (Test-Path -LiteralPath $script:micFile)) { Play-MicTest } })
+(UI 'MicDcOpen').Add_Click({ try { Start-Process 'discord://-/settings/voice' } catch { try { Start-Process 'discord://' } catch {} } })
+Set-StepRows (UI 'MicDcSteps') '#5865F2' @(
+    "Dans Discord : roue crantée en bas à gauche (Paramètres utilisateur), puis « Voix et vidéo ».",
+    "Périphérique d'entrée : choisis ton vrai micro (celui de ton casque).",
+    "Sensibilité de saisie : laisse « Déterminer automatiquement la sensibilité » activé.",
+    "Suppression du bruit : choisis « Krisp ». Ça enlève le bruit du clavier et du ventilo.",
+    "Annulation d'écho et contrôle automatique du gain : active les deux.",
+    "! Clique sur « Vérifions » dans Discord pour t'entendre avec ces réglages."
+)
+# ---------- Manette : test de drift ----------
+$padCs = @'
+using System;
+using System.Runtime.InteropServices;
+namespace PcmPad {
+  [StructLayout(LayoutKind.Sequential)] public struct XState { public uint packet; public ushort buttons; public byte lt; public byte rt; public short lx; public short ly; public short rx; public short ry; }
+  [StructLayout(LayoutKind.Sequential)] public struct JoyEx { public uint size; public uint flags; public uint x; public uint y; public uint z; public uint r; public uint u; public uint v; public uint buttons; public uint bnum; public uint pov; public uint res1; public uint res2; }
+  public static class Pad {
+    [DllImport("xinput1_4.dll", EntryPoint = "XInputGetState")] static extern int X14(int i, out XState s);
+    [DllImport("xinput9_1_0.dll", EntryPoint = "XInputGetState")] static extern int X91(int i, out XState s);
+    [DllImport("winmm.dll")] static extern int joyGetPosEx(int id, ref JoyEx j);
+    static int xver = 0; static int joyId = -1;
+    static int XGet(int i, out XState s) {
+      s = new XState();
+      if (xver == 0) { try { int r = X14(i, out s); xver = 1; return r; } catch { xver = 2; } }
+      if (xver == 1) { try { return X14(i, out s); } catch { xver = 2; } }
+      if (xver == 2) { try { return X91(i, out s); } catch { xver = 3; } }
+      return 1167;
+    }
+    static double N(short v) { return Math.Max(-1.0, v / 32767.0); }
+    static double J(uint v) { return (v - 32767.5) / 32767.5; }
+    // [source (0 rien, 1 XInput, 2 manette générique), gauche X, gauche Y, droit X, droit Y, gâchette G, gâchette D] ; Y positif = vers le haut
+    public static double[] Read() {
+      for (int i = 0; i < 4; i++) {
+        XState s; if (XGet(i, out s) == 0) return new double[] { 1, N(s.lx), N(s.ly), N(s.rx), N(s.ry), s.lt / 255.0, s.rt / 255.0 };
+      }
+      if (joyId >= 0) { double[] r0 = JoyRead(joyId); if (r0 != null) return r0; joyId = -1; }
+      for (int id = 0; id < 16; id++) { double[] r1 = JoyRead(id); if (r1 != null) { joyId = id; return r1; } }
+      return new double[] { 0, 0, 0, 0, 0, 0, 0 };
+    }
+    static double[] JoyRead(int id) {
+      JoyEx j = new JoyEx(); j.size = (uint)Marshal.SizeOf(typeof(JoyEx)); j.flags = 0xFF;
+      try { if (joyGetPosEx(id, ref j) != 0) return null; } catch { return null; }
+      return new double[] { 2, J(j.x), -J(j.y), J(j.z), -J(j.r), j.u / 65535.0, j.v / 65535.0 };
+    }
+  }
+}
+'@
+function Ensure-PadTest { if (-not ('PcmPad.Pad' -as [type])) { Add-Type -TypeDefinition $padCs -ErrorAction Stop } }
+$script:padScaleL = New-Object System.Windows.Media.ScaleTransform 0, 1; (UI 'PadTrL').RenderTransform = $script:padScaleL
+$script:padScaleR = New-Object System.Windows.Media.ScaleTransform 0, 1; (UI 'PadTrR').RenderTransform = $script:padScaleR
+$script:padRest = $null; $script:padRestMax = @(0.0, 0.0); $script:padSrcShown = -1
+function Set-PadDz($side, $pct) {
+    # cercle de zone morte : rayon du stick = 85 px (point de 18 px)
+    $r = 85.0 * [math]::Max(0.0, [math]::Min(1.0, $pct / 100.0)); $e = UI ('PadDz' + $side)
+    $e.Width = 2 * $r; $e.Height = 2 * $r; [System.Windows.Controls.Canvas]::SetLeft($e, 85 - $r); [System.Windows.Controls.Canvas]::SetTop($e, 85 - $r)
+}
+$script:padTimer = New-Object System.Windows.Threading.DispatcherTimer ([System.Windows.Threading.DispatcherPriority]::Render); $script:padTimer.Interval = [TimeSpan]::FromMilliseconds(33)
+$script:padTimer.Add_Tick({
+    if ((UI 'PagePad').Visibility -ne 'Visible') { $script:padTimer.Stop(); $script:padRest = $null; (UI 'PadTestGo').Content = 'Lancer le test'; return }
+    $v = $null; try { $v = [PcmPad.Pad]::Read() } catch {}
+    if (-not $v -or $v[0] -eq 0) {
+        if ($script:padSrcShown -ne 0) { $script:padSrcShown = 0; (UI 'PadTestSrc').Text = "Aucune manette lue. Branche-la en USB ou connecte-la en Bluetooth. Une manette PlayStation est parfois lue seulement si Steam est fermé." }
+        return
+    }
+    if ($script:padSrcShown -ne [int]$v[0]) {
+        $script:padSrcShown = [int]$v[0]
+        if ($v[0] -eq 1) { (UI 'PadTestSrc').Text = "Manette lue (mode Xbox). Bouge tes sticks et appuie sur tes gâchettes." }
+        else { (UI 'PadTestSrc').Text = "Manette lue (mode générique, PlayStation ou autre). Les sticks sont fiables ; les gâchettes peuvent être inversées ou ne pas bouger selon la manette." }
+    }
+    $i = 0
+    foreach ($side in 'L', 'R') {
+        $x = [double]$v[1 + 2 * $i]; $y = [double]$v[2 + 2 * $i]
+        $d = UI ('PadDot' + $side)
+        [System.Windows.Controls.Canvas]::SetLeft($d, 76 + 76 * [math]::Max(-1, [math]::Min(1, $x)))
+        [System.Windows.Controls.Canvas]::SetTop($d, 76 - 76 * [math]::Max(-1, [math]::Min(1, $y)))
+        (UI ('PadVal' + $side)).Text = 'X ' + [int][math]::Round($x * 100) + ' %  ·  Y ' + [int][math]::Round($y * 100) + ' %'
+        if ($script:padRest) { $m = [math]::Sqrt($x * $x + $y * $y); if ($m -gt $script:padRestMax[$i]) { $script:padRestMax[$i] = $m } }
+        $i++
+    }
+    $lt = [math]::Max(0.0, [math]::Min(1.0, [double]$v[5])); $rt = [math]::Max(0.0, [math]::Min(1.0, [double]$v[6]))
+    $script:padScaleL.ScaleX = $lt; $script:padScaleR.ScaleX = $rt
+    (UI 'PadTrVL').Text = '' + [int]($lt * 100) + ' %'; (UI 'PadTrVR').Text = '' + [int]($rt * 100) + ' %'
+    if ($script:padRest) {
+        $left = 5 - ((Get-Date) - $script:padRest).TotalSeconds
+        if ($left -gt 0) { (UI 'PadDriftRes').Text = "Ne touche à rien... " + [math]::Ceiling($left) + " s"; return }
+        $script:padRest = $null; (UI 'PadRest').IsEnabled = $true
+        $lines = @(); $j = 0
+        foreach ($nm in 'gauche', 'droit') {
+            $pct = [math]::Round($script:padRestMax[$j] * 100, 1); $dz = [int][math]::Min(30, [math]::Ceiling($pct) + 2)
+            if ($pct -lt 4) { $lines += "✓  Stick $nm : aucun drift (" + $pct + " % au repos). Zone morte basse possible dans Fortnite (environ " + [math]::Max(3, $dz) + " %)."; Set-PadDz ($(if ($j) { 'R' } else { 'L' })) ([math]::Max(3, $dz)) }
+            elseif ($pct -lt 10) { $lines += "⚠  Stick $nm : léger drift (" + $pct + " % au repos). Mets la zone morte à " + $dz + " % dans Fortnite."; Set-PadDz ($(if ($j) { 'R' } else { 'L' })) $dz }
+            else { $lines += "✗  Stick $nm : drift important (" + $pct + " % au repos). Zone morte à " + $dz + " % pour jouer en attendant ; souffle de l'air sec autour du stick, sinon il faudra le réparer ou changer de manette."; Set-PadDz ($(if ($j) { 'R' } else { 'L' })) $dz }
+            $j++
+        }
+        $lines += "Dans Fortnite : Réglages, onglet Manette, « Zone morte » du stick gauche et du stick droit. Le cercle jaune montre la zone conseillée."
+        (UI 'PadDriftRes').Text = ($lines -join "`r`n")
+        Log ('Test de drift manette : gauche ' + [math]::Round($script:padRestMax[0] * 100, 1) + ' %, droit ' + [math]::Round($script:padRestMax[1] * 100, 1) + ' %')
+    }
+})
+(UI 'PadTestGo').Add_Click({
+    if ($script:padTimer.IsEnabled) { $script:padTimer.Stop(); $script:padRest = $null; (UI 'PadTestGo').Content = 'Lancer le test'; (UI 'PadRest').IsEnabled = $true; return }
+    try { Ensure-PadTest } catch { (UI 'PadTestSrc').Text = "Impossible de lire les manettes sur ce PC."; return }
+    $script:padSrcShown = -1; $script:padTimer.Start(); (UI 'PadTestGo').Content = 'Arrêter le test'
+})
+(UI 'PadRest').Add_Click({
+    try { Ensure-PadTest } catch { return }
+    if (-not $script:padTimer.IsEnabled) { $script:padSrcShown = -1; $script:padTimer.Start(); (UI 'PadTestGo').Content = 'Arrêter le test' }
+    $script:padRestMax = @(0.0, 0.0); $script:padRest = (Get-Date).AddMilliseconds(700)
+    (UI 'PadRest').IsEnabled = $false; (UI 'PadDriftBox').Visibility = 'Visible'; (UI 'PadDriftRes').Text = "Pose la manette et ne touche plus les sticks..."
+})
+
+# ---------- Mode stream : cache tes infos perso dans OnePC ----------
+$script:streamRx = $null
+function Get-StreamRules {
+    $r = @()
+    try { if ($env:USERPROFILE) { $r += , @([regex]::Escape($env:USERPROFILE), 'C:\Users\•••') } } catch {}
+    if ($env:USERNAME -and $env:USERNAME.Length -ge 3) { $r += , @(('(?<![A-Za-z0-9])' + [regex]::Escape($env:USERNAME) + '(?![A-Za-z0-9])'), '•••') }
+    if ($env:COMPUTERNAME -and $env:COMPUTERNAME.Length -ge 3) { $r += , @(('(?<![A-Za-z0-9])' + [regex]::Escape($env:COMPUTERNAME) + '(?![A-Za-z0-9])'), 'MON-PC') }
+    $r += , @('\b(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\b', '•••.•••.•••.•••')
+    $r += , @('\b[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4}){4,7}\b|\b[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*::(?:[0-9A-Fa-f]{1,4}:)*[0-9A-Fa-f]{1,4}\b', '••••:••••')
+    $r += , @('\b(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}\b', '••:••:••:••:••:••')
+    foreach ($x in $r) { $x[0] = New-Object System.Text.RegularExpressions.Regex($x[0], 'IgnoreCase') }
+    $r
+}
+function Hide-StreamText($s) {
+    if (-not $s) { return $s }
+    $t = [string]$s; foreach ($x in $script:streamRx) { $t = $x[0].Replace($t, $x[1]) }
+    $t
+}
+# masquage à la source : les infos qui se rafraîchissent toutes seules (IP de la page Réseau...) ne s'affichent jamais en clair
+function Stream-Txt($s) { if ($cfg.StreamMode -and $script:streamRx) { return (Hide-StreamText $s) }; $s }
+function Scan-Stream($el) {
+    if (-not $el) { return }
+    if ($el -is [System.Windows.UIElement] -and $el.Visibility -ne 'Visible') { return }
+    if ($el -is [System.Windows.Controls.TextBlock]) { $t = $el.Text; if ($t) { $n = Hide-StreamText $t; if ($n -ne $t) { $el.Text = $n } }; return }
+    if ($el -is [System.Windows.Controls.TextBox]) { $t = $el.Text; if ($t) { $n = Hide-StreamText $t; if ($n -ne $t) { $el.Text = $n } }; return }
+    $c = 0; try { $c = [System.Windows.Media.VisualTreeHelper]::GetChildrenCount($el) } catch { return }
+    for ($i = 0; $i -lt $c; $i++) { Scan-Stream ([System.Windows.Media.VisualTreeHelper]::GetChild($el, $i)) }
+}
+$script:streamTimer = New-Object System.Windows.Threading.DispatcherTimer; $script:streamTimer.Interval = [TimeSpan]::FromMilliseconds(900)
+$script:streamTimer.Add_Tick({ try { Scan-Stream $win } catch {} })
+function Set-StreamMode($on) {
+    $cfg.StreamMode = [bool]$on; Save-Cfg
+    try { (UI 'SetStream').IsChecked = [bool]$on } catch {}
+    if ($on) {
+        if (-not $script:streamRx) { $script:streamRx = @(Get-StreamRules) }
+        # listes sensibles de la page Réseau : on les vide
+        try { (UI 'WifiList').ItemsSource = $null; (UI 'WifiMsg').Text = ' ' } catch {}
+        try { if ((UI 'DevList').ItemsSource) { (UI 'DevList').ItemsSource = $null; (UI 'DevMsg').Text = "Liste cachée en mode stream." } } catch {}
+        try { (UI 'NetInfo').Text = Stream-Txt ([string]$sync.NetInfo) } catch {}
+        try { Scan-Stream $win } catch {}
+        $script:streamTimer.Start()
+    } else {
+        $script:streamTimer.Stop()
+        # les vraies valeurs reviennent en rechargeant la page affichée
+        try { (UI 'InfoPc').Text = $env:COMPUTERNAME } catch {}
+        try { if ($script:curPage) { Show-Page $script:curPage } } catch {}
+    }
+    try { Set-ProMode } catch {}
+}
+(UI 'SetStream').Add_Click({ Set-StreamMode ([bool](UI 'SetStream').IsChecked) })
+(UI 'ObsStreamMode').Add_Click({ Set-StreamMode (-not [bool]$cfg.StreamMode); if ($cfg.StreamMode) { (UI 'ObsMsg').Text = "Mode stream activé : ton nom de PC, ton nom d'utilisateur, tes adresses IP et tes dossiers sont cachés dans OnePC." } else { (UI 'ObsMsg').Text = 'Mode stream coupé.' } })
+if ([bool]$cfg.StreamMode) { Set-StreamMode $true }
+# ---------- logo Discord ----------
+$dcLogoB64 = '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'
+try {
+    $dcLogo = New-Object System.Windows.Media.Imaging.BitmapImage
+    $dcLogo.BeginInit(); $dcLogo.StreamSource = New-Object System.IO.MemoryStream (, [Convert]::FromBase64String($dcLogoB64)); $dcLogo.CacheOption = 'OnLoad'; $dcLogo.EndInit(); $dcLogo.Freeze()
+    foreach ($dcN in 'DcLogoNav', 'DcLogoHero', 'DcLogoMic') { try { (UI $dcN).Source = $dcLogo } catch {} }
+} catch {}
 # ---------- Version gratuite / OnePC Pro ----------
 $proInfo = @{
     'Comp'  = @('Mode compétitif', 0xE945, "Les réglages qui réduisent vraiment la latence sur Fortnite et stabilisent tes FPS : Fortnite, Windows et carte graphique, chacun expliqué et annulable.")
@@ -11642,7 +14492,7 @@ function Set-ProMode {
             $sp = (UI $pages[$k][0]).Content
             if ($sp -is [System.Windows.Controls.Panel]) {
                 foreach ($c in @($sp.Children)) { if ([string]$c.Tag -eq 'lock') { [void]$sp.Children.Remove($c) } }
-                if (-not $script:isPro) { try { [void]$sp.Children.Add((New-ProPill)) } catch {} }
+                if (-not $script:isPro -and -not ($k -eq 'Fresh' -and $script:freshRescue)) { try { [void]$sp.Children.Add((New-ProPill)) } catch {} }
             }
         } catch {}
     }
@@ -11653,6 +14503,8 @@ function Set-ProMode {
     elseif ($cfg.DemoFree) { $t += '   ·   Version gratuite (mode démo)' }
     else { $t += '   ·   Version gratuite' }
     (UI 'LicInfo').Text = $t
+    try { if ($script:isPro) { $wid = 'PRO'; if ($script:lic -and [string]$script:lic.Id) { $wid += '  ·  ' + [string]$script:lic.Id }; (UI 'WaterId').Text = $wid } else { (UI 'WaterId').Text = 'version gratuite' } } catch {}
+    try { if ($cfg.StreamMode) { (UI 'WaterId').Text = [string](UI 'WaterId').Text + '  ·  MODE STREAM' } } catch {}
     if ($script:lic -and $script:lic.Machine -eq '*') { (UI 'SetDemoCard').Visibility = 'Visible'; (UI 'SetDemoFree').IsChecked = [bool]$cfg.DemoFree }
     try { if ($script:curPage) { Show-Page $script:curPage } } catch {}
 }
@@ -11765,8 +14617,9 @@ function Close-Wel { (UI 'WelHost').Visibility = 'Collapsed'; try { Show-Page 'H
 (UI 'WelBack').Add_Click({ if ($script:welI -gt 0) { $script:welI--; Show-Wel } })
 (UI 'WelSkip').Add_Click({ Close-Wel })
 (UI 'SetWelcome').Add_Click({ Open-Wel })
-$win.Add_ContentRendered({ if (-not $cfg.Welcome) { $cfg.TourVer = '1.7'; try { Open-Wel } catch {} } elseif ([string]$cfg.TourVer -ne '1.7') { try { Open-Wel $welNew } catch {} } else { Check-CalReminder } })
+$win.Add_ContentRendered({ if ($script:freshRescue) { return }; if (-not $cfg.Welcome) { $cfg.TourVer = '1.7'; try { Open-Wel } catch {} } elseif ([string]$cfg.TourVer -ne '1.7') { try { Open-Wel $welNew } catch {} } else { Check-CalReminder } })
 $first = [string]$cfg.StartPage; if (-not $pages.ContainsKey($first)) { $first = 'Home' }
+if ($script:freshRescue) { $first = 'Fresh' }
 Show-Page $first
 $timer.Start()
 try { if ($splash) { $splash.Close() } } catch {}
